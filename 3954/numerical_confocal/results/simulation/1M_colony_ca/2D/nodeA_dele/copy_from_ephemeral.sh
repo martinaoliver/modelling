@@ -1,0 +1,2 @@
+cp ~/../../Volumes/mo2016/ephemeral/Documents/modelling/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/nodeA_dele/2Dtimeseries_circuit8_variant6_boundary1_ca_nodeAdeleID1236_L8_J80_T120_N23880.pkl .
+cp ~/../../Volumes/mo2016/ephemeral/Documents/modelling/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/nodeA_dele/2Dfinal_circuit8_variant6_boundary1_ca_nodeAdeleID1236_L8_J80_T120_N23880.pkl .

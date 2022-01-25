@@ -1,0 +1,9 @@
+#PBS -l walltime=01:00:00
+#PBS -lselect=1:ncpus=50:ompthreads=50:mem=600gb
+
+
+module load anaconda3/personal
+source activate env1
+cd $PBS_O_WORKDIR
+
+python frame_clustering.py > KMeans_1.txt

@@ -1,0 +1,14 @@
+dadt= self.ba+self.Va*self.noncompetitiveinh(D,self.kda)-self.mua*A
+dbdt= self.bb+self.Vb*self.noncompetitiveact(A,self.kaa)*self.noncompetitiveinh(E,self.keb)-self.mua*B
+dcdt= self.bc+self.Vc*self.noncompetitiveinh(D,self.kda)-self.mulva*C
+dddt= self.bd+self.Vd*self.noncompetitiveact(B,self.kbd)-self.mulva*D
+dedt= self.be+self.Ve*self.noncompetitiveinh(C,self.kce)*self.noncompetitiveinh(F,self.kfe)*self.noncompetitiveact(E,self.kee)-self.mulva*E
+dfdt= self.bf+self.Vf*self.noncompetitiveact(B,self.kbd)-self.mulva*F
+
+def noncompetitiveact(self, U, km,n=2):
+    act = ((U / km) ** (n)) / (1 + (U / km) ** (n))
+    return act
+
+def noncompetitiveinh(self, U, km,n=2):
+    inh = 1 / (1 + (U / km) ** (n))
+    return inh

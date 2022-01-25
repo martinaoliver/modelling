@@ -1,0 +1,15 @@
+
+**/**.png
+**/**.pkl
+**/**.jpg
+**/**.jpeg
+**/**.xlsx
+**/**.pbs.o*
+**/**.pbs.e*
+**/**.pdf
+**/**hdf5
+**/**gif
+.DS_Store
+
+
+

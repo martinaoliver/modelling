@@ -1,0 +1,11 @@
+#!/bin/sh
+#PBS -lselect=1:ncpus=300:ompthreads=300:mem=3600gb
+#PBS -lwalltime=40:00:00
+
+module load anaconda3/personal
+source activate env1
+cd $PBS_O_WORKDIR
+
+
+
+python  run_numerical_multithread.py 300 1D 10 100

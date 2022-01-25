@@ -1,0 +1,17 @@
+#!/bin/sh
+#PBS -l walltime=06:00:00
+#PBS -l select=1:ncpus=1:mem=96gb
+
+
+module load anaconda3/personal
+source activate env1
+cd $PBS_O_WORKDIR
+
+
+
+
+python plot_all.py $start $stop
+# python sample_general_numerical.py 2D $parID 10 120 8 1 $p_division 5
+# python sample_general_numerical.py 2D $parID 10 120 8 1 0.41 $kce
+# python sample_general_numerical.py 2D $parID 10 120 8 1 0.4
+# python sample_general_numerical.py 2D $parID 2 2 2

@@ -1,0 +1,55 @@
+- Variant0
+    -  kce=10^4
+    - dB: 0.001-10
+    - Vm: 10-1000
+    - Km:0.1-250
+    - Mu: 0.001,50
+    - Basal: 0.01
+    - Cooperativity:2
+    - dA: 1
+
+- Variant5
+    -    kce=10^4
+        - dB: 0.001-10
+        - Vm: 10-1000
+        - Km:0.1-250
+        - Mu: 0.001,50
+        - Basal: 0.05
+        - Cooperativity:2
+        - dA: 1
+
+- Variant6
+    -    kce=10^4
+        - dB: 0.001-10
+        - Vm: 10-1000
+        - Km:0.1-250
+        - Mu: 0.001,50
+        - Basal: 0.05
+        - Cooperativity:3
+        - dA: 1
+
+- Variant7
+          Vm_range = (10, 1000)
+          km_range = (0.1, 250)
+          mu_range = (0.25, 2)
+          alphaH_range = (1, 100)
+          R_range = (0.1, 100)
+          d_B_range = (0.001, 10)
+          b = 0.01    dA=1      n=3    kD=28
+          muLVA = muBDEF, khf=khd
+- Variant8
+        Vm_range = (10, 1000)
+        km_range = (0.1, 250)
+        mu_range = (0.25, 2)
+        R_range = (10, 200)
+        d_H_range = (0.1, 10)
+        a_range = (0.1,100)
+        kD_range = (28,1000)
+        bmX = np.full((numbercombinations, 1), 0.1)#nM
+        d_A = np.full((numbercombinations, 1), 1)#mm/h
+        muLVA = np.full((numbercombinations, 1), 1.08)#h^-1
+        muRNA= np.full((numbercombinations, 1), 12)#h^-1
+        nH = np.full((numbercombinations, 1), 1)
+        nE = np.full((numbercombinations, 1), 3)
+        nF = np.full((numbercombinations, 1), 3)
+        alphaH = np.full((numbercombinations, 1), 3000)

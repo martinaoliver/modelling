@@ -1,0 +1,9 @@
+#PBS -l walltime=60:00:00
+#PBS -lselect=1:ncpus=50:ompthreads=50:mem=600gb
+
+
+module load anaconda3/personal
+source activate env1
+cd $PBS_O_WORKDIR
+
+python timeseries_clustering.py > output_parallel_full.txt

@@ -1,0 +1,5 @@
+cir1 = cir3954 SA/PCA/pC
+cir2 = cir3954 with no positive feedback on node A - (constitutive node A) pC
+cir3 = A-B turing network with no positive feedback on node A. including equations for two diffusers 8 species (6 + diffusors)
+cir4 = cir2 with plasmid loss (RFP and E(cI) lost). Also C (TetR) lost because interaction is non present.
+cir10 = nodeA deletion with receptor binding dynamics and diffuser (HSL) modelled

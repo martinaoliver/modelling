@@ -1,0 +1,27 @@
+Comparing time 65
+Comparing time 77
+Comparing time 102
+zero_red
+zero_red
+Comparing time 110
+zero_red
+zero_red
+Comparing time 124
+zero_red
+zero_red
+Comparing time 135
+zero_red
+zero_red
+Comparing time 149
+zero_red
+zero_red
+zero_red
+zero_red
+[7.14285714 5.28571429 6.85714286 ... 6.71428571 6.57142857 7.85714286]
+plotting time 65
+plotting time 77
+plotting time 102
+plotting time 110
+plotting time 124
+plotting time 135
+plotting time 149
