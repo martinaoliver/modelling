@@ -4,10 +4,25 @@ mpl.use('tkagg')
 import sys
 import os
 pwd = os.getcwd()
-root = pwd.split("home", 1)[0]
-modelling_home = root + 'home/Documents/modelling'
-modelling_ephemeral = root + 'ephemeral/Documents/modelling'
-modulepath = modelling_home + '/3954/modules'
+# root = pwd.split("Documents", 1)[0]
+root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
+
+print(root)
+if root == '/Users/mo2016':
+    print('fasdghgfsgth')
+    modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
+    modelling_home = '/Volumes/mo2016/home/Documents/modelling'
+else:
+    modelling_ephemeral = root + 'ephemeral/Documents/modelling'
+    modelling_home = root  + '/Documents/modelling'
+
+modelling_path_local = root + '/Documents/modelling'
+
+modulepath = modelling_path_local + '/3954/modules'
+print(modelling_home)
+# modelling_home = root + 'home/Documents/modelling'
+# modelling_ephemeral = root + 'ephemeral/Documents/modelling'
+
 sys.path.append(modulepath)
 from numerical_solvers_variableboundary import *
 from PIL import Image, ImageDraw
@@ -68,7 +83,7 @@ parID_entropy_dict_red = {}
 parID_entropy_dict_green = {}
 parID_entropy_dict_redgreen= {}
 
-for parID in tqdm(parID_list):
+for parID in tqdm(parID_list[:3]):
 
     filename = '2Dfinal_circuit2_variant5716gaussian_ca_nodeAdeleID%s_L10_J150_T120_N1200.pkl'%parID
     final_concentration = pickle.load( open( results_path + '/' + filename, "rb" ) )
@@ -91,6 +106,6 @@ print(parID_entropy_dict_redgreen)
 print(parID_entropy_dict_green)
 print(parID_entropy_dict_red)
 
-pickle.dump( parID_entropy_dict_redgreen, open( "EntropyDicts/EntropyDictdictRedGreen_v1_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
-pickle.dump( parID_entropy_dict_red, open( "EntropyDicts/EntropyDictdictRed_v1_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
-pickle.dump( parID_entropy_dict_green, open( "EntropyDicts/EntropyDictdictGreen_v1_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
+pickle.dump( parID_entropy_dict_redgreen, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictRedGreen_v1_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
+pickle.dump( parID_entropy_dict_red, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictRed_v1_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
+pickle.dump( parID_entropy_dict_green, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictGreen_v1_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
