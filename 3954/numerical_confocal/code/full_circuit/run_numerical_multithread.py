@@ -15,18 +15,20 @@ import sys
 import os
 pwd = os.getcwd()
 root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
+
+
 if root == '/Users/mo2016':
-    print('fasdghgfsgth')
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
     modelling_home = '/Volumes/mo2016/home/Documents/modelling'
-else:
-    modelling_ephemeral = root + 'ephemeral/Documents/modelling'
-    modelling_home = root  + '/Documents/modelling'
+    modelling_local = root + '/Documents/modelling'
 
-modelling_path_local = root + '/Documents/modelling'
-modulepath = modelling_path_local + '/3954/modules/new_CN'
+if root == '/Volumes/mo2016' or '/rds/general': #'/rds/general' or root=='/Volumes':
+        modelling_ephemeral = root + '/ephemeral/Documents/modelling'
+        modelling_home = root  + '/home/Documents/modelling'
+        modelling_local = modelling_home
+
+modulepath = modelling_local + '/3954/modules/new_CN'
 sys.path.append(modulepath)
-
 
 from adi_v1_openclosed_ca_function import *
 from plotting_numerical import *
@@ -44,7 +46,7 @@ import multiprocessing
     Code
 ====================================================
 '''
-
+print('dfgdsf')
 # Set number of threads to 1 if no valid number provided
 if len(sys.argv) > 1:
     Number_of_Threads = int(sys.argv[1])
@@ -138,7 +140,7 @@ L =int(sys.argv[5])
 
 
 # Load dataframe of parameter sets
-df= pickle.load( open(modelling_hpc + '/3954/parameter_space_search/parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(2,variant,n_param_sets), "rb" ) )
+df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(2,variant,n_param_sets), "rb" ) )
 start = int(sys.argv[6])
 end = int(sys.argv[7])
 total_params = int(end-start)
