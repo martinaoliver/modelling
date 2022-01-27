@@ -4,12 +4,30 @@
 ====================================================
 '''
 
-import sys
-modelling_hpc = '/rds/general/user/mo2016/home/Documents/modelling'
-modulepath = modelling_hpc + '/3954/modules/new_CN'
-modelling_ephemeral = '/rds/general/user/mo2016/ephemeral/Documents/modelling'
+# import sys
+# modelling_hpc = '/rds/general/user/mo2016/home/Documents/modelling'
+# modulepath = modelling_hpc + '/3954/modules/new_CN'
+# modelling_ephemeral = '/rds/general/user/mo2016/ephemeral/Documents/modelling'
+#
+# sys.path.append(modulepath)
 
+import sys
+import os
+pwd = os.getcwd()
+root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
+if root == '/Users/mo2016':
+    print('fasdghgfsgth')
+    modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
+    modelling_home = '/Volumes/mo2016/home/Documents/modelling'
+else:
+    modelling_ephemeral = root + 'ephemeral/Documents/modelling'
+    modelling_home = root  + '/Documents/modelling'
+
+modelling_path_local = root + '/Documents/modelling'
+modulepath = modelling_path_local + '/3954/modules/new_CN'
 sys.path.append(modulepath)
+
+
 from adi_v1_openclosed_ca_function import *
 from plotting_numerical import *
 
@@ -94,7 +112,7 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
             # rgb_timeseries = redgreen_contrast_timeseries(records)
             # show_rgbvideo(rgb_timeseries)
             if save_figure ==True:
-                pickle.dump(U_final, open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/2Dfinal_%s.pkl'%filename, 'wb'))
+                pickle.dump(U_final, open(modelling_home + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/2Dfinal_%s.pkl'%filename, 'wb'))
                 pickle.dump(U_record,open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/2Dtimeseries_%s.pkl'%filename, 'wb'))
 
             # else:
