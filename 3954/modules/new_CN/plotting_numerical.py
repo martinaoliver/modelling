@@ -51,12 +51,10 @@ def matrix_rgb_normalisation(matrix):
     row_n = 0
     NewMatrix = np.zeros(matrix.shape)
 
-    # OldMin = np.min(matrix[np.nonzero(matrix)])
     OldMin = np.min(matrix[np.nonzero(matrix)])
-
-    # OldMax = np.amax(matrix[np.nonzero(matrix)])+0.0001 #Add 0.0001 so that patterns with no var dont give errors
     OldMax = np.amax(matrix[np.nonzero(matrix)])+0.0001 #Add 0.0001 so that patterns with no var dont give errors
-
+    if OldMin < 0:
+        print('WARNING: Negative numbers!!!!!')
     # NewMin = 1 #make newmin 1 instead of zero so 1 can represent cells
     NewMin = 0
     NewMax = 255
@@ -66,12 +64,11 @@ def matrix_rgb_normalisation(matrix):
     for row in matrix:
         column_n = 0
         for value in row:
-            # if value!=0:
-            NewMatrix[column_n, row_n] = int((((value- OldMin) * NewRange) / OldRange) + NewMin)
+            if value!=0:
+                NewMatrix[column_n, row_n] = int((((value- OldMin) * NewRange) / OldRange) + NewMin)
             column_n += 1
         row_n += 1
     return NewMatrix, OldMin, OldMax
-
 
 def plot_redgreen_contrast(final_concentration, mm, mechanism, shape, filename, path, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
     green = final_concentration[-1]

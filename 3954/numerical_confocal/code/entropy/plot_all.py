@@ -28,6 +28,7 @@ import matplotlib.animation as animation
 import matplotlib as mpl
 mpl.use('tkagg')
 #############################
+df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(2,0,1000000), "rb" ) )
 
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
@@ -67,7 +68,7 @@ for count,n in tqdm(enumerate(parID_list)):
     parID = parID_list[count]
     filename = '2Dfinal_circuit%r_variant%s_%s_%sID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,shape,mechanism, parID,L,J,T,N)
     final_concentration = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/%s.pkl'%filename, 'rb' ) )
-    rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension=dimension,scale_factor=x_gridpoints,save_figure='LargeImage')
+    rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,sscale_factor=x_gridpoints,save_figure='LargeImage')
     # rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
     # ax.set_title(parID,size=0.1)
     ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])

@@ -1,16 +1,10 @@
 #############################
 #IMPORTS#
 #############################
-from scipy.fft import fft, ifft
-import matplotlib as mpl
-mpl.use('tkagg')
 import sys
 import os
 pwd = os.getcwd()
-# root = pwd.split("Documents", 1)[0]
 root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
-
-print(root)
 if root == '/Users/mo2016':
     print('fasdghgfsgth')
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
@@ -20,11 +14,17 @@ else:
     modelling_home = root  + '/Documents/modelling'
 
 modelling_path_local = root + '/Documents/modelling'
-
-modulepath = modelling_path_local + '/3954/modules'
-
+modulepath = modelling_path_local + '/3954/modules/new_CN'
 sys.path.append(modulepath)
-from numerical_solvers_variableboundary import *
+
+
+from plotting_numerical import plot_redgreen_contrast
+from tqdm import tqdm
+
+
+from scipy.fft import fft, ifft
+import matplotlib as mpl
+mpl.use('tkagg')
 from PIL import Image, ImageDraw
 import numpy as np
 from numpy import asarray

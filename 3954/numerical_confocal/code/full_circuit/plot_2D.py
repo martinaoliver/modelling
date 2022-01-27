@@ -1,52 +1,59 @@
+#############################
+#IMPORTS#
+#############################
 import sys
 import os
 pwd = os.getcwd()
-root = pwd.split("home", 1)[0]
-modelling_home = root + 'home/Documents/modelling'
-modelling_ephemeral = root + 'ephemeral/Documents/modelling'
-modulepath = modelling_home + '/3954/modules'
-sys.path.append(modulepath)
+root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
+if root == '/Users/mo2016':
+    print('fasdghgfsgth')
+    modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
+    modelling_home = '/Volumes/mo2016/home/Documents/modelling'
+else:
+    modelling_ephemeral = root + 'ephemeral/Documents/modelling'
+    modelling_home = root  + '/Documents/modelling'
 
-from numerical_solvers_variableboundary import *
+modelling_path_local = root + '/Documents/modelling'
+
+modulepath = modelling_path_local + '/3954/modules/new_CN'
+sys.path.append(modulepath)
+from plotting_numerical import plot_redgreen_contrast
+from tqdm import tqdm
+import matplotlib as mpl
+mpl.use('tkagg')
 import pickle
+
+
 #execution parameters
 circuit_n=2
-variant=0
+variant='5716gaussian'
 parametersets_n = 1000
-save_figure = True
+save_figure = False
 tqdm_disable = False #disable tqdm
-dimension = str(sys.argv[1])#str(sys.argv[1])
 n_species=6
 # open parameter dictionaries
-general_df = pickle.load(open(modelling_home + '/3954/parameter_space_search/results/output_dataframes/lsa_df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,parametersets_n), "rb"))
+general_df = pickle.load(open(modelling_home + '/3954/parameter_space_search/results/output_dataframes/lsa_df_circuit%r_variant%r_%rparametersets.pkl'%(2,variant,parametersets_n), "rb"))
 #chose parameter sets to analyse
-parID = int(sys.argv[2])
+parID = int(sys.argv[1])
 # if parID == 'all':
 #     interesting_list = np.unique(general_df.index.get_level_values(0))
 # else:
-#     interesting_list = [int(parID)]
+interesting_list = [int(parID)]
 
-interesting_list = np.linspace(1,10,10).astype(int)
 for parID in interesting_list:
     print('parID = ' + str(parID))
-    mechanism = 'rings2852ATC'
+    mechanism = 'nodeAdele'
     boundary_coef = 1 #1 is open boundary and 0 is closed boundary
     shape = 'ca'
     growth = True
 
-    # boundary_coef = 1 #1 is open boundary and 0 is closed boundary
-    # shape = 'growing_colony'
+    L,J,T,N = [int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])]
+    t_gridpoints = int(N/T)
+    x_gridpoints = int(J/L)
 
-    x_gridpoints = int(sys.argv[3])
-    T =int(sys.argv[4])
-    L=int(sys.argv[5])
-    p_division=float(sys.argv[6])
-    J = L *x_gridpoints  # number of equally spaced gridpoints in space domain (larger J means more spatial precision(tends towards continuum solution) )
-    t_gridpoints = t_gridpoints_stability(L, J, T)  # number of equally spaced gridpoints in domain (larger N means more temporal precision (tends towards continuum solution) )
-    t_gridpoints = int(t_gridpoints)
-    N = T * t_gridpoints
     initial_condition = [0.001]*n_species
-    filename = 'circuit%r_variant%r_boundary%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundary_coef, shape,mechanism,parID,L,J,T,N)
-
-    final_concentration = pickle.load(open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/2Dfinal_%s.pkl'%filename, 'rb'))
-    plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_home,parID=parID,dimension=dimension,scale_factor=x_gridpoints,save_figure=save_figure)
+    filename = '2Dfinal_circuit%r_variant%s_%s_%sID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,shape,mechanism, parID,L,J,T,N)
+    final_concentration = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/%s.pkl'%filename, 'rb' ) )
+    save_path =modelling_home + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN'
+    rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,save_path,parID=parID,scale_factor=x_gridpoints,save_figure=save_figure)
+    print(rgb)
