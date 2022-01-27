@@ -1,3 +1,6 @@
+#############################
+#IMPORTS#
+#############################
 from scipy.fft import fft, ifft
 import matplotlib as mpl
 mpl.use('tkagg')
@@ -19,9 +22,6 @@ else:
 modelling_path_local = root + '/Documents/modelling'
 
 modulepath = modelling_path_local + '/3954/modules'
-print(modelling_home)
-# modelling_home = root + 'home/Documents/modelling'
-# modelling_ephemeral = root + 'ephemeral/Documents/modelling'
 
 sys.path.append(modulepath)
 from numerical_solvers_variableboundary import *
@@ -30,6 +30,8 @@ import numpy as np
 from numpy import asarray
 import pickle
 from tqdm import tqdm
+#############################
+
 # def plot(parID,filename,results_path,L=10,mechanism='general',shape='ca',savefig_path='',x_gridpoints=8,save_figure=False):
 # #     filename = '2Dfinal_circuit2_variant0_boundary1_ca_generalID%r_L8_J80_T120_N23880.pkl'%parID
 #     final_concentration = pickle.load( open( results_path + '/' + filename, "rb" ) )
@@ -83,7 +85,7 @@ parID_entropy_dict_red = {}
 parID_entropy_dict_green = {}
 parID_entropy_dict_redgreen= {}
 
-for parID in tqdm(parID_list[:3]):
+for parID in tqdm(parID_list):
 
     filename = '2Dfinal_circuit2_variant5716gaussian_ca_nodeAdeleID%s_L10_J150_T120_N1200.pkl'%parID
     final_concentration = pickle.load( open( results_path + '/' + filename, "rb" ) )

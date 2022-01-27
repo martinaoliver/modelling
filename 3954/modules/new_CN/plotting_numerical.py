@@ -83,28 +83,31 @@ def plot_redgreen_contrast(final_concentration, mm, mechanism, shape, filename, 
     zeros = np.zeros(normalised_green.shape)
     rgb = np.dstack((normalised_red, normalised_green, zeros))
     rgb = np.rot90(rgb)
-    # if save_figure != 'results':
-    plt.imshow(rgb.astype('uint8'), origin='lower')
-    tick_positions = np.arange(0, len(normalised_green), len(normalised_green) / 4)
-    tick_labels = np.arange(0, len(normalised_green) / scale_factor,
-                            len(normalised_green) / scale_factor / 4).round(decimals=2)
-    plt.xticks(tick_positions, tick_labels)
-    plt.yticks(tick_positions, tick_labels)
-    plt.ylabel('y axis (mm)', size=16)
-    plt.xlabel('x axis (mm)', size=16)
-    plt.yticks(size=15)
-    plt.xticks(size=15)
-    plt.title('parID=' + str(parID), size=14)
-    np.set_printoptions(precision=2)
-    plt.text(1,1,'mCherry = [%r-%r]'%(np.around(redmin,2),np.around(redmax,2)),c='r')
-    plt.text(1,5,'GPF = [%r-%r]'%(np.around(greenmin,2),np.around(greenmax,2)),c='g')
-    plt.tight_layout()
+    if save_figure != 'LargeImage':
+        plt.imshow(rgb.astype('uint8'), origin='lower')
+        tick_positions = np.arange(0, len(normalised_green), len(normalised_green) / 4)
+        tick_labels = np.arange(0, len(normalised_green) / scale_factor,
+                                len(normalised_green) / scale_factor / 4).round(decimals=2)
+        plt.xticks(tick_positions, tick_labels)
+        plt.yticks(tick_positions, tick_labels)
+        plt.ylabel('y axis (mm)', size=16)
+        plt.xlabel('x axis (mm)', size=16)
+        plt.yticks(size=15)
+        plt.xticks(size=15)
+        plt.title('parID=' + str(parID), size=14)
+        np.set_printoptions(precision=2)
+        plt.text(1,1,'mCherry = [%r-%r]'%(np.around(redmin,2),np.around(redmax,2)),c='r')
+        plt.text(1,5,'GPF = [%r-%r]'%(np.around(greenmin,2),np.around(greenmax,2)),c='g')
+        plt.tight_layout()
 
-    if save_figure == True:
-        plt.savefig(path + '/%s_%s.jpeg' % (dimension, filename),dpi=2000)
-        plt.close()
-    else:
-        plt.show()
+        if save_figure == True:
+            plt.savefig(path + '/%s_%s.jpeg' % (dimension, filename),dpi=2000)
+            plt.close()
+        else:
+            plt.show()
+
+
+
 
 
     return rgb
