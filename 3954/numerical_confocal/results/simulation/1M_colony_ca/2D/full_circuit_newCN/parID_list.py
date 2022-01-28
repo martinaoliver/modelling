@@ -2,7 +2,7 @@ import os
 # files = [f for f in os.listdir('.') if os.path.isfile(f)]
 import glob
 import pickle
-files = glob.glob('./2Dfinal*gaussian*nodeAdele*N1200*')
+files = glob.glob('./2Dfinal*variant0_ca_fullcircuit*N1200*')
 print(len(files))
 parID_list = []
 for f in files:
@@ -13,6 +13,6 @@ for f in files:
 print(parID_list[:10])
 print(len(parID_list))
 
-pickle.dump( parID_list, open( "parID_list_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
+pickle.dump( parID_list, open( "parID_list_variant0_ca_fullcircuit_L10J150T120N1200.pkl", "wb" ) )
 print('------')
 print(parID_list.count('1138'))
