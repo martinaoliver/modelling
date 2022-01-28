@@ -68,8 +68,9 @@ n_row = np.floor(num/n_col)+1    # number of rows in the figure of the cluster
 
 print(parID_list)
 fig = plt.figure(figsize=(n_col/10+2, n_row/10+2))
-for count,n in tqdm(enumerate(parID_list)):
-    # print(count)
+for count,n in tqdm(enumerate(parID_list),disable=True):
+    if count%100==0:
+        print(count)
     ax=plt.subplot(n_row,n_col, count+1)
     #rgb_timeseries=timeseries_unstacked_list[row[n]] # Read the numpy matrix with images in the rows
     # par_ID = parID_list[row[n]]
