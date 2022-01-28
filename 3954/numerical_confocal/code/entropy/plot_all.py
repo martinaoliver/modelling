@@ -39,7 +39,7 @@ import matplotlib as mpl
 
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
-parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictRedGreen_v1_5716gaussian_L10J150T120N1200.pkl', "rb" ) )
+parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictGreen_v1_variant0_ca_fullcircuit_L10J150T120N1200.pkl', "rb" ) )
 len(parID_dict)
 parID_list = []
 entropy_list = []
@@ -52,14 +52,14 @@ stop = int(sys.argv[2])
 # parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
 parID_list = [int(i) for i in parID_list] #turn string list into integer list
 circuit_n=2
-variant='5716gaussian'
+variant='0'
 boundary_coef=1
 shape='ca'
-mechanism = 'nodeAdele'#in reality is full circuit
+mechanism = 'fullcircuit'
 L,J,T,N = [10,150,120,1200]
 dimension='2D'
 x_gridpoints=L
-details = 'EntropyDictdictRedGreen_v1_5716gaussian_L10J150T120N1200'
+details = 'EntropyDictdictGreen_v1_variant0_ca_fullcircuit_L10J150T120N1200'
 num=len(parID_list)
 print(num)
 n_col = int(np.sqrt(num))
@@ -75,7 +75,7 @@ for count,n in tqdm(enumerate(parID_list)):
     parID = parID_list[count]
     filename = '2Dfinal_circuit%r_variant%s_%s_%sID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,shape,mechanism, parID,L,J,T,N)
     final_concentration = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/%s.pkl'%filename, 'rb' ) )
-    rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,sscale_factor=x_gridpoints,save_figure='LargeImage')
+    rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,scale_factor=x_gridpoints,save_figure='LargeImage')
     # rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
     # ax.set_title(parID,size=0.1)
     ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
