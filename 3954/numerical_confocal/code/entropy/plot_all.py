@@ -11,16 +11,18 @@ if root == '/Users/mo2016':
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
     modelling_home = '/Volumes/mo2016/home/Documents/modelling'
     modelling_local = root + '/Documents/modelling'
-    modelling_local = root + '/Documents/modelling'
     import matplotlib as mpl
     mpl.use('tkagg')
 
-if root == '/Volumes/mo2016' or '/rds/general': #'/rds/general' or root=='/Volumes':
+if root == '/Volumes/mo2016' or root=='/rds/general': #'/rds/general' or root=='/Volumes':
         modelling_ephemeral = root + '/ephemeral/Documents/modelling'
         modelling_home = root  + '/home/Documents/modelling'
         modelling_local = modelling_home
 
 modulepath = modelling_local + '/3954/modules/new_CN'
+print(modelling_local)
+print(root)
+print(modulepath)
 sys.path.append(modulepath)
 
 
@@ -66,10 +68,9 @@ print(num)
 n_col = int(np.sqrt(num))
 n_row = np.floor(num/n_col)+1    # number of rows in the figure of the cluster
 
-print(parID_list)
 fig = plt.figure(figsize=(n_col/10+2, n_row/10+2))
-for count,n in tqdm(enumerate(parID_list),disable=False):
-    if count%1==0:
+for count,n in tqdm(enumerate(parID_list),disable=True):
+    if count%100==0:
         print(count)
     ax=plt.subplot(n_row,n_col, count+1)
     #rgb_timeseries=timeseries_unstacked_list[row[n]] # Read the numpy matrix with images in the rows
