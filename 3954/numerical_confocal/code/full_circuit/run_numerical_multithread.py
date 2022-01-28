@@ -21,7 +21,9 @@ if root == '/Users/mo2016':
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
     modelling_home = '/Volumes/mo2016/home/Documents/modelling'
     modelling_local = root + '/Documents/modelling'
-
+    import matplotlib as mpl
+    mpl.use('tkagg')
+    
 if root == '/Volumes/mo2016' or '/rds/general': #'/rds/general' or root=='/Volumes':
         modelling_ephemeral = root + '/ephemeral/Documents/modelling'
         modelling_home = root  + '/home/Documents/modelling'

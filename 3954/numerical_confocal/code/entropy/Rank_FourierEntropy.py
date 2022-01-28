@@ -11,6 +11,8 @@ if root == '/Users/mo2016':
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
     modelling_home = '/Volumes/mo2016/home/Documents/modelling'
     modelling_local = root + '/Documents/modelling'
+    import matplotlib as mpl
+    mpl.use('tkagg')
 
 if root == '/Volumes/mo2016' or '/rds/general': #'/rds/general' or root=='/Volumes':
         modelling_ephemeral = root + '/ephemeral/Documents/modelling'
@@ -28,7 +30,6 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 from scipy.fft import fft, ifft
 import matplotlib as mpl
-mpl.use('tkagg')
 from PIL import Image, ImageDraw
 import numpy as np
 from numpy import asarray

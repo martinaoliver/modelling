@@ -11,6 +11,9 @@ if root == '/Users/mo2016':
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
     modelling_home = '/Volumes/mo2016/home/Documents/modelling'
     modelling_local = root + '/Documents/modelling'
+    modelling_local = root + '/Documents/modelling'
+    import matplotlib as mpl
+    mpl.use('tkagg')
 
 if root == '/Volumes/mo2016' or '/rds/general': #'/rds/general' or root=='/Volumes':
         modelling_ephemeral = root + '/ephemeral/Documents/modelling'
@@ -30,7 +33,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.animation as animation
 import matplotlib as mpl
-mpl.use('tkagg')
+
 #############################
 # df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(2,0,1000000), "rb" ) )
 
