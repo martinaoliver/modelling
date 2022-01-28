@@ -25,6 +25,7 @@ sys.path.append(modulepath)
 
 
 from plotting_numerical import plot_redgreen_contrast
+from send_email import *
 from tqdm import tqdm
 import pickle
 import numpy as np
@@ -92,3 +93,5 @@ plt.savefig(modelling_home + '/3954/numerical_confocal/results/entropy/LargeImag
 print('gh')
 # plt.clf()
 # plt.close(fig)
+if root == '/rds/general':
+    sendemail()

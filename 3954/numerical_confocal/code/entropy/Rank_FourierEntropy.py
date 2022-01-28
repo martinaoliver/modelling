@@ -35,6 +35,7 @@ import numpy as np
 from numpy import asarray
 import pickle
 from tqdm import tqdm
+from send_email import *
 #############################
 
 # def plot(parID,filename,results_path,L=10,mechanism='general',shape='ca',savefig_path='',x_gridpoints=8,save_figure=False):
@@ -116,3 +117,6 @@ print(parID_entropy_dict_red)
 pickle.dump( parID_entropy_dict_redgreen, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictRedGreen_v1_variant0_ca_fullcircuit_L10J150T120N1200.pkl", "wb" ) )
 pickle.dump( parID_entropy_dict_red, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictRed_v1_variant0_ca_fullcircuit_L10J150T120N1200.pkl", "wb" ) )
 pickle.dump( parID_entropy_dict_green, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictGreen_v1_variant0_ca_fullcircuit_L10J150T120N1200.pkl", "wb" ) )
+
+if root == '/rds/general':
+    sendemail()
