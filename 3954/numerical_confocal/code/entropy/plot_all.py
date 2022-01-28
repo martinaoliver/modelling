@@ -28,7 +28,7 @@ import matplotlib.animation as animation
 import matplotlib as mpl
 mpl.use('tkagg')
 #############################
-df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(2,0,1000000), "rb" ) )
+# df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(2,0,1000000), "rb" ) )
 
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')

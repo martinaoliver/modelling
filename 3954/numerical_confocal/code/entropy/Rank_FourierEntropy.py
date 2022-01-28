@@ -21,7 +21,7 @@ sys.path.append(modulepath)
 from plotting_numerical import plot_redgreen_contrast
 from tqdm import tqdm
 
-
+import matplotlib.pyplot as plt
 from scipy.fft import fft, ifft
 import matplotlib as mpl
 mpl.use('tkagg')
@@ -80,14 +80,14 @@ def kSI(i,a,b): #entropy - (fourier entropy re + fourier entropy imag)
     return(kSI)
 
 results_path = modelling_home + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/'
-parID_list = pickle.load( open( results_path + '/' + 'parID_list_5716gaussian_L10J150T120N1200.pkl', "rb" ) )
+parID_list = pickle.load( open( results_path + '/' + 'parID_list_variant0_ca_fullcircuit_L10J150T120N1200.pkl', "rb" ) )
 parID_entropy_dict_red = {}
 parID_entropy_dict_green = {}
 parID_entropy_dict_redgreen= {}
 
-for parID in tqdm(parID_list):
+for parID in tqdm(parID_list, disable=False):
 
-    filename = '2Dfinal_circuit2_variant5716gaussian_ca_nodeAdeleID%s_L10_J150_T120_N1200.pkl'%parID
+    filename = '2Dfinal_circuit2_variant0_ca_fullcircuitID%s_L10_J150_T120_N1200.pkl'%parID
     final_concentration = pickle.load( open( results_path + '/' + filename, "rb" ) )
 
     i, a,b = entropy_fourier(final_concentration,'red')
@@ -108,6 +108,6 @@ print(parID_entropy_dict_redgreen)
 print(parID_entropy_dict_green)
 print(parID_entropy_dict_red)
 
-pickle.dump( parID_entropy_dict_redgreen, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictRedGreen_v1_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
-pickle.dump( parID_entropy_dict_red, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictRed_v1_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
-pickle.dump( parID_entropy_dict_green, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictGreen_v1_5716gaussian_L10J150T120N1200.pkl", "wb" ) )
+pickle.dump( parID_entropy_dict_redgreen, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictRedGreen_v1_variant0_ca_fullcircuit_L10J150T120N1200.pkl", "wb" ) )
+pickle.dump( parID_entropy_dict_red, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictRed_v1_variant0_ca_fullcircuit_L10J150T120N1200.pkl", "wb" ) )
+pickle.dump( parID_entropy_dict_green, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictGreen_v1_variant0_ca_fullcircuit_L10J150T120N1200.pkl", "wb" ) )
