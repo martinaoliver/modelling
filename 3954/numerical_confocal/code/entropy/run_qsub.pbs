@@ -1,5 +1,5 @@
 #!/bin/sh
-#PBS -l walltime=03:00:00
+#PBS -l walltime=10:10:00
 #PBS -l select=1:ncpus=1:mem=124gb
 
 
@@ -8,8 +8,8 @@ source activate env1
 cd $PBS_O_WORKDIR
 
 
-
-python Rank_FourierEntropy.py
+python plot_all.py 0 10722
+#python Rank_FourierEntropy.py
 
 #python sample_general_numerical.py 2D $parID 10 300 8
 # python sample_general_numerical.py 2D $parID 10 120 8 1 $p_division 5
