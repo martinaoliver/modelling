@@ -28,7 +28,6 @@ def plot_2D_final_concentration(final_concentration,L,J,filename,path, n_species
     green_cmap = LinearSegmentedColormap.from_list('black_green',black_green)
     cmap_list = [yellow_cmap,yellow_cmap,yellow_cmap,green_cmap,red_cmap,green_cmap]
     ims = [0]*n_species
-    print(n_species)
     for n in range(n_species):
         specie = final_concentration[n]
         ims[n] = ax[n].pcolormesh(grid, grid, specie, shading='auto', label = labels[n],cmap=cmap_list[n])
