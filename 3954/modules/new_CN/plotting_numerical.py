@@ -11,7 +11,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 
 #image
-def plot_2D_final_concentration(final_concentration,L,J,filename,n_species=6):
+def plot_2D_final_concentration(final_concentration,L,J,filename,path, n_species=6, save_figure=False ):
 
     # A,B,C,D,E,F = final_concentration
     dx = float(L)/float(J-1)
@@ -44,8 +44,12 @@ def plot_2D_final_concentration(final_concentration,L,J,filename,n_species=6):
         count1+=1
 
     fig.tight_layout()
-    plt.savefig('diffusion_outsidecell.png')
-    plt.show()
+    if save_figure == True:
+        plt.savefig(path + '/%s_%s.jpeg' % ('2D', filename),dpi=2000)
+        plt.close()
+    else:
+        plt.show()
+
 
 def matrix_rgb_normalisation(matrix):
     row_n = 0
