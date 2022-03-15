@@ -158,7 +158,6 @@ batch_indices = list(range(0, len(df), batch_size))
 # Create a pool of workers
 pool = multiprocessing.Pool(Number_of_Threads)
 
-# Define jobs as different batches of parameter sets
 # Run lsa_check function in parallel across different threads
 pool_output = []
 for start_batch_index in batch_indices:

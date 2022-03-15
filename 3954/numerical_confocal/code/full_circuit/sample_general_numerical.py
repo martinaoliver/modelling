@@ -14,7 +14,6 @@ if root == '/Users/mo2016':
     mpl.use('tkagg')
 
 if root == '/Volumes/mo2016' or root=='/rds/general/user/mo2016': #'/rds/general' or root=='/Volumes':
-        print('sdsf')
         modelling_ephemeral = root + '/ephemeral/Documents/modelling'
         modelling_home = root  + '/home/Documents/modelling'
         modelling_local = modelling_home

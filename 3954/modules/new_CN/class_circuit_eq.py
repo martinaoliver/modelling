@@ -124,45 +124,55 @@ class circuit2_eq(hill_functions):
     def dAdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dadt= self.ba+self.Va*self.noncompetitiveinh(D,self.kda)-self.mua*A
-        dadt+=dadt*normal(0,0.05,1)*self.stochasticity
-
+        if self.stochasticity ==1:
+            dadt+=dadt*normal(0,0.05,1)
         return dadt
 
 
     def dBdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dbdt= self.bb+self.Vb*self.noncompetitiveact(A,self.kaa)*self.noncompetitiveinh(E,self.keb)-self.mua*B
-        dbdt+=dbdt*normal(0,0.05,1)*self.stochasticity
+        if self.stochasticity ==1:
+            dbdt+=dbdt*normal(0,0.05,1)
         return dbdt
 
 
     def dCdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dcdt= self.bc+self.Vc*self.noncompetitiveinh(D,self.kda)-self.mulva*C
-        dcdt+=dcdt*normal(0,0.05,1)*self.stochasticity
+        if self.stochasticity ==1:
+            dcdt+=dcdt*normal(0,0.05,1)
         return dcdt
 
     def dDdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dddt= self.bd+self.Vd*self.noncompetitiveact(B,self.kbd)-self.mulva*D
-        dddt+=dddt*normal(0,0.05,1)*self.stochasticity
+        if self.stochasticity ==1:
+            dddt+=dddt*normal(0,0.05,1)
         return dddt
 
     def dEdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dedt= self.be+self.Ve*self.noncompetitiveinh(C,self.kce)*self.noncompetitiveinh(F,self.kfe)*self.noncompetitiveact(E,self.kee)-self.mulva*E
-        dedt+=dedt*normal(0,0.05,1)*self.stochasticity
+        if self.stochasticity ==1:
+            dedt+=dedt*normal(0,0.05,1)
         return dedt
+        
     def dFdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dfdt= self.bf+self.Vf*self.noncompetitiveact(B,self.kbd)-self.mulva*F
-        dfdt+=dfdt*normal(0,0.05,1)*self.stochasticity
+        if self.stochasticity ==1:
+            dfdt+=dfdt*normal(0,0.05,1)
         return dfdt
     # function_list = [dAdt_f,dBdt_f,dCdt_f,dDdt_f,dEdt_f,dFdt_f]
 
-    def dudt(self,U, cell_matrix):
+    def dudt_growth(self,U, cell_matrix):
         function_list = [self.dAdt_f(U),self.dBdt_f(U),self.dCdt_f(U), self.dDdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
         dudt = [eq*cell_matrix for eq in function_list]
+        return dudt
+
+    def dudt(self,U):
+        dudt = [self.dAdt_f(U),self.dBdt_f(U),self.dCdt_f(U), self.dDdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
         return dudt
 
     def getJacobian(self,x,wvn):
