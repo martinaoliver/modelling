@@ -115,7 +115,8 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
             # U_record,U_final = adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species, D,tqdm_disable=tqdm_disable)#,p_division=p_division,seed=seed)
             U_record,U_final = adi(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, tqdm_disable=tqdm_disable)#,p_division=p_division,seed=seed)
             savefig_path = modelling_ephemeral + '/3954/numerical_confocal/results/figures/square/%s'%folder
-            plot_redgreen_contrast(U_final,L_x,mechanism,shape,filename,savefig_path,parID=parID,scale_factor=x_gridpoints,save_figure=save_figure)
+            plot_2D_final_concentration(U_final,L_x,J,filename,savefig_path,n_species=n_species,save_figure=True)
+            # plot_redgreen_contrast(U_final,L_x,mechanism,shape,filename,savefig_path,parID=parID,scale_factor=x_gridpoints,save_figure=save_figure)
             # rgb_timeseries = redgreen_contrast_timeseries(records)
             # show_rgbvideo(rgb_timeseries)
             if save_figure ==True:
