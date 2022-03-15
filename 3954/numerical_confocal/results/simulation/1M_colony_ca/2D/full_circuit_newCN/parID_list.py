@@ -2,7 +2,7 @@ import os
 # files = [f for f in os.listdir('.') if os.path.isfile(f)]
 import glob
 import pickle
-files = glob.glob('./2Dfinal*variant0_ca_fullcircuit*N1200*')
+files = glob.glob('./2Dfinal_circuit2_variant0_ca_fullcircuitID*_L10_J150_T120_N1200.pkl')
 print(len(files))
 parID_list = []
 for f in files:

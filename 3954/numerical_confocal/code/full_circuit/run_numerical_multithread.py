@@ -139,10 +139,13 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
 start_time = time.perf_counter()
 
 #parameters
-t_gridpoints = int(sys.argv[2])
-x_gridpoints = int(sys.argv[3])
-T =int(sys.argv[4])
-L =int(sys.argv[5])
+L_x=int(sys.argv[2]); x_gridpoints = int(sys.argv[3])
+T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) 
+
+# t_gridpoints = int(sys.argv[2])
+# x_gridpoints = int(sys.argv[3])
+# T =int(sys.argv[4])
+# L =int(sys.argv[5])
 
 
 # Load dataframe of parameter sets

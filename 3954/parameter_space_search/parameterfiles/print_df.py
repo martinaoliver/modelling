@@ -4,8 +4,8 @@ import pickle
 circuit=2
 variant=0
 n_parametersets = 1000000
+n_parametersets = 10000
 df = pd.read_pickle("df_circuit%r_variant%r_%rparametersets.pkl"%(circuit,variant,n_parametersets))
-df = df.iloc[:1000]
-pickle.dump(df, open('df_circuit%r_variant%r_%rparametersets.pkl'%(circuit,variant,len(df)), 'wb'))
-
-# print(df)
+print('g')
+# pickle.dump( df.loc[0:20000], open( "df_circuit%r_variant%r_%rparametersets.pkl"%(circuit,variant,10000), "wb" ) )
+print(df.loc[5716])
