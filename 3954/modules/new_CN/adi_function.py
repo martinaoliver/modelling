@@ -13,7 +13,7 @@ from scipy.linalg import solve_banded
 from class_circuit_eq import *
 
 def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0):
-
+    #for dt/dx^2 <1 (stability criterion): t_gridpoints approx < xgridpoints^2
     parent_list = [circuit1_eq, circuit2_eq,circuit3_eq,circuit4_eq,circuit5_eq,circuit6_eq,circuit7_eq,circuit8_eq,circuit9_eq, circuit10_eq, circuit11_eq]
     f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
 
@@ -30,7 +30,6 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
     t_grid = numpy.array([n*dt for n in range(N)])
 
     alpha = [D[n]*dt/(2.*dx*dx) for n in range(n_species)]
-    print(dt/(dx)**2)
 
 
     #Define initial conditions and cell matrix

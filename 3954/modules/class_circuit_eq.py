@@ -1,5 +1,5 @@
 import numpy as np
-
+from numpy.random import normal
 # - This file contains the definitions for every circuit used. Every circuit is composed of different
 # molecular interactions.
 
@@ -41,7 +41,6 @@ class circuit1_eq(hill_functions):
             for key,value in par_dict.items():
                 setattr(self,key,value)
 
-
         def dAdt_f(self,A,B,C,D,E,F):
             dadt= self.ba+self.Va*self.noncompetitiveact(A,self.kaa)*self.noncompetitiveinh(D,self.kda)-self.mua*A
             return dadt
@@ -70,6 +69,7 @@ class circuit1_eq(hill_functions):
             return dfdt
 
         function_list = [dAdt_f, dBdt_f, dCdt_f, dDdt_f, dEdt_f, dFdt_f]
+
 
         def getJacobian_(self,x,wvn):
             A, B, C, D, E, F = x
@@ -115,43 +115,59 @@ class circuit1_eq(hill_functions):
 
 class circuit2_eq(hill_functions):
 
-    def __init__(self,par_dict):
+    def __init__(self,par_dict,stochasticity=1):
         for key,value in par_dict.items():
             setattr(self,key,value)
+        setattr(self, 'stochasticity', 1)
 
 
     def dAdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dadt= self.ba+self.Va*self.noncompetitiveinh(D,self.kda)-self.mua*A
+        dadt+=dadt*normal(0,0.05,1)*self.stochasticity
+
         return dadt
 
 
     def dBdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dbdt= self.bb+self.Vb*self.noncompetitiveact(A,self.kaa)*self.noncompetitiveinh(E,self.keb)-self.mua*B
+        dbdt+=dbdt*normal(0,0.05,1)*self.stochasticity
         return dbdt
 
 
     def dCdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dcdt= self.bc+self.Vc*self.noncompetitiveinh(D,self.kda)-self.mulva*C
+        dcdt+=dcdt*normal(0,0.05,1)*self.stochasticity
         return dcdt
 
     def dDdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dddt= self.bd+self.Vd*self.noncompetitiveact(B,self.kbd)-self.mulva*D
+        dddt+=dddt*normal(0,0.05,1)*self.stochasticity
         return dddt
 
     def dEdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dedt= self.be+self.Ve*self.noncompetitiveinh(C,self.kce)*self.noncompetitiveinh(F,self.kfe)*self.noncompetitiveact(E,self.kee)-self.mulva*E
+        dedt+=dedt*normal(0,0.05,1)*self.stochasticity
         return dedt
     def dFdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dfdt= self.bf+self.Vf*self.noncompetitiveact(B,self.kbd)-self.mulva*F
+        dfdt+=dfdt*normal(0,0.05,1)*self.stochasticity
+
         return dfdt
+
     function_list = [dAdt_f,dBdt_f,dCdt_f,dDdt_f,dEdt_f,dFdt_f]
 
+    def dudt(self,U, cell_matrix=None):
+        if cell_matrix == None:
+            cell_matrix = np.ones(shape=np.shape(U))
+        function_list = [self.dAdt_f(U),self.dBdt_f(U),self.dCdt_f(U), self.dDdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
+        dudt = [eq*cell_matrix for eq in function_list]
+        return dudt
 
     def getJacobian(self,x,wvn):
 
@@ -461,45 +477,46 @@ class circuit7_eq(hill_functions):
 #circuit2 (3954): nodeA dele
 class circuit8_eq(hill_functions):
 
-    def __init__(self,par_dict):
+    def __init__(self,par_dict,stochasticity=1):
         for key,value in par_dict.items():
             setattr(self,key,value)
+        setattr(self, 'stochasticity', stochasticity)
 
     def dBdt_f(self,species_list):
-        B,D,E,F = species_list
+        B,E,F = species_list
         dbdt= self.bb+self.Vb**self.noncompetitiveinh(E,self.keb)-self.mua*B
+        dbdt+=dbdt*normal(0,0.05,1)*self.stochasticity
         return dbdt
     def diffusing_dBdt_f(self,species_list,wvn):
-        B,D,E,F = species_list
+        B,E,F = species_list
         dbdt= self.bb+self.Vb**self.noncompetitiveinh(E,self.keb)-self.mua*B - B*self.d_B*wvn**2
         return dbdt
 
-    def dDdt_f(self,species_list):
-        B,D,E,F = species_list
-        dddt= self.bd+self.Vd*self.noncompetitiveact(B,self.kbd)-self.mulva*D
-        return dddt
-
     def dEdt_f(self,species_list):
-        B,D,E,F = species_list
+        B,E,F = species_list
         dedt= self.be+self.Ve**self.noncompetitiveinh(F,self.kfe)*self.noncompetitiveact(E,self.kee)-self.mulva*E
+        dedt+=dedt*normal(0,0.05,1)*self.stochasticity
         return dedt
     def dFdt_f(self,species_list):
-        B,D,E,F = species_list
+        B,E,F = species_list
         dfdt= self.bf+self.Vf*self.noncompetitiveact(B,self.kbd)-self.mulva*F
+        dfdt+=dfdt*normal(0,0.05,1)*self.stochasticity
         return dfdt
-    function_list = [dBdt_f,dDdt_f,dEdt_f,dFdt_f]
+    def dudt(self,U, cell_matrix):
+        function_list = [self.dBdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
+        dudt = [eq*cell_matrix for eq in function_list]
+        return dudt
 
 
     def getJacobian(self,x,wvn):
 
         B,D,E,F = x
-        JB = [-self.d_B*wvn**2 - self.mua, 0, -self.Vb**(1/((E/self.keb)**self.n + 1))*self.n*(E/self.keb)**self.n*log(self.Vb)/(E*((E/self.keb)**self.n + 1)**2), 0]
-        JD = [-self.Vd*self.n*(B/self.kbd)**(2*self.n)/(B*((B/self.kbd)**self.n + 1)**2) + self.Vd*self.n*(B/self.kbd)**self.n/(B*((B/self.kbd)**self.n + 1)), -self.mulva, 0, 0]
-        JE = [0, 0, -self.mulva - self.Ve**(1/((F/self.kfe)**self.n + 1))*self.n*(E/self.kee)**(2*self.n)/(E*((E/self.kee)**self.n + 1)**2) + self.Ve**(1/((F/self.kfe)**self.n + 1))*self.n*(E/self.kee)**self.n/(E*((E/self.kee)**self.n + 1)), -self.Ve**(1/((F/self.kfe)**self.n + 1))*self.n*(E/self.kee)**self.n*(F/self.kfe)**self.n*log(self.Ve)/(F*((E/self.kee)**self.n + 1)*((F/self.kfe)**self.n + 1)**2)]
-        JF = [-self.Vf*self.n*(B/self.kbd)**(2*self.n)/(B*((B/self.kbd)**self.n + 1)**2) + self.Vf*self.n*(B/self.kbd)**self.n/(B*((B/self.kbd)**self.n + 1)), 0, 0, -self.mulva]
+        JB = [-self.d_B*wvn**2 - self.mua,  -self.Vb**(1/((E/self.keb)**self.n + 1))*self.n*(E/self.keb)**self.n*log(self.Vb)/(E*((E/self.keb)**self.n + 1)**2), 0]
+        JE = [0,  -self.mulva - self.Ve**(1/((F/self.kfe)**self.n + 1))*self.n*(E/self.kee)**(2*self.n)/(E*((E/self.kee)**self.n + 1)**2) + self.Ve**(1/((F/self.kfe)**self.n + 1))*self.n*(E/self.kee)**self.n/(E*((E/self.kee)**self.n + 1)), -self.Ve**(1/((F/self.kfe)**self.n + 1))*self.n*(E/self.kee)**self.n*(F/self.kfe)**self.n*log(self.Ve)/(F*((E/self.kee)**self.n + 1)*((F/self.kfe)**self.n + 1)**2)]
+        JF = [-self.Vf*self.n*(B/self.kbd)**(2*self.n)/(B*((B/self.kbd)**self.n + 1)**2) + self.Vf*self.n*(B/self.kbd)**self.n/(B*((B/self.kbd)**self.n + 1)), 0, -self.mulva]
 
 
-        return np.array([JB, JD, JE, JF])
+        return np.array([JB, JE, JF])
 
 #circuit2 (3954): nodeB dele (top cassete: cinI dele)
 class circuit9_eq(hill_functions):
@@ -630,40 +647,39 @@ class circuit10_eq(hill_functions):
         return np.array([JB, JH, JD, JE, JF])
 
 
-
+#circuit2 (3954): nodeA dele + receptor binding and diffuser
 class circuit11_eq(hill_functions):
 
     def __init__(self,par_dict):
         for key,value in par_dict.items():
             setattr(self,key,value)
         self.muB = self.muLVA
-        self.muD = self.muLVA
         self.muE = self.muLVA
         self.muF = self.muLVA
         self.khmf = self.khmd
 
-    def function_list(self,species_list,cell,wvn):
-        mB,H,mD,mE,mF,B,D,E,F = species_list
+    def dudt(self,species_list,cell_matrix,wvn=0):
+        mB,H,mE,mF,B,E,F = species_list
 
 
         dmBdt_f= self.bmB+self.VmB*self.noncompetitiveinh(E,self.kemb,self.nE)-self.muRNA*mB
-        dHdt_f= (self.alphaH*B - self.muH*H)*cell - H*self.d_H*wvn**2
+        dHdt_f= (self.alphaH*B - self.muH*H) - H*self.d_H*wvn**2
         HR=self.R/(1+(self.kD/H)) #Quasisteadystate
-        dmDdt_f= self.bmD+self.VmD*self.noncompetitiveact(HR,self.khmd,self.nH)-self.muRNA*mD
         dmEdt_f= self.bmE+self.VmE*self.noncompetitiveinh(F,self.kfme,self.nF)*self.noncompetitiveact(E,self.keme,self.nE)-self.muRNA*mE
         dmFdt_f= self.bmF+self.VmF*self.noncompetitiveact(HR,self.khmf,self.nH)-self.muRNA*mF
         dBdt_f = self.aB*mB - self.muB*B
-        dDdt_f = self.aD*mD - self.muD*D
         dEdt_f = self.aE*mE - self.muE*E
         dFdt_f = self.aF*mF - self.muF*F
-        # self.Vmrna = 1
-        # dBdt_f = self.Vmrna*noncompetitiveact(mB,self.khmd) - self.muB*B
-        # dDdt_f = self.aD*mD - self.muD*D
-        # dEdt_f = self.aE*mE - self.muE*E
-        # dFdt_f = self.aF*mF - self.muF*F
+        function_list = [dmBdt_f,dHdt_f,dmEdt_f,dmFdt_f,dBdt_f,dEdt_f,dFdt_f]
 
-        # print(HR)
-        return [dmBdt_f,dHdt_f,dmDdt_f,dmEdt_f,dmFdt_f,dBdt_f,dDdt_f,dEdt_f,dFdt_f]
+        dudt = [eq*cell_matrix for eq in function_list]
+        return dudt
+        # def dudt(self,U, cell_matrix):
+        #     function_list = [self.dBdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
+        #     dudt = [eq*cell_matrix for eq in function_list]
+        #     return dudt
+
+        # return [dmBdt_f,dHdt_f,dmDdt_f,dmEdt_f,dmFdt_f,dBdt_f,dDdt_f,dEdt_f,dFdt_f]
 
 
 

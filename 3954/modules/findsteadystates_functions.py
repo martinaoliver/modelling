@@ -47,10 +47,12 @@ def newton_raphson(f, x_guess,equations_par_dict, max_num_iter=15, tolerance=0.0
         return (x,err,1)
 class newtonraphson_equations(hill_functions):
 
-    def __init__(self,par_dict,circuit_n):
+    def __init__(self,par_dict,circuit_n, stochasticity=1):
         for key,value in par_dict.items():
             setattr(self,key,value)
         setattr(self, 'circuit_n', circuit_n)
+        setattr(self, 'stochasticity', 1)
+
         self.parent_list = [circuit1_eq, circuit2_eq, circuit3_eq, circuit4_eq, circuit5_eq, circuit6_eq, circuit7_eq]
 
 
