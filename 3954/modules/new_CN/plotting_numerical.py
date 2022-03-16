@@ -138,5 +138,6 @@ def show_rgbvideo(timeseries_unstacked,parID):
     for time in range(len(rgb_timeseries)):
         im.set_data(rgb_timeseries[time].astype('uint8'))
         plt.title(parID)
+        plt.xlabel(time)
         plt.pause(0.01)
     plt.show()

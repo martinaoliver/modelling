@@ -49,7 +49,6 @@ import multiprocessing
     Code
 ====================================================
 '''
-print('dfgdsf')
 # Set number of threads to 1 if no valid number provided
 if len(sys.argv) > 1:
     Number_of_Threads = int(sys.argv[1])
@@ -120,7 +119,7 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
             # rgb_timeseries = redgreen_contrast_timeseries(records)
             # show_rgbvideo(rgb_timeseries)
             if save_figure ==True:
-                pickle.dump(U_final, open(modelling_home + '/3954/numerical_confocal/results/simulation/square/%s/2Dfinal_%s.pkl'%(folder,filename), 'wb'))
+                pickle.dump(U_final, open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/square/%s/2Dfinal_%s.pkl'%(folder,filename), 'wb'))
                 pickle.dump(U_record,open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/square/%s/2Dtimeseries_%s.pkl'%(folder,filename), 'wb'))
 
             # else:
