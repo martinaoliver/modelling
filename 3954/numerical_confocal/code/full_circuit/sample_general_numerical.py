@@ -28,7 +28,7 @@ from plotting_numerical import *
 import pickle
 #execution parameters
 
-mechanism = 'general'
+mechanism = 'fullcircuit'
 shape = 'square' #'ca'
 parID = int(sys.argv[1])
 circuit_n=2
