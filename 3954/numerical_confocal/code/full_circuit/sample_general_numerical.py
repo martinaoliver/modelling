@@ -57,8 +57,8 @@ L_x=int(sys.argv[2]); x_gridpoints = int(sys.argv[3]); J = L_x*x_gridpoints;  L_
 T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) ; N = T*t_gridpoints
 suggested_tgridpoints = x_gridpoints**2
 
-filename = 'circuit%r_variant%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,parID,L_x,J,T,N)#,p_division,kce)
-savefig_path = modelling_ephemeral + '/3954/numerical_confocal/results/figures/square/%s'%folder
+filename = 'circuit%r_variant%svar%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,parID,L,J,T,N)
+savefig_path = modelling_ephemeral + '/3954/numerical_confocal/results/figures/square/%s/var%r'%(folder,var)
 try:
     U_record,U_final = adi(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, tqdm_disable=tqdm_disable)#,p_division=p_division,seed=seed)
     plot_2D_final_concentration(U_final,L_x,J,filename,savefig_path,n_species=n_species,save_figure=True)
