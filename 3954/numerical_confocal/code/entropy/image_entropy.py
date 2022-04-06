@@ -1,12 +1,30 @@
+
+#IMPORTS#
+#############################
 import sys
 import os
+
+from joblib import parallel_backend
 pwd = os.getcwd()
-root = pwd.split("home", 1)[0]
-modelling_home = root + 'home/Documents/modelling'
-modelling_ephemeral = root + 'ephemeral/Documents/modelling'
-modulepath = modelling_home + '/3954/modules'
+root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
+print(root)
+if root == '/Users/mo2016':
+    modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
+    modelling_home = '/Volumes/mo2016/home/Documents/modelling'
+    modelling_local = root + '/Documents/modelling'
+    import matplotlib as mpl
+    mpl.use('tkagg')
+
+if root == '/Volumes/mo2016' or root=='/rds/general/user/mo2016': #'/rds/general' or root=='/Volumes':
+        modelling_ephemeral = root + '/ephemeral/Documents/modelling'
+        modelling_home = root  + '/home/Documents/modelling'
+        modelling_local = modelling_home
+
+modulepath = modelling_local + '/3954/modules/new_CN'
+
 sys.path.append(modulepath)
-from numerical_solvers_variableboundary import *
+
+
 from PIL import Image, ImageDraw
 import numpy as np
 from numpy import asarray
@@ -18,11 +36,14 @@ import matplotlib.pyplot as plt
 #######
 #FUNCTIONS#
 #######
-def plot(parID,filename,results_path,L=10,mechanism='general',shape='ca',savefig_path='',x_gridpoints=8,save_figure=False):
+L=5; x_gridpoints =10; J = L*x_gridpoints; dx = float(L)/float(J-1)
+grid = np.array([j*dx for j in range(J)])
+parID=0
+def plot(parID,filename,results_path,grid):
     final_concentration = pickle.load( open( results_path + '/' + filename, "rb" ) )
-    plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,savefig_path,parID=parID,scale_factor=x_gridpoints,save_figure=save_figure)
+    plt.pcolormesh(grid, grid, final_concentration[2], shading='auto')
 
-def entropy(parID,filename,results_path,show_fig=False,L=10,mechanism='general',shape='ca',savefig_path='',x_gridpoints=8,save_figure=False):
+def entropy(parID,filename,results_path, show_fig=True):
     final_concentration = pickle.load( open( results_path + '/' + filename, "rb" ) )
 
     if show_fig==True:
