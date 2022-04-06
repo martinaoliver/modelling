@@ -50,10 +50,11 @@ D = np.zeros(n_species)
 D[0]=d_A
 d_B=1
 D[1]=d_B
+var_list=[0.01,0.02,0.04, 0.06,0.08, 0.1,0.23]
 
 
 #solver parameters
-L_x=int(sys.argv[2]); x_gridpoints = int(sys.argv[3]); J = L_x*x_gridpoints;  L_y=L_x; I=J
+L_x=int(sys.argv[2]); x_gridpoints = int(sys.argv[3]); L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
 T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) ; N = T*t_gridpoints
 suggested_tgridpoints = x_gridpoints**2
 
