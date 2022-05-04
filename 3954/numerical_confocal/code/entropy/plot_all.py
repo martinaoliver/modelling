@@ -42,7 +42,7 @@ from tqdm import tqdm
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
 folder = 'fullcircuit_5716gaussian'
-var=0.23
+var=float(sys.argv[1])
 circuit_n=2
 variant='5716gaussian'
 shape='square'
