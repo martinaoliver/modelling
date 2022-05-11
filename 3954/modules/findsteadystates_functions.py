@@ -62,10 +62,10 @@ class newtonraphson_equations(hill_functions):
         function_list = circuit.function_list
         f = np.zeros((len(function_list),))
 
-
         for function in function_list:
             f[n]=circuit.function_list[n](self,x)
             n +=1
+
         return f
 
     def getJacobian(self,x):

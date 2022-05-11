@@ -1,6 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
-from class_circuit_eq import *
+from old_class_circuit_eq import *
 
 
 #This class can return the jacobian which is stored in circuit*_eq class.

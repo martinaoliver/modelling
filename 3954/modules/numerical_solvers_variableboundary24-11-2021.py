@@ -3,7 +3,7 @@ import time
 start_time = time.time()
 import numpy as np
 np.set_printoptions(precision=3)
-from class_circuit_eq import *
+from old_class_circuit_eq import *
 import pickle
 from tqdm import tqdm
 import matplotlib

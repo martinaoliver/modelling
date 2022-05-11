@@ -8,6 +8,8 @@
     - Cooperativity:2
     - dA: 1
 
+- Variant1: same as variant 0 but with varying kce as well
+
 - Variant5
     -    kce=10^4
         - dB: 0.001-10

@@ -9,7 +9,7 @@ sys.path.append(modulepath)
 from sympy import *
 
 import pickle
-from class_circuit_eq import *
+from old_class_circuit_eq import *
 # print('load df')
 # df= pickle.load( open(path +  '/parameterfiles/df_circuit2_variant0_1000000parametersets.pkl', "rb" ) )
 # print('df loaded')
