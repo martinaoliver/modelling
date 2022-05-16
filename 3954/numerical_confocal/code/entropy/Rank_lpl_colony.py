@@ -37,7 +37,7 @@ from tqdm import tqdm
 from send_email import *
 from scipy.ndimage import laplace
 #############################
-%matplotlib inline 
+# %matplotlib inline 
 
 
 
@@ -67,9 +67,9 @@ parID_list = pickle.load( open(data_path + '/parID_list_variant0_ca_fullcircuit_
 
 
 
-plot=True
+plot=False
 parID_lpl = {}
-for parID in tqdm(parID_list, disable=True):
+for parID in tqdm(parID_list[:10], disable=True):
 # for parID in tqdm([805,686,472,252,688], disable=True):
 
 
@@ -79,7 +79,6 @@ for parID in tqdm(parID_list, disable=True):
     
     lpl_sum = compute_LaplaceSum(final_concentration[5], plot=plot)
     # print('kSI',kSI, 'HKS',HKS, 'IKS_real',IKS_real, 'IKS_im',IKS_im)
-    print(lpl_sum)
     parID_lpl[parID] = lpl_sum
 
     if plot==True:

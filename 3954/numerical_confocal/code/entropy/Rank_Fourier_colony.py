@@ -115,7 +115,7 @@ parID_IKS_im ={}
 
 plot=True
 
-for parID in tqdm(parID_list, disable=False):
+for parID in tqdm(parID_list, disable=True):
 # for parID in tqdm([805,686,472,252,688], disable=True):
 
 
