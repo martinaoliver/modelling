@@ -53,25 +53,26 @@ def entropy(final_concentration):
 
 
 #definition of variables and path
-folder = 'fullcircuit_5716gaussian'
-var=0.06
 circuit_n=2
-variant='5716gaussian'
-shape='square'
-mechanism = 'fullcircuit'
-L=5; x_gridpoints =10; J = L*x_gridpoints
-T =150; t_gridpoints = 100; N = T*t_gridpoints
-data_path = modelling_home + '/3954/numerical_confocal/results/simulation/square/%s/var%r'%(folder,var)
-parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T150_N15000.pkl', "rb" ) )
+variant=0#'5716gaussian'
+shape='ca'
+mechanism = 'fullcircuit'#nodeAdele' #not really nodeAdele, mistake in filename
+L=10; x_gridpoints =15; J = L*x_gridpoints
+T =120; t_gridpoints = 10; N = T*t_gridpoints
+data_path = modelling_home + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN'
+# parID_list = pickle.load( open(data_path + '/parID_list_5716gaussian_L10J150T120N1200.pkl', "rb" ) )
 
+parID_list = pickle.load( open(data_path + '/parID_list_variant0_ca_fullcircuit_L10J150T120N1200.pkl', "rb" ) )
+
+print(parID_list)
 
 parID_entropy ={}
 plot=False
-colony=True
-for parID in tqdm(parID_list[:100], disable=False):
+for parID in tqdm(parID_list, disable=False):
 
     #open concentration file
-    filename = 'circuit%r_variant%svar%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,int(parID),L,J,T,N)
+
+    filename = 'circuit%r_variant%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,int(parID),L,J,T,N)
     final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
     final_concentration = np.round(final_concentration,4)
     
@@ -86,7 +87,7 @@ for parID in tqdm(parID_list[:100], disable=False):
         plt.show()
 
 #save dictionary
-filename = 'circuit%r_variant%svar%r_%s_%s_L%r_J%r_T%r_N%r_test'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
+filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r_test'%(circuit_n,variant, shape,mechanism,L,J,T,N)
 pickle.dump( parID_entropy, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/HKSdict_%s.pkl"%filename, "wb" ) )
 if root == '/rds/general':
     sendemail()

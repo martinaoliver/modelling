@@ -41,8 +41,13 @@ from scipy.signal import correlate
 
 
 
-def compute_CrossCorrelation(M1,M2):
-    return correlate(M1,M2, mode='same')
+def compute_FFTCorrelation(M1):
+    dataFT = fft(M1, axis=1)
+    dataAC = ifft(dataFT * np.conjugate(dataFT), axis=1).real
+
+    return dataAC
+
+
 folder = 'fullcircuit_5716gaussian'
 var=0.23
 circuit_n=2
@@ -65,16 +70,14 @@ for parID in tqdm(parID_list[:1], disable=True):
 
 
     filename = 'circuit%r_variant%svar%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,int(parID),L,J,T,N)
-    final_concentration1 = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
-    final_concentration1 = np.round(final_concentration1,4)
-    filename = 'circuit%r_variant%svar%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,int(parID)+1,L,J,T,N)
-    final_concentration2 = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
-    final_concentration2 = np.round(final_concentration2,4)
-    correlation = compute_CrossCorrelation(final_concentration1, final_concentration2)
+    final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
+    final_concentration = np.round(final_concentration,4)
+    correlation = compute_FFTCorrelation(final_concentration[4])
     # print('kSI',kSI, 'HKS',HKS, 'IKS_real',IKS_real, 'IKS_im',IKS_im)
 
     # parID_HKS[parID] = HKS
     print(correlation)
+    print(np.shape(correlation))
 
     if plot==True:
         plt.imshow(final_concentration[5])

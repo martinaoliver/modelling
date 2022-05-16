@@ -43,7 +43,8 @@ import matplotlib as mpl
 
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
-parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/EntropyDictdictGreen_v1_variant0_ca_fullcircuit_L10J150T120N1200.pkl', "rb" ) )
+# parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/HKSdict_circuit2_variant5716gaussian_ca_nodeAdele_L10_J150_T120_N1200_test.pkl', "rb" ) )
+parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/HKSdict_circuit2_variant0_ca_fullcircuit_L10_J150_T120_N1200_test.pkl', "rb" ) )
 len(parID_dict)
 parID_list = []
 entropy_list = []
@@ -70,7 +71,7 @@ n_col = int(np.sqrt(num))
 n_row = np.floor(num/n_col)+1    # number of rows in the figure of the cluster
 
 fig = plt.figure(figsize=(n_col/10+2, n_row/10+2))
-for count,n in tqdm(enumerate(parID_list),disable=True):
+for count,n in tqdm(enumerate(parID_list),disable=False):
     if count%100==0:
         print(count)
     ax=plt.subplot(n_row,n_col, count+1)
