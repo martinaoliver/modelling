@@ -53,7 +53,7 @@ T =150; t_gridpoints = 100; N = T*t_gridpoints
 data_path = modelling_home + '/3954/numerical_confocal/results/simulation/square/%s/var%r'%(folder,var)
 filename = 'circuit%r_variant%svar%r_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
 
-parID_dict = pickle.load( open(modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/IKS_im_dict_%s.pkl"%filename, "rb" ) )
+parID_dict = pickle.load( open(modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/lpl_dict_%s.pkl"%filename, "rb" ) )
 len(parID_dict)
 parID_list = []
 entropy_list = []
@@ -106,7 +106,7 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
 
 # plt.title('1M numerical search 0-%r'%num)
 filename = 'circuit%r_variant%svar%r_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
-plt.savefig(modelling_home + '/3954/numerical_confocal/results/entropy/LargeImages/IKS_im_%s.png'%(filename), dpi=2000)
+plt.savefig(modelling_home + '/3954/numerical_confocal/results/entropy/LargeImages/lpl_%s.png'%(filename), dpi=2000)
 # plt.show()
 # plt.savefig('h.png',dpi=2000)
 print('gh')
