@@ -67,7 +67,6 @@ parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T150_N15000.pkl',
 
 parID_entropy ={}
 plot=False
-colony=True
 for parID in tqdm(parID_list[:100], disable=False):
 
     #open concentration file
