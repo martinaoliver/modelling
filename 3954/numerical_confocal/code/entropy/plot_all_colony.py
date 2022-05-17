@@ -5,7 +5,6 @@ import sys
 import os
 pwd = os.getcwd()
 root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
-
 print(root)
 if root == '/Users/mo2016':
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
@@ -15,7 +14,6 @@ if root == '/Users/mo2016':
     mpl.use('tkagg')
 
 if root == '/Volumes/mo2016' or root=='/rds/general/user/mo2016': #'/rds/general' or root=='/Volumes':
-        print('sdsf')
         modelling_ephemeral = root + '/ephemeral/Documents/modelling'
         modelling_home = root  + '/home/Documents/modelling'
         modelling_local = modelling_home
@@ -28,7 +26,6 @@ sys.path.append(modulepath)
 
 
 from plotting_numerical import plot_redgreen_contrast
-from send_email import *
 from tqdm import tqdm
 import pickle
 import numpy as np
@@ -54,8 +51,8 @@ for key in parID_dict:
 parID_list
 start = int(sys.argv[1])
 stop = int(sys.argv[2])
-# parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
-parID_list = [int(i) for i in parID_list] #turn string list into integer list
+parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
+# parID_list = [int(i) for i in parID_list] #turn string list into integer list
 circuit_n=2
 variant='0'
 boundary_coef=1
@@ -64,14 +61,14 @@ mechanism = 'fullcircuit'
 L,J,T,N = [10,150,120,1200]
 dimension='2D'
 x_gridpoints=L
-details = 'EntropyDictdictGreen_v1_variant0_ca_fullcircuit_L10J150T120N1200'
+details = 'HKSdict_circuit2_variant0_ca_fullcircuit_L10_J150_T120_N1200'
 num=len(parID_list)
 print(num)
 n_col = int(np.sqrt(num))
 n_row = np.floor(num/n_col)+1    # number of rows in the figure of the cluster
 
 fig = plt.figure(figsize=(n_col/10+2, n_row/10+2))
-for count,n in tqdm(enumerate(parID_list),disable=False):
+for count,n in tqdm(enumerate(parID_list),disable=True):
     if count%100==0:
         print(count)
     ax=plt.subplot(n_row,n_col, count+1)
@@ -97,5 +94,4 @@ plt.savefig(modelling_home + '/3954/numerical_confocal/results/entropy/LargeImag
 print('gh')
 # plt.clf()
 # plt.close(fig)
-if root == '/rds/general/user/mo2016':
-    sendemail()
+

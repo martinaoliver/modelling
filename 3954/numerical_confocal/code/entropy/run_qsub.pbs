@@ -1,6 +1,6 @@
 #!/bin/sh
 #PBS -l walltime=10:10:00
-#PBS -l select=1:ncpus=1:mem=124gb
+#PBS -l select=1:ncpus=1:mem=62gb
 
 
 module load anaconda3/personal
@@ -8,12 +8,15 @@ source activate env1
 cd $PBS_O_WORKDIR
 
 
-python plot_all.py 0 10722
-#python Rank_FourierEntropy.py
+# python plot_all.py 0 10722
+python plot_all_colony.py 0 10722
+# python Rank_lpl_colony.py
+# python Rank_Fourier_colony.py
+# python Rank_Entropy_colony.py
 
 #python sample_general_numerical.py 2D $parID 10 300 8
 # python sample_general_numerical.py 2D $parID 10 120 8 1 $p_division 5
 # python sample_general_numerical.py 2D $parID 10 120 8 1 $p_division 5
 # python sample_general_numerical.py 2D $parID 10 120 8 1 0.41 $kce
-# python sample_general_numerical.py 2D $parID 10 120 8 1 0.4
+# python sample_generalnanonumerical.py 2D $parID 10 120 8 1 0.4
 # python sample_general_numerical.py 2D $parID 2 2 2
