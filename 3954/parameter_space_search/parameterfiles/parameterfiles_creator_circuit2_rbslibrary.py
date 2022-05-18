@@ -31,7 +31,7 @@ from tqdm import tqdm
 import time
 from itertools import product
 
-df = pickle.load( open( "df_circuit2_variant1_100parametersets.pkl", "rb" ) )
+df = pickle.load( open( "df_circuit2_variant1_1954parametersets.pkl", "rb" ) )
 df['original_index'] =df.index
 library_df = pd.DataFrame(columns=df.columns)
 rbs_strenght = np.logspace(1, 3, num=8)
@@ -46,6 +46,6 @@ library_df = library_df.reset_index(drop=True)
 
 par_dict = library_df.loc[1].to_dict()
 print(par_dict)
-pickle.dump( library_df, open( "df_circuit2_variant1_100parametersets_rbslibrary0.pkl", "wb" ) )
+pickle.dump( library_df, open( "df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "wb" ) )
 print(len(library_df))
 print(library_df)
