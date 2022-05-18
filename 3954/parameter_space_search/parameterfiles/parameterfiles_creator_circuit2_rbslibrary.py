@@ -31,17 +31,23 @@ from tqdm import tqdm
 import time
 from itertools import product
 
+
+
 df = pickle.load( open( "df_circuit2_variant1_1954parametersets.pkl", "rb" ) )
 df['original_index'] =df.index
 library_df = pd.DataFrame(columns=df.columns)
 rbs_strenght = np.logspace(1, 3, num=8)
 rbs_combinations = list(product(rbs_strenght, repeat=3))
 
-for index, row in df.iterrows():
+for index, row in tqdm(df.iterrows(),disable=True):
+    if index%100==0:
+        print(index)
+    index_df = pd.DataFrame(columns=df.columns)
     for combination in rbs_combinations:
         # library_df = library_df.append(row)
         row['Va','Vb','Ve'] = combination
-        library_df  = library_df.append(row)
+        index_df  = index_df.append(row)
+    library_df = pd.concat([library_df, index_df])
 library_df = library_df.reset_index(drop=True)
 
 par_dict = library_df.loc[1].to_dict()

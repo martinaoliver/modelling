@@ -41,7 +41,7 @@ import matplotlib as mpl
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
 # parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/HKSdict_circuit2_variant5716gaussian_ca_nodeAdele_L10_J150_T120_N1200_test.pkl', "rb" ) )
-parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/HKSdict_circuit2_variant0_ca_fullcircuit_L10_J150_T120_N1200_test.pkl', "rb" ) )
+parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/kSIdict_circuit2_variant0_ca_fullcircuit_L10_J150_T120_N1200_test.pkl', "rb" ) )
 len(parID_dict)
 parID_list = []
 entropy_list = []
@@ -61,7 +61,7 @@ mechanism = 'fullcircuit'
 L,J,T,N = [10,150,120,1200]
 dimension='2D'
 x_gridpoints=L
-details = 'HKSdict_circuit2_variant0_ca_fullcircuit_L10_J150_T120_N1200'
+details = 'kSIdict_circuit2_variant0_ca_fullcircuit_L10_J150_T120_N1200'
 num=len(parID_list)
 print(num)
 n_col = int(np.sqrt(num))

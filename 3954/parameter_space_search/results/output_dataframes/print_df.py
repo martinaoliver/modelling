@@ -5,7 +5,7 @@ circuit=2
 variant=0
 n_parametersets = 1000000
 # df = pd.read_pickle("lsa_df_circuit%r_variant%r_%rparametersets.pkl"%(circuit,variant,n_parametersets))
-df = pd.read_pickle('lsa_df_circuit2_variant0_51200parametersets_batch9_rbslibrary0.pkl')
+df = pd.read_pickle('lsa_df_circuit2_variant1_1000448parametersets_rbslibrary0_concat.pkl')
 # pickle.dump( df.loc[0:20000], open( "lsa_df_circuit%r_variant%r_%rparametersets.pkl"%(circuit,variant,20000), "wb" ) )
 # print(df.head())
 # print(df['system_class'].value_counts())

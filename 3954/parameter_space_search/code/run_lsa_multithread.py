@@ -57,8 +57,8 @@ circuit_n=2
 variant= 1
 
 # Specifiy number of parameter sets in parameterset file to be loaded
-df_lenght = 51200
-n_param_sets = 51200
+df_lenght = 1000448
+n_param_sets = 1000448
 # n_param_sets = 10000
 
 
@@ -68,8 +68,8 @@ date = date.today().strftime('%m_%d_%Y')
 # Specify size of batches in which to complete computations
 # Does not need to be a factor of number of parameter sets
 # batch_size = 20000
-batch_size = 1067
-# batch_size = 1250
+batch_size = 20842
+# batch_size = 5
 
 # Get starting parameter set indices for batches
 
@@ -89,8 +89,9 @@ start_time = time.perf_counter()
 start_parameter = int(0)
 # Load dataframe of parameter sets
 # df= pickle.load( open('../parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,df_lenght), "rb" ) )
-df= pickle.load( open("../parameterfiles/df_circuit2_variant1_100parametersets_rbslibrary0.pkl", "rb"))
+df= pickle.load( open("../parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
 batch_indices = list(range(0+start_parameter, len(df) + start_parameter, batch_size))
+# batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))
 
 # Create a pool of workers
 pool = multiprocessing.Pool(Number_of_Threads)
