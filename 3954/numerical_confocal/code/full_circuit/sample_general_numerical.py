@@ -23,24 +23,24 @@ modulepath = modelling_local + '/3954/modules/new_CN'
 sys.path.append(modulepath)
 
 
-from adi_function import *
+from adi_ca_function import *
 from plotting_numerical import *
 import pickle
 #execution parameters
 
 mechanism = 'fullcircuit'
-shape = 'square' #'ca'
+shape = 'ca'
 parID = int(sys.argv[1])
 circuit_n=2
 variant='5716gaussian'
 folder='fullcircuit_5716gaussian'
-parametersets_n = 1000 #1000000
+parametersets_n = 30000 #1000000
 save_figure = True
 tqdm_disable = False #disable tqdm
 n_species=6
 var=0.001
 # open parameter dictionaries
-general_df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/5716gaussian/df_circuit%r_variant%s_%rparametersets_%rvar.pkl'%(circuit_n,variant,parametersets_n,var), "rb" ) )
+general_df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/5716gaussian/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,parametersets_n), "rb" ) )
 # general_df= pickle.load( open(modelling_home + '/3954/parameter_space_search/results/output_dataframes/lsa_df_circuit2_variant0_20000parametersets.pkl', "rb" ) )
 par_dict = general_df.loc[parID].to_dict()
 
@@ -61,8 +61,8 @@ suggested_tgridpoints = x_gridpoints**2
 filename = 'circuit%r_variant%svar%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,parID,L,J,T,N)
 savefig_path = modelling_ephemeral + '/3954/numerical_confocal/results/figures/square/%s/var%r'%(folder,var)
 try:
-    U_record,U_final = adi(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, tqdm_disable=tqdm_disable)#,p_division=p_division,seed=seed)
-    plot_2D_final_concentration(U_final,L_x,J,filename,savefig_path,n_species=n_species,save_figure=True)
+    U_record,U_final = adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, tqdm_disable=tqdm_disable)#,p_division=p_division,seed=seed)
+    plot_2D_final_concentration(U_final,L_x,J,filename,savefig_path,n_species=n_species,save_figure=False)
         # savefig_path = modelling_ephemeral + '/3954/numerical_confocal/results/figures/1M_colony_ca/2D/5716gaussian'
     # plot_redgreen_contrast(U_final,L_x,mechanism,shape,filename,savefig_path,parID=parID,scale_factor=x_gridpoints,save_figure=save_figure)
     # plot_redgreen_contrast(U_final,L_x,mechanism,shape,filename,savefig_path,parID=parID,scale_factor=x_gridpoints,save_figure=False)
