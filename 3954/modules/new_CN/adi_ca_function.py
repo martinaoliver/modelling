@@ -1,6 +1,5 @@
 import numpy
-# import matplotlib as mpl
-# mpl.use('tkagg')
+
 
 import matplotlib.pyplot as plt
 import numpy as np

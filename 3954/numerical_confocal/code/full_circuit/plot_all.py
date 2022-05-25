@@ -40,22 +40,23 @@ from tqdm import tqdm
 #############################
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
-folder = 'fullcircuit_5716gaussian'
-var=0.23
-print(var)
-data_path = modelling_ephemeral + '/3954/numerical_confocal/results/simulation/square/%s/var%r'%(folder,var)
-parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T150_N15000.pkl', "rb" ) )
+folder = '5716gaussian'
+# var=0.23
+# print(var)
+data_path = modelling_ephemeral + '/3954/numerical_confocal/results/simulation/ca/2D/full_circuit/%s'%folder
+# parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T150_N15000.pkl', "rb" ) )
+parID_list = pickle.load( open(data_path + '/parID_list_variant5716gaussian_ca_fullcircuit_L10J150T120N1200.pkl', "rb" ) )
 start = int(sys.argv[1])
 stop = int(len(parID_list)-1)
 parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
 parID_list.sort() #sort from lower to higher values
 circuit_n=2
 variant='5716gaussian'
-shape='square'
+shape='ca'
 mechanism = 'fullcircuit'
-L=5; x_gridpoints =10; J = L*x_gridpoints
-T =150; t_gridpoints = 100; N = T*t_gridpoints
-details = 'var%r'%var
+L=10; x_gridpoints =15; J = L*x_gridpoints
+T =120; t_gridpoints = 10; N = T*t_gridpoints
+# details = 'var%r'%var
 dimension='2D'
 # k=20
 num=len(parID_list)
@@ -71,12 +72,12 @@ n_row = np.floor(num/n_col)+1    # number of rows in the figure of the cluster
 fig = plt.figure(figsize=(n_col/10+2, n_row/10+2))
 dx = float(L)/float(J-1)
 grid = np.array([j*dx for j in range(J)])
-for count,parID in tqdm(enumerate(parID_list),disable=False):
+for count,parID in tqdm(enumerate(parID_list[:10]),disable=False):
     ax=plt.subplot(n_row,n_col, count+1)
     #rgb_timeseries=timeseries_unstacked_list[row[n]] # Read the numpy matrix with images in the rows
     # par_ID = parID_list[row[n]]
     # parID = parID_list[count]
-    filename = 'circuit%r_variant%svar%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,parID,L,J,T,N)
+    filename = 'circuit%r_variant%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,parID,L,J,T,N)
     # final_concentration = pickle.load( open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/2Dfinal_%s.pkl'%filename, 'rb' ) )
     final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
 
@@ -91,8 +92,8 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
 
 
 # plt.title('1M numerical search 0-%r'%num)
-filename = 'circuit%r_variant%svar%r_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
-plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/square/large_images/%s_%s-%s.png'%(filename,start,stop), dpi=2000)
+filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,L,J,T,N)
+plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)
 # plt.show()
 # plt.savefig('h.png',dpi=2000)
 print('gh')

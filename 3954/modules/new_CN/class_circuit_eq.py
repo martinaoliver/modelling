@@ -115,7 +115,7 @@ class circuit1_eq(hill_functions):
 
 class circuit2_eq(hill_functions):
 
-    def __init__(self,par_dict,stochasticity=1):
+    def __init__(self,par_dict,stochasticity=0):
         for key,value in par_dict.items():
             setattr(self,key,value)
         setattr(self, 'stochasticity', stochasticity)
