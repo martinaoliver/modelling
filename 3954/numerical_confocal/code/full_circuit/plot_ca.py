@@ -9,7 +9,6 @@ from numpy import searchsorted
 pwd = os.getcwd()
 root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
 if root == '/Users/mo2016':
-    print(root)
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
     modelling_home = '/Volumes/mo2016/home/Documents/modelling'
     modelling_local = root + '/Documents/modelling'
@@ -37,7 +36,7 @@ import pickle
 mechanism = 'fullcircuit'
 shape = 'ca'
 # parID = int(sys.argv[1])
-parID = int(545)
+parID = int(1)
 circuit_n=2
 variant='5716gaussian'
 folder='5716gaussian'

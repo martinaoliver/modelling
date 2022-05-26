@@ -8,7 +8,6 @@ from numpy import searchsorted
 pwd = os.getcwd()
 root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
 if root == '/Users/mo2016':
-    print(root)
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
     modelling_home = '/Volumes/mo2016/home/Documents/modelling'
     modelling_local = root + '/Documents/modelling'
@@ -27,6 +26,7 @@ modulepath = modelling_local + '/3954/modules/new_CN'
 
 sys.path.append(modulepath)
 
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
