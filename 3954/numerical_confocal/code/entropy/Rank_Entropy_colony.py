@@ -92,3 +92,4 @@ pickle.dump( parID_entropy, open( modelling_home + "/3954/numerical_confocal/res
 if root == '/rds/general':
     sendemail()
 
+
