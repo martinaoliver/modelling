@@ -1,36 +1,39 @@
-
+#############################
 #IMPORTS#
 #############################
 import sys
 import os
 
-from joblib import parallel_backend
+from numpy import searchsorted
 pwd = os.getcwd()
 root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
-print(root)
 if root == '/Users/mo2016':
+    print(root)
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
     modelling_home = '/Volumes/mo2016/home/Documents/modelling'
     modelling_local = root + '/Documents/modelling'
-    import matplotlib as mpl
-    mpl.use('tkagg')
+
 
 if root == '/Volumes/mo2016' or root=='/rds/general/user/mo2016': #'/rds/general' or root=='/Volumes':
         modelling_ephemeral = root + '/ephemeral/Documents/modelling'
         modelling_home = root  + '/home/Documents/modelling'
         modelling_local = modelling_home
 
+if root == '/Users/mo2016' or  root == '/Volumes/mo2016':
+    print('yyyyy')
+    import matplotlib as mpl
+    mpl.use('tkagg')
+
 modulepath = modelling_local + '/3954/modules/new_CN'
 
 sys.path.append(modulepath)
+
 
 
 from plotting_numerical import *
 
 import pickle
 import numpy as np
-import matplotlib
-matplotlib.use('TKAgg')
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -48,7 +51,10 @@ data_path = modelling_ephemeral + '/3954/numerical_confocal/results/simulation/c
 parID_list = pickle.load( open(data_path + '/parID_list_variant5716gaussian_ca_fullcircuit_L10J150T120N1200.pkl', "rb" ) )
 start = int(sys.argv[1])
 stop = int(len(parID_list)-1)
+# stop = int(sys.argv[2])
+
 parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
+print(len(parID_list))
 parID_list.sort() #sort from lower to higher values
 circuit_n=2
 variant='5716gaussian'
@@ -72,7 +78,7 @@ n_row = np.floor(num/n_col)+1    # number of rows in the figure of the cluster
 fig = plt.figure(figsize=(n_col/10+2, n_row/10+2))
 dx = float(L)/float(J-1)
 grid = np.array([j*dx for j in range(J)])
-for count,parID in tqdm(enumerate(parID_list[:10]),disable=False):
+for count,parID in tqdm(enumerate(parID_list),disable=False):
     ax=plt.subplot(n_row,n_col, count+1)
     #rgb_timeseries=timeseries_unstacked_list[row[n]] # Read the numpy matrix with images in the rows
     # par_ID = parID_list[row[n]]
@@ -93,9 +99,9 @@ for count,parID in tqdm(enumerate(parID_list[:10]),disable=False):
 
 # plt.title('1M numerical search 0-%r'%num)
 filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,L,J,T,N)
-# plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)
+plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)
 
-plt.savefig('h.png',dpi=2000)
+# plt.savefig('h.png',dpi=2000)
 print('gh')
 # plt.clf()
 # plt.close(fig)

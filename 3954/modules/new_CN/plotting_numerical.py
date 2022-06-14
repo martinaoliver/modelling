@@ -5,6 +5,7 @@ import sys
 import os
 
 from numpy import searchsorted
+
 pwd = os.getcwd()
 root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
 if root == '/Users/mo2016':

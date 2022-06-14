@@ -37,7 +37,7 @@ from tqdm import tqdm
 from send_email import *
 from scipy.ndimage import laplace
 #############################
-%matplotlib inline 
+# %matplotlib inline 
 
 
 
@@ -52,42 +52,47 @@ def compute_LaplaceSum(M1, plot=True):
 
     
     return sum_l
-folder = 'fullcircuit_5716gaussian'
-var=0.23
+
+
+folder = 'fullcircuit_5716gaussian/1M_turingI'
+# var=0.23
 circuit_n=2
-variant='5716gaussian'
+variant=0#'5716gaussian'
 shape='square'
 mechanism = 'fullcircuit'
+# L=5; x_gridpoints =10; J = L*x_gridpoints
+# T =150; t_gridpoints = 100; N = T*t_gridpoints
 L=5; x_gridpoints =10; J = L*x_gridpoints
-T =150; t_gridpoints = 100; N = T*t_gridpoints
+T =2000; t_gridpoints = 10; N = T*t_gridpoints
+
+data_path = modelling_home + '/3954/numerical_confocal/results/simulation/square/%s'%(folder)
+parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T2000_N20000.pkl', "rb" ) )
 
 
-data_path = modelling_home + '/3954/numerical_confocal/results/simulation/square/%s/var%r'%(folder,var)
-parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T150_N15000.pkl', "rb" ) )
-
-
-
-plot=True
+plot=False
 parID_lpl = {}
-for parID in tqdm(parID_list, disable=True):
+for parID in tqdm(parID_list, disable=False):
 # for parID in tqdm([805,686,472,252,688], disable=True):
+    # parID=435376
+    print(parID)
 
-
-    filename = 'circuit%r_variant%svar%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,int(parID),L,J,T,N)
+    # filename = 'circuit%r_variant%svar%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,int(parID),L,J,T,N)
+    filename = 'circuit%r_variant%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,int(parID),L,J,T,N)
     final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
     final_concentration = np.round(final_concentration,4)
     
     lpl_sum = compute_LaplaceSum(final_concentration[5], plot=plot)
     # print('kSI',kSI, 'HKS',HKS, 'IKS_real',IKS_real, 'IKS_im',IKS_im)
-    print(lpl_sum)
+    # print(lpl_sum)
     parID_lpl[parID] = lpl_sum
 
-    if plot==True:
+    # if plot==True:
 
-        plt.imshow(final_concentration[5])
-        plt.colorbar()
-        plt.show()
+    #     plt.imshow(final_concentration[5])
+    #     plt.colorbar()
+    #     plt.show()
 # print(parID_entropy)
-filename = 'circuit%r_variant%svar%r_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
+# filename = 'circuit%r_variant%svar%r_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
+filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,L,J,T,N)
 
 pickle.dump( parID_lpl, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/lpl_dict_%s.pkl"%filename, "wb" ) )

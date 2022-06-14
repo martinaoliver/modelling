@@ -1,36 +1,38 @@
-
+#############################
 #IMPORTS#
 #############################
 import sys
 import os
 
-from joblib import parallel_backend
+from numpy import searchsorted
 pwd = os.getcwd()
 root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
-print(root)
 if root == '/Users/mo2016':
+    print(root)
     modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
     modelling_home = '/Volumes/mo2016/home/Documents/modelling'
     modelling_local = root + '/Documents/modelling'
-    import matplotlib as mpl
-    mpl.use('tkagg')
+
 
 if root == '/Volumes/mo2016' or root=='/rds/general/user/mo2016': #'/rds/general' or root=='/Volumes':
         modelling_ephemeral = root + '/ephemeral/Documents/modelling'
         modelling_home = root  + '/home/Documents/modelling'
         modelling_local = modelling_home
 
+if root == '/Users/mo2016' or  root == '/Volumes/mo2016':
+    import matplotlib as mpl
+    mpl.use('tkagg')
+
 modulepath = modelling_local + '/3954/modules/new_CN'
 
 sys.path.append(modulepath)
+
 
 
 from plotting_numerical import *
 
 import pickle
 import numpy as np
-import matplotlib
-matplotlib.use('TKAgg')
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -40,22 +42,22 @@ from tqdm import tqdm
 #############################
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
-folder = '5716gaussian'
-# var=0.23
+folder = 'fullcircuit_5716gaussian'
+var=0.23
 # print(var)
-data_path = modelling_ephemeral + '/3954/numerical_confocal/results/simulation/ca/2D/full_circuit/%s'%folder
-# parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T150_N15000.pkl', "rb" ) )
-parID_list = pickle.load( open(data_path + '/parID_list_variant5716gaussian_ca_fullcircuit_L10J150T120N1200.pkl', "rb" ) )
+data_path = modelling_home + '/3954/numerical_confocal/results/simulation/square/fullcircuit_5716gaussian/var%s'%var
+parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T150_N15000.pkl', "rb" ) )
 start = int(sys.argv[1])
 stop = int(len(parID_list)-1)
+stop=int(10)
 parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
 parID_list.sort() #sort from lower to higher values
 circuit_n=2
 variant='5716gaussian'
-shape='ca'
+shape='square'
 mechanism = 'fullcircuit'
-L=10; x_gridpoints =15; J = L*x_gridpoints
-T =120; t_gridpoints = 10; N = T*t_gridpoints
+L=5; x_gridpoints =10; J = L*x_gridpoints
+T =150; t_gridpoints = 100; N = T*t_gridpoints
 # details = 'var%r'%var
 dimension='2D'
 # k=20
@@ -77,7 +79,7 @@ for count,parID in tqdm(enumerate(parID_list[:10]),disable=False):
     #rgb_timeseries=timeseries_unstacked_list[row[n]] # Read the numpy matrix with images in the rows
     # par_ID = parID_list[row[n]]
     # parID = parID_list[count]
-    filename = 'circuit%r_variant%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,parID,L,J,T,N)
+    filename = 'circuit%r_variant%svar%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant, var,shape,mechanism,parID,L,J,T,N)
     # final_concentration = pickle.load( open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/2Dfinal_%s.pkl'%filename, 'rb' ) )
     final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
 

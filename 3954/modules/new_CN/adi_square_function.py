@@ -11,8 +11,9 @@ import copy
 from scipy.sparse import linalg
 from scipy.linalg import solve_banded
 from class_circuit_eq import *
+from scipy.ndimage import laplace
 
-def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0):
+def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
     #for dt/dx^2 <1 (stability criterion): t_gridpoints approx < xgridpoints^2
     parent_list = [circuit1_eq, circuit2_eq,circuit3_eq,circuit4_eq,circuit5_eq,circuit6_eq,circuit7_eq,circuit8_eq,circuit9_eq, circuit10_eq, circuit11_eq]
     f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
@@ -31,15 +32,16 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
 
     alpha = [D[n]*dt/(2.*dx*dx) for n in range(n_species)]
 
-
+    
     #Define initial conditions and cell matrix
     U0 = []
     perturbation=0.001
-    steadystates=[0.1]*n_species
     np.random.seed(1)
 
-    cell_matrix = np.zeros(shape=(I,J))
-    cell_matrix[int(I/2), int(J/2)] = 1
+    if np.all(steadystates)==0:
+        steadystates=[0.1]*n_species
+    # cell_matrix = np.zeros(shape=(I,J))
+    # cell_matrix[int(I/2), int(J/2)] = 1
     for index in range(n_species):
         U0.append(np.random.uniform(low=steadystates[index] - perturbation, high=steadystates[index] + perturbation, size=(I, J)))
     # U0 = U0*cell_matrix
@@ -164,14 +166,33 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
                 U_new[n][j,:] =  U_half[n][j,:] + f1[n][j,:]*(dt/2)
 
         hour = ti / (N / T)
-
-        if hour % 1 == 0:  #only consider division at unit time (hour)
+        # print(np.amax(np.abs(D[0]*laplace(U[0]) + f.dudt(U)[0]))) 
+        if hour % 10 == 0:  #only consider division at unit time (hour)
             #append results into top_array for records
             for species_index in range(n_species):
                 U_record[species_index][:, :, int(hour)] = U_new[species_index] #issue in this line
+        if hour % 50 == 0:   
+            uprime_list=[np.amax(np.abs(U_new[n]-U[n])) for n in range(n_species)]
+            # print(np.amax(uprime_list))
 
+            if all(i <= 10e-4 for i in uprime_list):
+                if hour > 200:
+                    # print('Error1')
+                    # print(np.amax(np.abs(U_new[-2]-U[-2])))
+                    # print('Error2')
+                    # print([np.amax(np.abs(D[i]*laplace(U[i]) + f.dudt(U)[i])) for i in range(n_species)])
+                    print('converged')
+                    return U_record, U
+                    break
 
 
         U = copy.deepcopy(U_new)
+    
 
+
+    #check if solution is correct
+    # print(np.amax(D[-1]*laplace(U) + f.dudt(U)[-1]))
     return U_record, U
+
+
+
