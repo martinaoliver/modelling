@@ -120,7 +120,7 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
     # # ax.set_title(parID,size=0.1)
     ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
     # ax.imshow(rgb.astype('uint8'), origin= 'lower')
-    ax.set_ylabel('%s-%s'%(parID,entropy_list[parID]),size= 1,c='y', labelpad=0.35)
+    ax.set_ylabel('%s-%s'%(parID,entropy_list[count]),size= 1,c='y', labelpad=0.35)
 
 
 

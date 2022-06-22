@@ -19,9 +19,7 @@ if root == '/Volumes/mo2016' or root=='/rds/general/user/mo2016': #'/rds/general
         modelling_local = modelling_home
 
 modulepath = modelling_local + '/3954/modules/new_CN'
-print(modelling_local)
 print(root)
-print(modulepath)
 sys.path.append(modulepath)
 
 
@@ -36,59 +34,97 @@ import matplotlib.animation as animation
 import matplotlib as mpl
 
 #############################
-# df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(2,0,1000000), "rb" ) )
-
 #Opening list with parID's
-# file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
-# parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/HKSdict_circuit2_variant5716gaussian_ca_nodeAdele_L10_J150_T120_N1200_test.pkl', "rb" ) )
-parID_dict = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/entropy/EntropyDicts/kSIdict_circuit2_variant0_ca_fullcircuit_L10_J150_T120_N1200_test.pkl', "rb" ) )
+
+lhs=True
+
+if lhs==True:
+    folder = 'fullcircuit_5716gaussian/1M'
+    variant=0
+    details = '1M_turingI'
+else:
+    var=float(sys.argv[1])
+    # var=0.23
+    folder = 'fullcircuit_5716gaussian/var%s'%var
+    variant='5716gaussian'
+    details = 'var%r'%var
+
+
+circuit_n=2
+shape='ca'
+mechanism = 'fullcircuit'
+dimension='2D'
+
+L=10; x_gridpoints =15; J = L*x_gridpoints
+T =120; t_gridpoints = 10; N = T*t_gridpoints
+
+
+data_path = modelling_home + '/3954/numerical_confocal/results/simulation/ca/%s'%(folder)
+
+if lhs==True:    
+    if folder == 'fullcircuit_5716gaussian/1M_turingI':
+        print('yes')
+        general_filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,'1MturingI', shape,mechanism,L,J,T,N)
+    else: 
+        general_filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,L,J,T,N)
+else:
+    general_filename = 'circuit%r_variant%svar%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
+
+
+
+# metric=str(sys.argv[1])
+metric='ps_min'
+parID_dict = pickle.load( open(modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/%s_dict_%s.pkl"%(metric,general_filename), "rb" ) )
+print(modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/%s_dict_%s.pkl"%(metric,general_filename))
 len(parID_dict)
 parID_list = []
 entropy_list = []
+parID_dict = dict(sorted(parID_dict.items(), key=lambda item: item[1])) #important to sort out dictionary by HKS values
 for key in parID_dict:
     parID_list.append(key)
     entropy_list.append(parID_dict[key])
-parID_list
-start = int(sys.argv[1])
-stop = int(sys.argv[2])
-parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
-# parID_list = [int(i) for i in parID_list] #turn string list into integer list
-circuit_n=2
-variant='0'
-boundary_coef=1
-shape='ca'
-mechanism = 'fullcircuit'
-L,J,T,N = [10,150,120,1200]
-dimension='2D'
-x_gridpoints=L
-details = 'kSIdict_circuit2_variant0_ca_fullcircuit_L10_J150_T120_N1200'
-num=len(parID_list)
-print(num)
-n_col = int(np.sqrt(num))
-n_row = np.floor(num/n_col)+1    # number of rows in the figure of the cluster
+# print(parID_list, entropy_list)
+parID_list = [int(i) for i in parID_list] #turn string list into integer list
 
+print(parID_list)
+# k=20
+num=len(parID_list)
+n_col = int(np.sqrt(num))
+# for i in range(0,k):
+# n_col = 10
+#     row = np.where(fit==i)[0]
+#     print(row) # row in Z for elements of cluster i
+#     num = row.shape[0]       #  number of elements for each cluster
+n_row = np.floor(num/n_col)+1    # number of rows in the figure of the cluster
+#     print("cluster "+str(i))
+#     print(str(num)+" elements")
 fig = plt.figure(figsize=(n_col/10+2, n_row/10+2))
-for count,n in tqdm(enumerate(parID_list),disable=True):
-    if count%100==0:
-        print(count)
+dx = float(L)/float(J-1)
+grid = np.array([j*dx for j in range(J)])
+
+
+for count,parID in tqdm(enumerate(parID_list),disable=False):
     ax=plt.subplot(n_row,n_col, count+1)
     #rgb_timeseries=timeseries_unstacked_list[row[n]] # Read the numpy matrix with images in the rows
     # par_ID = parID_list[row[n]]
-    parID = parID_list[count]
-    filename = '2Dfinal_circuit%r_variant%s_%s_%sID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,shape,mechanism, parID,L,J,T,N)
-    final_concentration = pickle.load( open(modelling_home + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/%s.pkl'%filename, 'rb' ) )
+    if lhs==True:
+        filename = 'circuit%r_variant%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,int(parID),L,J,T,N)
+    else:
+        filename = 'circuit%r_variant%svar%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,int(parID),L,J,T,N)
+
+    final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
     rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,scale_factor=x_gridpoints,save_figure='LargeImage')
     # rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
     # ax.set_title(parID,size=0.1)
     ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
     ax.imshow(rgb.astype('uint8'), origin= 'lower')
-    ax.set_ylabel(parID,size= 1,c='y', labelpad=0.35)
+    ax.set_ylabel('%s-%s'%(parID,entropy_list[count]),size= 1,c='y', labelpad=0.35)
 
 
 
 
 # plt.title('1M numerical search 0-%r'%num)
-plt.savefig(modelling_home + '/3954/numerical_confocal/results/entropy/LargeImages/1M_numerical_search_%s-%s_%s.png'%(start,stop,details), dpi=2000)
+plt.savefig(modelling_home + '/3954/numerical_confocal/results/entropy/LargeImages/%s_%s.png'%(metric,general_filename), dpi=2000)
 # plt.show()
 # plt.savefig('h.png',dpi=2000)
 print('gh')

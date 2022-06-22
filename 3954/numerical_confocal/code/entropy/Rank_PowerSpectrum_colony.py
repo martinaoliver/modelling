@@ -98,10 +98,10 @@ circuit_n=2
 shape='square'
 mechanism = 'fullcircuit'
 
-L=5; x_gridpoints =10; J = L*x_gridpoints
-T =2000; t_gridpoints = 10; N = T*t_gridpoints
+L=10; x_gridpoints =15; J = L*x_gridpoints
+T =120; t_gridpoints = 10; N = T*t_gridpoints
 
-data_path = modelling_home + '/3954/numerical_confocal/results/simulation/square/%s'%(folder)
+data_path = modelling_home + '/3954/numerical_confocal/results/simulation/ca/%s'%(folder)
 parID_list = pickle.load( open(data_path + '/parID_list_L%r_J%r_T%r_N%r.pkl'%(L,J,T,N), "rb" ) )
 
 parID_ps = {}
@@ -137,7 +137,10 @@ for parID in tqdm(parID_list, disable=False):
 
 
 if lhs==True:
-    filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,L,J,T,N)
+    if folder== 'fullcircuit_5716gaussian/1M_turingI':
+        variant='1MturingI'
+    else:
+        filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,L,J,T,N)
 else:
     filename = 'circuit%r_variant%svar%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
 
