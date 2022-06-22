@@ -41,9 +41,8 @@ from tqdm import tqdm
 
 
 # %matplotlib inline
-def fourier2d(final_concentration):
+def fourier2d(pixels):
     # print('Normalised PowerSpectrum of original')
-    pixels=final_concentration[5]
     pixels[pixels == 0] = 0.0000000001
     pixels/=np.sum(pixels) #line added
 
@@ -121,15 +120,19 @@ for parID in tqdm(parID_list, disable=False):
     final_concentration0 = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
     if not np.isnan(final_concentration0).any():
         final_concentration = np.round(final_concentration0,4)
-        if plot==True:
-            plt.figure(figsize=[14,2])
-            plt.subplot(131)
-            plt.imshow(final_concentration[5])
-            plt.colorbar()
-        hist_PowerSpectrum  = fourier2d(final_concentration)
-        ps = entropy(hist_PowerSpectrum)
-
-        parID_ps[parID] = ps
+        red_final_concentration = final_concentration[-2]
+        green_final_concentration = final_concentration[-1]
+        # if plot==True:
+        #     plt.figure(figsize=[14,2])
+        #     plt.subplot(131)
+        #     plt.imshow(final_concentration[5])
+        #     plt.colorbar()
+        red_ps  = fourier2d(red_final_concentration)
+        rgreen_ps  = fourier2d(green_final_concentration)
+        red_ps_entropy = entropy(red_ps)
+        green_ps_entropy = entropy(rgreen_ps)
+        min_ps_entropy = np.amin([red_ps_entropy, green_ps_entropy])
+        parID_ps[parID] = min_ps_entropy
     # print(final_concentration0)
 
 
@@ -138,7 +141,7 @@ if lhs==True:
 else:
     filename = 'circuit%r_variant%svar%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
 
-pickle.dump( parID_ps, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/ps_zerokept_dict_%s.pkl"%filename, "wb" ) )
+pickle.dump( parID_ps, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/ps_min_dict_%s.pkl"%filename, "wb" ) )
 
 
 # if root=='/rds/general/user/mo2016':

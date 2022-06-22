@@ -74,7 +74,7 @@ else:
 
 
 # metric=str(sys.argv[1])
-metric='HKS'
+metric='ps_zerokept'
 parID_dict = pickle.load( open(modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/%s_dict_%s.pkl"%(metric,general_filename), "rb" ) )
 len(parID_dict)
 parID_list = []
@@ -120,7 +120,7 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
     # # ax.set_title(parID,size=0.1)
     ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
     # ax.imshow(rgb.astype('uint8'), origin= 'lower')
-    ax.set_ylabel(parID,size= 1,c='y', labelpad=0.35)
+    ax.set_ylabel('%s-%s'%(parID,entropy_list[parID]),size= 1,c='y', labelpad=0.35)
 
 
 
