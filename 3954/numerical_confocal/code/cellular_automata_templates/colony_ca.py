@@ -201,15 +201,11 @@ for parID in interesting_list:
     # boundary_coef = 1 #1 is open boundary and 0 is closed boundary
     # shape = 'growing_colony'
 
-    x_gridpoints = int(sys.argv[3])
-    T =int(sys.argv[4])
+    L=5; x_gridpoints =10; J = L*x_gridpoints
+    T =150; t_gridpoints = 100; N = T*t_gridpoints
     par_dict = general_df.loc[(parID,0)].to_dict()
     # print(par_dict)
-    L=int(sys.argv[5])
     J = L *x_gridpoints  # number of equally spaced gridpoints in space domain (larger J means more spatial precision(tends towards continuum solution) )
-    t_gridpoints = t_gridpoints_stability(L, J, T)  # numbesr of equally spaced gridpoints in domain (larger N means more temporal precision (tends towards continuum solution) )
-    t_gridpoints = int(t_gridpoints)
-    N = T * t_gridpoints
     initial_condition = [1000]*n_species
     filename = 'circuit%r_variant%r_boundary%r_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundary_coef, shape,mechanism,parID,L,J,T,N)
 
@@ -225,6 +221,7 @@ for parID in interesting_list:
         # records,final_concentration,grids = adi_ca(par_dict,initial_condition,L_x,L_y,J,I,T,N, circuit_n, boundary_coef=boundary_coef,tqdm_disable=tqdm_disable,n_species=n_species)
         cell_grid,cell_grid_list = ca(par_dict,initial_condition,L_x,L_y,J,I,T,N, circuit_n, shape,tqdm_disable=tqdm_disable,n_species=n_species,p_division=0.41,seed=1)
         plt.imshow(cell_grid)# plot_2D_final_concentration(final_concentration,grids,filename,n_species=n_species)
+        plt.show()
         plt.savefig('g')# plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension=dimension,scale_factor=x_gridpoints,save_figure=save_figure)
         # rgb_timeseries = redgreen_contrast_timeseries(records)
         # show_rgbvideo(cell_grid_list,parID)
@@ -238,10 +235,10 @@ for parID in interesting_list:
             lenght = np.count_nonzero(cell_grid_list[i][int(80/2)][:])
             lenght_list.append(lenght)
         lenght_list = np.array(lenght_list)/10
-        plt.scatter(np.linspace(0,T,int(T/1)),lenght_list, c='k',s=1)
-        plt.xlabel('Time (hours)')
-        plt.ylabel('Colony diameter (mm)')
-        plt.show()
+        # plt.scatter(np.linspace(0,T,int(T/1)),lenght_list, c='k',s=1)
+        # plt.xlabel('Time (hours)')
+        # plt.ylabel('Colony diameter (mm)')
+        # plt.show()
             # else:
             #     plt.show()
         # except ValueError:

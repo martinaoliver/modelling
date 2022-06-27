@@ -42,15 +42,15 @@ from tqdm import tqdm
 #############################
 #Opening list with parID's
 
-lhs=True
+lhs=False
 
 if lhs==True:
     folder = 'fullcircuit_5716gaussian/1M_turingI'
     variant=0
     details = '1M_turingI'
 else:
-    var=float(sys.argv[2])
-    # var=0.23
+    # var=float(sys.argv[2])
+    var=0.23
     folder = 'fullcircuit_5716gaussian/var%s'%var
     variant='5716gaussian'
     details = 'var%r'%var
@@ -64,6 +64,9 @@ dimension='2D'
 L=5; x_gridpoints =10; J = L*x_gridpoints
 T =2000; t_gridpoints = 10; N = T*t_gridpoints
 
+L=5; x_gridpoints =10; J = L*x_gridpoints
+T =150; t_gridpoints = 100; N = T*t_gridpoints
+
 data_path = modelling_home + '/3954/numerical_confocal/results/simulation/square/%s'%(folder)
 
 if lhs==True:
@@ -74,7 +77,7 @@ else:
 
 
 # metric=str(sys.argv[1])
-metric='ps_zerokept'
+metric='Compression'
 parID_dict = pickle.load( open(modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/%s_dict_%s.pkl"%(metric,general_filename), "rb" ) )
 len(parID_dict)
 parID_list = []
