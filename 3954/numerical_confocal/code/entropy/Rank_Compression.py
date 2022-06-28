@@ -34,7 +34,7 @@ import numpy as np
 from numpy import asarray
 import pickle
 from tqdm import tqdm
-from send_email import *
+# from send_email import *
 from scipy.ndimage import laplace
 import zipfile
 
@@ -64,7 +64,7 @@ parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T2000_N20000.pkl'
 print(len(parID_list))
 
 plot=False
-compress=False
+compress=True
 parID_Compression = {}
 
 for parID in tqdm(parID_list, disable=False):

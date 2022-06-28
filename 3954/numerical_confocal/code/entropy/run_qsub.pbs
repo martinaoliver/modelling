@@ -11,6 +11,7 @@ cd $PBS_O_WORKDIR
 
 # python Rank_PowerSpectrum_square.py 
 # python Rank_Fourier_square.py 
+python Rank_lpl_square.py
 # python Rank_lpl_colony.py
 # python plot_all_colony.py $var
 # python plot_all_colony.py
