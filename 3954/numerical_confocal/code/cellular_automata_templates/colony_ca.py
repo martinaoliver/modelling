@@ -31,7 +31,7 @@ modulepath = modelling_local + '/3954/modules/new_CN'
 sys.path.append(modulepath)
 
 # def adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, p_division=0.5,stochasticity=0):
-def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1):
+def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1, growth='Fast'):
 
 
     #spatial variables
@@ -98,16 +98,21 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
 
         hour = ti / (N / T)
         if hour % 1 == 0:  #only consider division at unit time (hour)
+            if growth=='Slow':
+                #predict if division occurs based on the p_division, the current cell matrix
+                #return new cell matrix and updated concentrations with dilution
+                U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
+                cell_matrix = copy.deepcopy(cell_matrix_new)
+                cell_matrix_record[:, :, int(hour)] = cell_matrix #issue in this line
 
+        if growth=='Fast':
             #predict if division occurs based on the p_division, the current cell matrix
             #return new cell matrix and updated concentrations with dilution
             U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
             cell_matrix = copy.deepcopy(cell_matrix_new)
             cell_matrix_record[:, :, int(hour)] = cell_matrix #issue in this line
-
-
         U = copy.deepcopy(U_new)
-
+    print(np.shape(cell_matrix_record))
     return cell_matrix_record
 
 import pickle
@@ -125,7 +130,7 @@ T =int(sys.argv[3]); t_gridpoints = int(sys.argv[4]); N = T*t_gridpoints
 L_x = L
 L_y = L
 I = J
-p_division=0.5;seed=1
+p_division=float(sys.argv[5]);seed=1
 initial_condition = [1000]*n_species
 
 cell_matrix_record= adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=tqdm_disable,p_division=p_division,seed=seed)
