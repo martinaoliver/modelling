@@ -63,8 +63,8 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
         neighbours_cellmatrix = np.array([top_array,middle_array,bottom_array])
         return neighbours_cellmatrix
     def cell_automata_colony(species_list,cell_matrix, p_division):
-        new_species_list = copy.deepcopy(species_list)
-        original_species_list = copy.deepcopy(species_list)
+        # new_species_list = copy.deepcopy(species_list)
+        # original_species_list = copy.deepcopy(species_list)
         cell_matrix_new = copy.deepcopy(cell_matrix)
         for y_pos in np.linspace(1,len(cell_matrix)-2,len(cell_matrix)-2):
             for x_pos in np.linspace(1,len(cell_matrix)-2,len(cell_matrix)-2):
@@ -78,9 +78,9 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
                             index_nocells=np.where(np.array(neighbours_cellmatrix )== 0)
                             divided_cell_index = np.random.choice(range(len(index_nocells[0])))
                             index_newcell_y, index_newcell_x = (index_nocells[n][divided_cell_index] for n in range(2))
-                            for count,species in enumerate(original_species_list):
-                                new_species_list[count][index_newcell_y+y_pos-1,index_newcell_x+x_pos-1] += species[y_pos,x_pos]/2
-                                new_species_list[count][y_pos,x_pos] += species[y_pos,x_pos]/2
+                            # for count,species in enumerate(original_species_list):
+                            #     new_species_list[count][index_newcell_y+y_pos-1,index_newcell_x+x_pos-1] += species[y_pos,x_pos]/2
+                            #     new_species_list[count][y_pos,x_pos] += species[y_pos,x_pos]/2
                             cell_matrix_new[index_newcell_y+y_pos-1,index_newcell_x+x_pos-1]=1
 
 

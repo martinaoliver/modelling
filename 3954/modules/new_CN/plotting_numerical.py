@@ -134,10 +134,12 @@ def plot_redgreen_contrast(final_concentration, mm, mechanism, shape, filename, 
 
     return rgb
 
-def plot_redgreenblue_contrast(final_concentration, mm, mechanism, shape, filename, path, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
+def plot_redgreenblue_contrast(final_concentration, mm, mechanism, shape, filename, path, mask, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
     green = final_concentration[-1]
     red = final_concentration[-2]
     blue = final_concentration[0]
+    if mask != None:
+        blue = blue*mask[:,:,-1]
     x_grid = np.linspace(0, mm, len(green))
     normalised_red, redmin, redmax = matrix_rgb_normalisation(red)
     normalised_green, greenmin, greenmax = matrix_rgb_normalisation(green)

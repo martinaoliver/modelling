@@ -11,15 +11,15 @@ cd $PBS_O_WORKDIR
 
 # python Rank_PowerSpectrum_square.py 
 # python Rank_Fourier_square.py 
-python Rank_lpl_square.py
+# python Rank_lpl_square.py
 # python Rank_lpl_colony.py
 # python plot_all_colony.py $var
-# python plot_all_colony.py
+python plot_all_colony.py
 # python Rank_lpl_colony.py
 # python Rank_Fourier_colony.py
 # python Rank_Fourier.py $metric
 # python plot_all_square.py $metric $var
-python plot_all_square.py
+# python plot_all_square.py
 # python Rank_Entropy_colony.py
 
 #python sample_general_numerical.py 2D $parID 10 300 8

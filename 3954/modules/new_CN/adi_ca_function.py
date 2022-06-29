@@ -11,7 +11,7 @@ from scipy.sparse import linalg
 from scipy.linalg import solve_banded
 from class_circuit_eq import *
 
-def adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, p_division=0.5,stochasticity=0):
+def adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Fast'):
 
     parent_list = [circuit1_eq, circuit2_eq,circuit3_eq,circuit4_eq,circuit5_eq,circuit6_eq,circuit7_eq,circuit8_eq,circuit9_eq, circuit10_eq, circuit11_eq]
     f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
@@ -38,7 +38,7 @@ def adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, 
     U0 = []
     perturbation=0.001
     steadystates=[0.1]*n_species
-    np.random.seed(1)
+    np.random.seed(seed)
 
     cell_matrix = np.zeros(shape=(I,J))
     cell_matrix[int(I/2), int(J/2)] = 1
@@ -195,10 +195,16 @@ def adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, 
 
         hour = ti / (N / T)
 
-        if hour % 1 == 0:  #only consider division at unit time (hour)
+        if hour % 1 == 0:  #only consider recording at unit time (hour)
             #append results into top_array for records
             for species_index in range(n_species):
                 U_record[species_index][:, :, int(hour)] = U_new[species_index] #issue in this line
+            if growth=='Slow': 
+                #predict if division occurs based on the p_division, the current cell matrix
+                #return new cell matrix and updated concentrations with dilution
+                U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
+                cell_matrix = copy.deepcopy(cell_matrix_new)
+        if growth=='Fast':
 
             #predict if division occurs based on the p_division, the current cell matrix
             #return new cell matrix and updated concentrations with dilution

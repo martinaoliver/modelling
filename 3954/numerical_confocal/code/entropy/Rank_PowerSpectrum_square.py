@@ -38,8 +38,11 @@ import pickle
 from tqdm import tqdm
 #############################
 
-
-
+%matplotlib inline
+plot=True
+save=True
+if plot==True:
+    save==False
 # %matplotlib inline
 def fourier2d(final_concentration):
     # print('Normalised PowerSpectrum of original')
@@ -53,12 +56,27 @@ def fourier2d(final_concentration):
     f = np.fft.ifftshift(pixels)
     f = np.fft.fft2(f)
     f = np.fft.fftshift(f)
-    # max_coordinates=list(zip(np.where(f == np.amax(f))[0], np.where(f == np.amax(f))[1]))[0]
+    if plot==True:
+        plt.subplot(142)
+        plt.imshow(np.real(f))
+        plt.colorbar()
+        plt.subplot(143)
+        plt.imshow(np.imag(f))
+        plt.colorbar()
+        max_coordinates=list(zip(np.where(f == np.amax(f))[0], np.where(f == np.amax(f))[1]))[0]
     PowerSpectrum = np.real(f)**2 +  np.imag(f)**2
-    # PowerSpectrum[max_coordinates]=0
+    PowerSpectrum[max_coordinates]=0
+    # if plot==True:
+    #     plt.subplot(144)
+    #     plt.imshow(PowerSpectrum)
+    #     plt.colorbar()
+
     if np.sum(PowerSpectrum)!=0:
         PowerSpectrum/=np.sum(PowerSpectrum)
-
+    if plot==True:
+        plt.subplot(144)
+        plt.imshow(PowerSpectrum)
+        plt.colorbar()
     # print('sum',np.sum(PowerSpectrum))
 
     # print('max', np.amax(PowerSpectrum), 'min', np.amin(PowerSpectrum))
@@ -107,10 +125,9 @@ parID_list = pickle.load( open(data_path + '/parID_list_L%r_J%r_T%r_N%r.pkl'%(L,
 
 parID_ps = {}
 
-plot=False
 # parID_list=[497]
-for parID in tqdm(parID_list, disable=False):
-# for parID in tqdm(parID_list[:20], disable=False):
+# for parID in tqdm(parID_list, disable=False):
+for parID in tqdm(parID_list[:20], disable=False):
 # for parID in tqdm([805,686,472,252,688], disable=True):
     # print('parID',parID)
     if lhs==True:
@@ -122,8 +139,8 @@ for parID in tqdm(parID_list, disable=False):
     if not np.isnan(final_concentration0).any():
         final_concentration = np.round(final_concentration0,4)
         if plot==True:
-            plt.figure(figsize=[14,2])
-            plt.subplot(131)
+            plt.figure(figsize=[24,4])
+            plt.subplot(141)
             plt.imshow(final_concentration[5])
             plt.colorbar()
         hist_PowerSpectrum  = fourier2d(final_concentration)
@@ -132,11 +149,11 @@ for parID in tqdm(parID_list, disable=False):
         parID_ps[parID] = ps
     # print(final_concentration0)
 
-
-if lhs==True:
-    filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,L,J,T,N)
-else:
-    filename = 'circuit%r_variant%svar%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
+if save==True:
+    if lhs==True:
+        filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,L,J,T,N)
+    else:
+        filename = 'circuit%r_variant%svar%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,var, shape,mechanism,L,J,T,N)
 
 pickle.dump( parID_ps, open( modelling_home + "/3954/numerical_confocal/results/entropy/EntropyDicts/ps_zerokept_dict_%s.pkl"%filename, "wb" ) )
 
