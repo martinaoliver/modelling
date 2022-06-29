@@ -62,7 +62,8 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
         bottom_array = [cell_matrix[y_pos+1, x_pos-1], cell_matrix[y_pos+1,x_pos], cell_matrix[y_pos+1,x_pos+1]]
         neighbours_cellmatrix = np.array([top_array,middle_array,bottom_array])
         return neighbours_cellmatrix
-    def cell_automata_colony(species_list,cell_matrix, p_division):
+    # def cell_automata_colony(species_list,cell_matrix, p_division):
+    def cell_automata_colony(cell_matrix, p_division):
         # new_species_list = copy.deepcopy(species_list)
         # original_species_list = copy.deepcopy(species_list)
         cell_matrix_new = copy.deepcopy(cell_matrix)
@@ -84,11 +85,17 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
                             cell_matrix_new[index_newcell_y+y_pos-1,index_newcell_x+x_pos-1]=1
 
 
-        return new_species_list, cell_matrix_new
+        # return new_species_list, cell_matrix_new
+        return cell_matrix_new
 
 
     U = copy.deepcopy(U0)
-    cell_matrix_record = np.zeros([J, I, T])
+    
+    if growth=='Slow':
+        cell_matrix_record = np.zeros([J, I, T])
+    if growth=='Fast':
+        cell_matrix_record = np.zeros([J, I, N])
+
 
 
     unittime=0
@@ -103,15 +110,17 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
                 #return new cell matrix and updated concentrations with dilution
                 U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
                 cell_matrix = copy.deepcopy(cell_matrix_new)
-                cell_matrix_record[:, :, int(hour)] = cell_matrix #issue in this line
-
+                cell_matrix_record[:, :, (hour)] = cell_matrix #issue in this line
+    # if np.round(hour % 0.25, 2) ==0:  #only consider division at unit time (hour)
         if growth=='Fast':
             #predict if division occurs based on the p_division, the current cell matrix
             #return new cell matrix and updated concentrations with dilution
-            U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
+            # U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
+            # U_new, cell_matrix_new = cell_automata_colony( cell_matrix, p_division)
+            cell_matrix_new = cell_automata_colony( cell_matrix, p_division)
             cell_matrix = copy.deepcopy(cell_matrix_new)
-            cell_matrix_record[:, :, int(hour)] = cell_matrix #issue in this line
-        U = copy.deepcopy(U_new)
+            cell_matrix_record[:, :, int(ti)] = cell_matrix #issue in this line
+    U = copy.deepcopy(U_new)
     print(np.shape(cell_matrix_record))
     return cell_matrix_record
 
@@ -135,21 +144,30 @@ initial_condition = [1000]*n_species
 
 cell_matrix_record= adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=tqdm_disable,p_division=p_division,seed=seed)
 plt.imshow(cell_matrix_record[:,:,-1], cmap='Greys')# plot_2D_final_concentration(final_concentration,grids,filename,n_species=n_species)
-plt.savefig('masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png'%(seed,p_division,L,J,T,N))# plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension=dimension,scale_factor=x_gridpoints,save_figure=save_figure)
-pickle.dump( cell_matrix_record, open( "masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+tick_positions = np.arange(0, J, J / 4)
+tick_labels = np.arange(0, J / x_gridpoints,
+                        J / x_gridpoints / 4).round(decimals=2)
+plt.xticks(tick_positions, tick_labels)
+plt.yticks(tick_positions, tick_labels)
+plt.ylim(0,J)
+plt.xlim(0,J)
+        
+plt.savefig('masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.png'%(seed,p_division,L,J,T,N))# plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension=dimension,scale_factor=x_gridpoints,save_figure=save_figure)
+pickle.dump( cell_matrix_record, open( "masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
 plt.show()
-
+# plt.close()
 def show_rgbvideo(timeseries_unstacked):
     time=0
 
     fig = plt.plot()
     rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
-    T = len(rgb_timeseries)
+    N = len(rgb_timeseries)
     im=plt.imshow(rgb_timeseries[:,:,0].astype('uint8'), origin= 'lower', cmap='Greys')
     for time in range(len(rgb_timeseries[0,0,:])):
         im.set_data(rgb_timeseries[:,:,time].astype('uint8'))
+        
         plt.xlabel(time)
-        plt.pause(0.01)
+        plt.pause(0.001)
     plt.show()
 
 show_rgbvideo(cell_matrix_record)
@@ -157,21 +175,17 @@ show_rgbvideo(cell_matrix_record)
 
     # print(np.shape(cell_matrix_record[0][0]))
 #         # print(np.shape(cell_grid_list(int(80/2),:,0)))
-# lenght_list = []
-# for i in range(len(cell_matrix_record)):
-#     lenght = np.count_nonzero(cell_matrix_record[i][int(80/2)][:])
-#     lenght_list.append(lenght)
-# lenght_list = np.array(lenght_list)/10
-# plt.scatter(np.linspace(0,T,int(T/1)),lenght_list, c='k',s=1)
-# plt.xlabel('Time (hours)')
-# plt.ylabel('Colony diameter (mm)')
-# plt.show()
-#             # else:
-#             #     plt.show()
-#         # except ValueError:
-#         #     print('!!!!!!!!!!!!!')
-#         #     print('ValueError --> unstable solution')
-#         #     print('!!!!!!!!!!!!!')
-#         #     print()
-#         #
-#         #     pass
+lenght_list = []
+for i in range(len(cell_matrix_record[0,0,:])):
+    lenght = np.count_nonzero(cell_matrix_record[:,int(J/2),i])
+    lenght_list.append(lenght)
+lenght_list = np.array(lenght_list)/x_gridpoints
+plt.scatter(np.linspace(0,N,int(N/1)),lenght_list, c='k',s=1)
+plt.xlabel('Time (hours)')
+plt.ylabel('Colony diameter (mm)')
+tick_positions = np.arange(0, N, N / 4)
+tick_labels = np.arange(0, N / t_gridpoints,
+                        N / t_gridpoints / 4).round(decimals=2)
+plt.xticks(tick_positions, tick_labels)
+plt.savefig("masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.png"%(seed,p_division,L,J,T,N))
+plt.show()
