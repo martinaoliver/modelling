@@ -36,7 +36,7 @@ start_time = time.time()
 # path = os.path.expanduser(
 #     '~/Documents/modelling/6eq/parameter_space_search')  # path of project folder: folder where code, results and parameterfiles are found.
 circuit_n=2
-variant=1 #variant1 is variant0 but with varying kce as well.
+variant=9 #variant1 is variant0 but with varying kce as well.
 
 #######################
 #########CODE##########
@@ -70,24 +70,23 @@ def parameterfile_creator_function(numbercombinations):
     Vm_range = (10, 1000)
     km_range = (0.1, 250)
     mu_range = (0.001, 50)
-    d_B_range = (0.001, 10)
+    # d_B_range = (0.001, 10)
 
     # b_distribution = [x for x in loguniformdist if b_range[0] <= x <= b_range[1]]
     Vm_distribution = [x for x in loguniformdist if Vm_range[0] <= x <= Vm_range[1]]
     km_distribution = [x for x in loguniformdist if km_range[0] <= x <= km_range[1]]
     mu_distribution = [x for x in loguniformdist if mu_range[0] <= x <= mu_range[1]]
-    d_B_distribution = [x for x in loguniformdist if d_B_range[0] <= x <= d_B_range[1]]
+    # d_B_distribution = [x for x in loguniformdist if d_B_range[0] <= x <= d_B_range[1]]
 
 
-    # lenghtsdistributions = ( len(Vm_distribution), len(km_distribution), len(mu_distribution))
-    lenghtsdistributions = ( len(Vm_distribution), len(km_distribution), len(mu_distribution), len(d_B_distribution))
+    lenghtsdistributions = ( len(Vm_distribution), len(km_distribution), len(mu_distribution))
+    # lenghtsdistributions = ( len(Vm_distribution), len(km_distribution), len(mu_distribution), len(d_B_distribution))
     minimumlenghtdistribution = np.amin(lenghtsdistributions)
     # b_distribution = b_distribution[:minimumlenghtdistribution]
     Vm_distribution = Vm_distribution[:minimumlenghtdistribution]
     km_distribution = km_distribution[:minimumlenghtdistribution]
     mu_distribution = mu_distribution[:minimumlenghtdistribution]
-    mu_distribution = mu_distribution[:minimumlenghtdistribution]
-    d_B_distribution = d_B_distribution[:minimumlenghtdistribution]
+    # d_B_distribution = d_B_distribution[:minimumlenghtdistribution]
 
     # A general matrix is generated with the distributions for each parameter
 
@@ -98,17 +97,17 @@ def parameterfile_creator_function(numbercombinations):
     mu_matrix = np.column_stack((mu_distribution, mu_distribution))
     km_matrix = np.column_stack((km_distribution, km_distribution, km_distribution, km_distribution, km_distribution,
                                  km_distribution, km_distribution))
-    d_B_matrix = np.column_stack( (d_B_distribution)).transpose()  # needs transposing as only one element leads to np.array the other way around.
+    # d_B_matrix = np.column_stack( (d_B_distribution)).transpose()  # needs transposing as only one element leads to np.array the other way around.
 
-    # par_distribution_matrix = np.concatenate((Vm_matrix, km_matrix, mu_matrix), 1)
-    par_distribution_matrix = np.concatenate(( Vm_matrix, km_matrix, mu_matrix,d_B_matrix), 1)
+    par_distribution_matrix = np.concatenate((Vm_matrix, km_matrix, mu_matrix), 1)
+    # par_distribution_matrix = np.concatenate(( Vm_matrix, km_matrix, mu_matrix,d_B_matrix), 1)
     #
     points = lhs(par_distribution_matrix, numbercombinations)
 
     bx = np.full((numbercombinations, 1), 0.01)
     cooperativity = np.full((numbercombinations, 1), 2)
-    d_A = np.full((numbercombinations, 1), 1)
-    # d_B = np.full((numbercombinations, 1), 1.8)
+    d_A = np.full((numbercombinations, 1), 2)
+    d_B = np.full((numbercombinations, 1), 0.8)
     parameterindex = np.arange(1, numbercombinations + 1, dtype=np.int).reshape(numbercombinations, 1)
     points = np.concatenate((parameterindex, bx, bx, bx, bx, bx, bx, points, d_A,  cooperativity), 1)
 
