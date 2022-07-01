@@ -109,11 +109,11 @@ def parameterfile_creator_function(numbercombinations):
     d_A = np.full((numbercombinations, 1), 2)
     d_B = np.full((numbercombinations, 1), 0.8)
     parameterindex = np.arange(1, numbercombinations + 1, dtype=np.int).reshape(numbercombinations, 1)
-    points = np.concatenate((parameterindex, bx, bx, bx, bx, bx, bx, points, d_A,  cooperativity), 1)
+    points = np.concatenate((parameterindex, bx, bx, bx, bx, bx, bx, points, d_A, d_B, cooperativity), 1)
 
     parameternames = (
     'index', 'ba', 'bb', 'bc', 'bd', 'be', 'bf', 'Va', 'Vb', 'Vc', 'Vd', 'Ve', 'Vf', 'kaa', 'kda', 'keb', 'kbd', 'kce',
-    'kfe', 'kee', 'mua', 'mulva', 'd_B','d_A',  'n')
+    'kfe', 'kee', 'mua', 'mulva', 'd_A', 'd_B', 'n')
     df = pd.DataFrame(data=points, columns=parameternames)
     df['index'] = df['index'].astype(int)
     df['n'] = df['n'].astype(int)

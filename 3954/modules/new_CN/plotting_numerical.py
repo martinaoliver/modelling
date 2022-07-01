@@ -123,7 +123,7 @@ def plot_redgreen_contrast(final_concentration, mm, mechanism, shape, filename, 
         plt.tight_layout()
 
         if save_figure == True:
-            plt.savefig(path + '/%s_%s.jpeg' % (dimension, filename),dpi=2000)
+            plt.savefig(path + '/%s_%s_rg.jpeg' % (dimension, filename),dpi=2000)
             plt.close()
         else:
             plt.show()
@@ -134,7 +134,7 @@ def plot_redgreen_contrast(final_concentration, mm, mechanism, shape, filename, 
 
     return rgb
 
-def plot_redgreenblue_contrast(final_concentration, mm, mechanism, shape, filename, path, mask, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
+def plot_redgreenblue_contrast(final_concentration, mm, mechanism, shape, filename, mask=None, path='test_results',parID=0, scale_factor=10, save_figure=False, dimension='2D'):
     green = final_concentration[-1]
     red = final_concentration[-2]
     blue = final_concentration[0]
@@ -161,13 +161,13 @@ def plot_redgreenblue_contrast(final_concentration, mm, mechanism, shape, filena
         plt.xticks(size=15)
         plt.title('parID=' + str(parID), size=14)
         np.set_printoptions(precision=2)
-        plt.text(1,1,'mCherry = [%r-%r]'%(np.around(redmin,2),np.around(redmax,2)),c='r')
-        plt.text(1,5,'GPF = [%r-%r]'%(np.around(greenmin,2),np.around(greenmax,2)),c='g')
-        plt.text(1,10,'GPF = [%r-%r]'%(np.around(bluemin,2),np.around(bluemax,2)),c='g')
+        plt.text(1,1,'mCherry = [%r-%r]'%(np.around(redmin,2),np.around(redmax,2)),c='r', size='xx-small')
+        plt.text(1,5,'GPF = [%r-%r]'%(np.around(greenmin,2),np.around(greenmax,2)),c='g', size='xx-small')
+        plt.text(1,10,'BFP = [%r-%r]'%(np.around(bluemin,2),np.around(bluemax,2)),c='b', size='xx-small')
         plt.tight_layout()
 
         if save_figure == True:
-            plt.savefig(path + '/%s_%s.jpeg' % (dimension, filename),dpi=2000)
+            plt.savefig(path + '/%s_%s_rgb.jpeg' % (dimension, filename),dpi=2000)
             plt.close()
         else:
             plt.show()

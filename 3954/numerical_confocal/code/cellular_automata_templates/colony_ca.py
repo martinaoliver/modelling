@@ -31,7 +31,7 @@ modulepath = modelling_local + '/3954/modules/new_CN'
 sys.path.append(modulepath)
 
 # def adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, p_division=0.5,stochasticity=0):
-def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1, growth='Fast'):
+def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
 
 
     #spatial variables
@@ -94,13 +94,13 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
     if growth=='Slow':
         cell_matrix_record = np.zeros([J, I, T])
     if growth=='Fast':
-        cell_matrix_record = np.zeros([J, I, N])
+        cell_matrix_record = np.zeros([J, I, int(T/0.1)])
 
 
-
-    unittime=0
+    tdivider=0.1*t_gridpoints
+    divide_counter=0
     for ti in tqdm(range(N), disable = tqdm_disable):
-
+        
         U_new = copy.deepcopy(U)
 
         hour = ti / (N / T)
@@ -112,14 +112,18 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
                 cell_matrix = copy.deepcopy(cell_matrix_new)
                 cell_matrix_record[:, :, (hour)] = cell_matrix #issue in this line
     # if np.round(hour % 0.25, 2) ==0:  #only consider division at unit time (hour)
-        if growth=='Fast':
-            #predict if division occurs based on the p_division, the current cell matrix
-            #return new cell matrix and updated concentrations with dilution
-            # U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
-            # U_new, cell_matrix_new = cell_automata_colony( cell_matrix, p_division)
-            cell_matrix_new = cell_automata_colony( cell_matrix, p_division)
-            cell_matrix = copy.deepcopy(cell_matrix_new)
-            cell_matrix_record[:, :, int(ti)] = cell_matrix #issue in this line
+        print(hour ,ti, ti%tdivider)
+        if (ti%tdivider==0):
+            if growth=='Fast':
+                #predict if division occurs based on the p_division, the current cell matrix
+                #return new cell matrix and updated concentrations with dilution
+                # U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
+                # U_new, cell_matrix_new = cell_automata_colony( cell_matrix, p_division)
+                cell_matrix_new = cell_automata_colony( cell_matrix, p_division)
+                cell_matrix = copy.deepcopy(cell_matrix_new)
+                cell_matrix_record[:, :, divide_counter] = cell_matrix #issue in this line
+                divide_counter+=1
+
     U = copy.deepcopy(U_new)
     print(np.shape(cell_matrix_record))
     return cell_matrix_record
@@ -131,8 +135,8 @@ save_figure = False
 tqdm_disable = False #disable tqdm
 n_species=6
 
-L=5; x_gridpoints =10; J = L*x_gridpoints
-T =10; t_gridpoints = 100; N = T*t_gridpoints
+# L=5; x_gridpoints =10; J = L*x_gridpoints
+# T =10; t_gridpoints = 100; N = T*t_gridpoints
 
 L=int(sys.argv[1]); x_gridpoints =int(sys.argv[2]); J = L*x_gridpoints
 T =int(sys.argv[3]); t_gridpoints = int(sys.argv[4]); N = T*t_gridpoints
@@ -170,7 +174,7 @@ def show_rgbvideo(timeseries_unstacked):
         plt.pause(0.001)
     plt.show()
 
-show_rgbvideo(cell_matrix_record)
+# show_rgbvideo(cell_matrix_record)
 
 
     # print(np.shape(cell_matrix_record[0][0]))

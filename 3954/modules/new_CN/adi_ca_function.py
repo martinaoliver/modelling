@@ -173,7 +173,8 @@ def adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, 
         U_record.append(np.zeros([J, I, T])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
 
 
-    unittime=0
+    t_gridpoints=(N/T)
+    tdivider=0.1*t_gridpoints #every 0.1 hour we divide. 
     for ti in tqdm(range(N), disable = tqdm_disable):
         #First step: solve in y direction from n -> n+1/2
         U_half = copy.deepcopy(U)
@@ -205,11 +206,11 @@ def adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, 
                 U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
                 cell_matrix = copy.deepcopy(cell_matrix_new)
         if growth=='Fast':
-
-            #predict if division occurs based on the p_division, the current cell matrix
-            #return new cell matrix and updated concentrations with dilution
-            U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
-            cell_matrix = copy.deepcopy(cell_matrix_new)
+            if (ti%tdivider==0):
+                #predict if division occurs based on the p_division, the current cell matrix
+                #return new cell matrix and updated concentrations with dilution
+                U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
+                cell_matrix = copy.deepcopy(cell_matrix_new)
 
         U = copy.deepcopy(U_new)
 
