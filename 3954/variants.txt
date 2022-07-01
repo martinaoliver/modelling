@@ -55,3 +55,12 @@
         nE = np.full((numbercombinations, 1), 3)
         nF = np.full((numbercombinations, 1), 3)
         alphaH = np.full((numbercombinations, 1), 3000)
+-variant9:
+
+    - kxx: 0.1-250
+    - Vm: 10-1000
+    - Mu: 0.001,50
+    - Basal: 0.01
+    - Cooperativity:2
+    - dA: 2
+    - dB: 0.8
