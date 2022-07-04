@@ -41,6 +41,7 @@ variant=9 #variant1 is variant0 but with varying kce as well.
 #######################
 #########CODE##########
 #######################
+np.random.seed(1)
 
 
 def loguniform(low=-3, high=3, size=None):

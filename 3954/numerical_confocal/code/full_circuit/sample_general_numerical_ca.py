@@ -46,7 +46,7 @@ tqdm_disable = False #disable tqdm
 n_species=6
 boundarycoeff = float(sys.argv[6])
 var=0.001
-seed=1;p_division=0.5
+seed=1;p_division=0.147#0.5
 # open parameter dictionaries
 general_df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/5716gaussian/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,parametersets_n), "rb" ) )
 # general_df= pickle.load( open(modelling_home + '/3954/parameter_space_search/results/output_dataframes/lsa_df_circuit2_variant0_20000parametersets.pkl', "rb" ) )
@@ -71,7 +71,7 @@ filename = 'circuit%r_variant%s_bc%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,varia
 savefig_path = 'test_results'
 try:
     # U_record,U_final = adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=1, p_division=0.3, tqdm_disable=tqdm_disable, growth='Fast')#,p_division=p_division,seed=seed)
-    U_record,U_final = adi_ca_openclosed(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=1, p_division=0.3, tqdm_disable=tqdm_disable, growth='Fast', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
+    U_record,U_final = adi_ca_openclosed(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=seed, p_division=p_division, tqdm_disable=tqdm_disable, growth='Fast', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
     # plot_2D_final_concentration(U_final,L_x,J,filename,savefig_path,n_species=n_species,save_figure=save_figure)
     # mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     plot_redgreenblue_contrast(U_final,L_x,mechanism,shape,filename,parID=parID,scale_factor=x_gridpoints,save_figure=save_figure)

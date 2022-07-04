@@ -59,7 +59,8 @@ variant= 9
 # Specifiy number of parameter sets in parameterset file to be loaded
 df_lenght = 1000000
 n_param_sets = 1000000
-# n_param_sets = 10000
+# df_lenght = 100
+# n_param_sets = 100
 
 
 # Specify date today
@@ -70,6 +71,7 @@ date = date.today().strftime('%m_%d_%Y')
 # batch_size = 20000
 batch_size = 20833
 # batch_size = 2
+print(batch_size)
 
 # Get starting parameter set indices for batches
 
@@ -84,11 +86,13 @@ def lsa_check(start_batch_index,n_param_sets,df,circuit_n=2, variant=9, n_specie
     print('saved')
 # Runs if the module is the main program
 # if __name__ == '__main__':
-
+print('start_time')
 start_time = time.perf_counter()
 start_parameter = int(0)
 # Load dataframe of parameter sets
-df= pickle.load( open('../parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
+print('df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets))
+# df= pickle.load( open('../parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
+df= pickle.load( open(modelling_home + '/3954/parameter_space_search/parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(2,variant,n_param_sets), "rb" ) )
 # df= pickle.load( open("../parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
 batch_indices = list(range(0+start_parameter, len(df) + start_parameter, batch_size))
 # batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))
@@ -99,6 +103,7 @@ pool = multiprocessing.Pool(Number_of_Threads)
 # Define jobs as different batches of parameter sets
 # Run lsa_check function in parallel across different threads
 pool_output = []
+print('start_loop')
 for start_batch_index in batch_indices:
 
     print('main' + str(start_batch_index))

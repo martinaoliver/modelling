@@ -112,7 +112,7 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
                 cell_matrix = copy.deepcopy(cell_matrix_new)
                 cell_matrix_record[:, :, (hour)] = cell_matrix #issue in this line
     # if np.round(hour % 0.25, 2) ==0:  #only consider division at unit time (hour)
-        print(hour ,ti, ti%tdivider)
+        # print(hour ,ti, ti%tdivider)
         if (ti%tdivider==0):
             if growth=='Fast':
                 #predict if division occurs based on the p_division, the current cell matrix
@@ -174,7 +174,7 @@ def show_rgbvideo(timeseries_unstacked):
         plt.pause(0.001)
     plt.show()
 
-# show_rgbvideo(cell_matrix_record)
+show_rgbvideo(cell_matrix_record)
 
 
     # print(np.shape(cell_matrix_record[0][0]))
@@ -184,12 +184,12 @@ for i in range(len(cell_matrix_record[0,0,:])):
     lenght = np.count_nonzero(cell_matrix_record[:,int(J/2),i])
     lenght_list.append(lenght)
 lenght_list = np.array(lenght_list)/x_gridpoints
-plt.scatter(np.linspace(0,N,int(N/1)),lenght_list, c='k',s=1)
+plt.scatter(np.linspace(0,T,T*10),lenght_list, c='k',s=1)
 plt.xlabel('Time (hours)')
 plt.ylabel('Colony diameter (mm)')
-tick_positions = np.arange(0, N, N / 4)
-tick_labels = np.arange(0, N / t_gridpoints,
-                        N / t_gridpoints / 4).round(decimals=2)
-plt.xticks(tick_positions, tick_labels)
+tick_positions = np.arange(0, T, T / 4)
+# tick_labels = np.arange(0, T / t_gridpoints,
+#                         N / t_gridpoints / 4).round(decimals=2)
+# plt.xticks(tick_positions, tick_labels)
 plt.savefig("masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.png"%(seed,p_division,L,J,T,N))
 plt.show()
