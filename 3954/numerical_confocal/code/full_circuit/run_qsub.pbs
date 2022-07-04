@@ -10,8 +10,8 @@ cd $PBS_O_WORKDIR
 
 
 
-# python plot_all_ca.py $start
-python sample_general_numerical_ca.py 694 2 100 24 $tg $cf
+python plot_all_ca.py 
+# python sample_general_numerical_ca.py 694 2 50 24 $tg $cf
 # python sample_general_numerical.py 2D $parID 10 120 8 1 $p_division 5
 # python sample_general_numerical.py 2D $parID 10 120 8 1 $p_division 5
 # python sample_general_numerical.py 2D $parID 10 120 8 1 0.41 $kce

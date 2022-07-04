@@ -138,7 +138,7 @@ def plot_redgreenblue_contrast(final_concentration, mm, mechanism, shape, filena
     green = final_concentration[-1]
     red = final_concentration[-2]
     blue = final_concentration[0]
-    if mask != None:
+    if np.any(mask) != None:
         blue = blue*mask[:,:,-1]
     x_grid = np.linspace(0, mm, len(green))
     normalised_red, redmin, redmax = matrix_rgb_normalisation(red)

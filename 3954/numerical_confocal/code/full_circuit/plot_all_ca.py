@@ -43,28 +43,37 @@ from tqdm import tqdm
 #############################
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
-folder = '5716gaussian'
-# var=0.23
+folder = 'fullcircuit/1M'
+circuit_n=2
+variant=9
+shape='ca'
+mechanism = 'fullcircuit'
+boundarycoeff=1.5
+# L=10; x_gridpoints =15; J = L*x_gridpoints
+# T =120; t_gridpoints = 10; N = T*t_gridpoints
+
+L=2; x_gridpoints =50; J = L*x_gridpoints
+T =24; t_gridpoints = 100; N = T*t_gridpoints
+details = '1M'
+
+seed=1;p_division=0.147
+## var=0.23
 # print(var)
-data_path = modelling_ephemeral + '/3954/numerical_confocal/results/simulation/ca/2D/full_circuit/%s'%folder
+# data_path = modelling_ephemeral + '/3954/numerical_confocal/results/simulation/ca/2D/full_circuit/%s'%folder
+data_path = modelling_home + '/3954/numerical_confocal/results/simulation/ca/%s'%folder
 # parID_list = pickle.load( open(data_path + '/parID_list_L5_J50_T150_N15000.pkl', "rb" ) )
-parID_list = pickle.load( open(data_path + '/parID_list_variant5716gaussian_ca_fullcircuit_L10J150T120N1200.pkl', "rb" ) )
-start = int(sys.argv[1])
+# parID_list = pickle.load( open(data_path + '/parID_list_variant5716gaussian_ca_fullcircuit_L10J150T120N1200.pkl', "rb" ) )
+parID_list = pickle.load( open(data_path + '/parID_list_circuit%r_variant%s_bc%s_%s_%s_L%r_J%r_T%r_N%r.pkl'%(circuit_n,variant,boundarycoeff,shape,mechanism,L,J,T,N), "rb" ) )
+# start = int(sys.argv[1])
+start = 0
 stop = int(len(parID_list)-1)
 # stop = int(sys.argv[2])
 
 parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
 print(len(parID_list))
 parID_list.sort() #sort from lower to higher values
-circuit_n=2
-variant='5716gaussian'
-shape='ca'
-mechanism = 'fullcircuit'
-L=10; x_gridpoints =15; J = L*x_gridpoints
-T =120; t_gridpoints = 10; N = T*t_gridpoints
-# details = 'var%r'%var
-dimension='2D'
-# k=20
+
+
 num=len(parID_list)
 n_col = int(np.sqrt(num))
 # for i in range(0,k):
@@ -72,7 +81,7 @@ n_col = int(np.sqrt(num))
 #     row = np.where(fit==i)[0]
 #     print(row) # row in Z for elements of cluster i
 #     num = row.shape[0]       #  number of elements for each cluster
-n_row = np.floor(num/n_col)+1    # number of rows in the figure of the cluster
+n_row = int(np.floor(num/n_col)+1)    # number of rows in the figure of the cluster
 #     print("cluster "+str(i))
 #     print(str(num)+" elements")
 fig = plt.figure(figsize=(n_col/10+2, n_row/10+2))
@@ -83,12 +92,15 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
     #rgb_timeseries=timeseries_unstacked_list[row[n]] # Read the numpy matrix with images in the rows
     # par_ID = parID_list[row[n]]
     # parID = parID_list[count]
-    filename = 'circuit%r_variant%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,parID,L,J,T,N)
+    filename = 'circuit%r_variant%s_bc%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,parID,L,J,T,N)
     # final_concentration = pickle.load( open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/full_circuit_newCN/2Dfinal_%s.pkl'%filename, 'rb' ) )
     final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
 
     # ax.pcolormesh(grid, grid, final_concentration[2], shading='auto')
-    rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension=dimension,scale_factor=x_gridpoints,save_figure='LargeImage')
+    # rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension=dimension,scale_factor=x_gridpoints,save_figure='LargeImage')
+    mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+    rgb = plot_redgreenblue_contrast(final_concentration,L,mechanism,shape,filename,parID=parID,mask=mask,scale_factor=x_gridpoints,save_figure='LargeImage')
+
     # # rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
     # ax.set_title(parID,size=0.1)
     ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
@@ -98,8 +110,9 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
 
 
 # plt.title('1M numerical search 0-%r'%num)
-filename = 'circuit%r_variant%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,L,J,T,N)
-plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)
+filename = 'circuit%r_variant%s_bc%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,L,J,T,N)
+# plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)
+plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s.png'%(shape,filename,details), dpi=2000)
 
 # plt.savefig('h.png',dpi=2000)
 print('gh')

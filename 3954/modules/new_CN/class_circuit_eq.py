@@ -124,7 +124,9 @@ class circuit2_eq(hill_functions):
     def dAdt_f(self,species_list):
         A,B,C,D,E,F = species_list
         dadt= self.ba+self.Va*self.noncompetitiveinh(D,self.kda)-self.mua*A
+
         if self.stochasticity ==1:
+            print('stochasticity')
             dadt+=dadt*normal(0,0.05,1)
         return dadt
 
