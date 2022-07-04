@@ -112,7 +112,7 @@ def adi_ca(initial_condition,L_x,L_y,J,I,T,N, n_species,tqdm_disable=False, p_di
                 cell_matrix = copy.deepcopy(cell_matrix_new)
                 cell_matrix_record[:, :, (hour)] = cell_matrix #issue in this line
     # if np.round(hour % 0.25, 2) ==0:  #only consider division at unit time (hour)
-        print(hour ,ti, ti%tdivider)
+        # print(hour ,ti, ti%tdivider)
         if (ti%tdivider==0):
             if growth=='Fast':
                 #predict if division occurs based on the p_division, the current cell matrix
