@@ -29,7 +29,9 @@ sys.path.append(modulepath)
 
 
 
-from adi_ca_function_openclosed import *
+# from adi_ca_function_openclosed import *
+# from adi_ca_function_openclosed import *
+from adi_ca_function_openclosed_nodilution import *
 from plotting_numerical import *
 
 import sys
@@ -54,12 +56,13 @@ print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
 circuit_n=2
-variant= 9
-folder = 'fullcircuit/1M_turingI'
+variant= 0#9
+folder = 'fullcircuit/1M_turingI'#'fullcircuit/1M'#'fullcircuit/1M_turingI'
 n_species = 6
 # Specifiy number of parameter sets in parameterset file to be loaded
 # n_param_sets = 1000000
-n_param_sets = 76
+# n_param_sets = 76
+n_param_sets = 1416
 
 
 # Specify date today
@@ -74,7 +77,7 @@ date = date.today().strftime('%m_%d_%Y')
 # Define work to be done per batch of parameter sets
 
 
-def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints,T,L,circuit_n=2, variant = variant,folder=folder, n_species=6,p_division=0.147,seed=1, boundarycoeff=1.5):
+def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints,T,L,circuit_n=2, variant = variant,folder=folder, n_species=6,p_division=0.5,seed=1, boundarycoeff=1.5):
     save_figure = True
     tqdm_disable = True #disable tqdm
 
@@ -82,7 +85,7 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
     for parID in df_index:
         print('parID = ' + str(parID))
         mechanism = 'fullcircuit'
-        shape = 'ca'
+        shape = 'caNodilution'
 
 
         par_dict = df.loc[parID].to_dict()
@@ -101,7 +104,7 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
         filename = 'circuit%r_variant%s_bc%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,parID,L,J,T,N)
 
 
-     # Define 2D numerical parameters
+        # Define 2D numerical parameters
         L_x = L
         L_y = L
         I = J
@@ -110,15 +113,19 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
             # Run 2D simulation
             # U_record,U_final = adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species, D,tqdm_disable=tqdm_disable)#,p_division=p_division,seed=seed)
             # U_record,U_final = adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, tqdm_disable=tqdm_disable)#,p_division=p_division,seed=seed)
-            U_record,U_final = adi_ca_openclosed(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=seed, p_division=p_division, tqdm_disable=tqdm_disable, growth='Fast', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
+            # U_record,U_final = adi_ca_openclosed(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=seed, p_division=p_division, tqdm_disable=tqdm_disable, growth='Slow', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
+            U_record,U_final = adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=seed, p_division=p_division, tqdm_disable=tqdm_disable, growth='Slow', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
 
-# savefig_path = modelling_ephemeral + '/3954/numerical_confocal/results/figures/ca/2D/full_circuit/%s'%(folder)
+            # savefig_path = modelling_ephemeral + '/3954/numerical_confocal/results/figures/ca/2D/full_circuit/%s'%(folder)
             # plot_2D_final_concentration(U_final,L_x,J,filename,savefig_path,n_species=n_species,save_figure=True)
             # plot_redgreen_contrast(U_final,L_x,mechanism,shape,filename,savefig_path,parID=parID,scale_factor=x_gridpoints,save_figure=save_figure)
             # rgb_timeseries = redgreen_contrast_timeseries(records)
             # show_rgbvideo(rgb_timeseries)
-            if save_figure ==True:
-                pickle.dump(U_final, open(modelling_home + '/3954/numerical_confocal/results/simulation/ca/%s/2Dfinal_%s.pkl'%(folder,filename), 'wb'))
+            # print(modelling_home + '/3954/numerical_confocal/results/simulation/ca/%s/2Dfinal_%s.pkl'%(folder,filename))
+
+            # if save_figure ==True:
+            #     print(modelling_home + '/3954/numerical_confocal/results/simulation/ca/%s/2Dfinal_%s.pkl'%(folder,filename))
+            pickle.dump(U_final, open(modelling_home + '/3954/numerical_confocal/results/simulation/ca/%s/2Dfinal_%s.pkl'%(folder,filename), 'wb'))
                 # pickle.dump(U_record,open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/ca/2D/full_circuit/%s/2Dtimeseries_%s.pkl'%(folder,filename), 'wb'))
 
             # else:

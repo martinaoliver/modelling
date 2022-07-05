@@ -29,7 +29,7 @@ sys.path.append(modulepath)
 
 
 from adi_ca_function import *
-from adi_ca_function_openclosed import *
+from adi_ca_function_openclosed_nodilution import *
 from plotting_numerical import *
 import pickle
 #execution parameters

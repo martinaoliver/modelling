@@ -43,20 +43,23 @@ from tqdm import tqdm
 #############################
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
-folder = 'fullcircuit/1M'
+folder = 'fullcircuit/1M_turingI'#'fullcircuit/1M'#'fullcircuit/1M_turingI'
 circuit_n=2
-variant=9
-shape='ca'
+variant=0#9
+shape = 'caNodilution'
 mechanism = 'fullcircuit'
 boundarycoeff=1.5
-# L=10; x_gridpoints =15; J = L*x_gridpoints
-# T =120; t_gridpoints = 10; N = T*t_gridpoints
+L=10; x_gridpoints =15; J = L*x_gridpoints
+T =120; t_gridpoints = 10; N = T*t_gridpoints
 
-L=2; x_gridpoints =50; J = L*x_gridpoints
-T =24; t_gridpoints = 100; N = T*t_gridpoints
-details = '1M'
+# L=2; x_gridpoints =50; J = L*x_gridpoints
+# T =24; t_gridpoints = 100; N = T*t_gridpoints
 
-seed=1;p_division=0.147
+# L=2; x_gridpoints =50; J = L*x_gridpoints
+# T =120; t_gridpoints = 100; N = T*t_gridpoints
+details = '1MturingI'
+
+seed=1;p_division=0.5#0.147
 ## var=0.23
 # print(var)
 # data_path = modelling_ephemeral + '/3954/numerical_confocal/results/simulation/ca/2D/full_circuit/%s'%folder
@@ -84,7 +87,7 @@ n_col = int(np.sqrt(num))
 n_row = int(np.floor(num/n_col)+1)    # number of rows in the figure of the cluster
 #     print("cluster "+str(i))
 #     print(str(num)+" elements")
-fig = plt.figure(figsize=(n_col/10+2, n_row/10+2))
+fig = plt.figure(figsize=(n_col/10+12, n_row/10+12))
 dx = float(L)/float(J-1)
 grid = np.array([j*dx for j in range(J)])
 for count,parID in tqdm(enumerate(parID_list),disable=False):
@@ -97,9 +100,11 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
     final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
 
     # ax.pcolormesh(grid, grid, final_concentration[2], shading='auto')
-    # rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension=dimension,scale_factor=x_gridpoints,save_figure='LargeImage')
-    mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
-    rgb = plot_redgreenblue_contrast(final_concentration,L,mechanism,shape,filename,parID=parID,mask=mask,scale_factor=x_gridpoints,save_figure='LargeImage')
+    rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension='2D',scale_factor=x_gridpoints,save_figure='LargeImage')
+    mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+    # # mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+    # mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.pkl"%(seed,p_division,L,J,24,2400), "rb" ) )
+    # rgb = plot_redgreenblue_contrast(final_concentration,L,mechanism,shape,filename,parID=parID,mask=mask,scale_factor=x_gridpoints,save_figure='LargeImage')
 
     # # rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
     # ax.set_title(parID,size=0.1)
@@ -112,9 +117,10 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
 # plt.title('1M numerical search 0-%r'%num)
 filename = 'circuit%r_variant%s_bc%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,L,J,T,N)
 # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)
-plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s.png'%(shape,filename,details), dpi=2000)
+plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s.png'%(filename,details), dpi=2000)
 
-# plt.savefig('h.png',dpi=2000)
+# plt.savefig('h2.png',dpi=2000)
+plt.savefig('~/Desktop/h2.png',dpi=2000)
 print('gh')
 # plt.clf()
 # plt.close(fig)
