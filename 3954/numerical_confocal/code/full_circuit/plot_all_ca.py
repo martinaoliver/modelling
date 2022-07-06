@@ -120,7 +120,7 @@ filename = 'circuit%r_variant%s_bc%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,b
 plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s.png'%(filename,details), dpi=2000)
 
 # plt.savefig('h2.png',dpi=2000)
-plt.savefig('~/Desktop/h2.png',dpi=2000)
+# plt.savefig('~/Desktop/h2.png',dpi=2000)
 print('gh')
 # plt.clf()
 # plt.close(fig)

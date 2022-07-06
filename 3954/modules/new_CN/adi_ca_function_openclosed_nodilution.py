@@ -161,8 +161,8 @@ def adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,
                             for count,species in enumerate(original_species_list):
                                 # new_species_list[count][index_newcell_y+y_pos-1,index_newcell_x+x_pos-1] += species[y_pos,x_pos]/2
                                 # new_species_list[count][y_pos,x_pos] += species[y_pos,x_pos]/2
-                                new_species_list[count][index_newcell_y+y_pos-1,index_newcell_x+x_pos-1] += species[y_pos,x_pos]/2
-                                new_species_list[count][y_pos,x_pos] += species[y_pos,x_pos]/2
+                                new_species_list[count][index_newcell_y+y_pos-1,index_newcell_x+x_pos-1] += species[y_pos,x_pos]
+                                new_species_list[count][y_pos,x_pos] += species[y_pos,x_pos]
                             cell_matrix_new[index_newcell_y+y_pos-1,index_newcell_x+x_pos-1]=1
 
 
