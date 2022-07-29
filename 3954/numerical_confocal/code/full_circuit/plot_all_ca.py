@@ -35,11 +35,13 @@ from plotting_numerical import *
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import colors
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 import pandas as pd
 import numpy as np
 import matplotlib.animation as animation
 from tqdm import tqdm
-
 #############################
 #Opening list with parID's
 # file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
@@ -88,8 +90,6 @@ n_row = int(np.floor(num/n_col)+1)    # number of rows in the figure of the clus
 #     print("cluster "+str(i))
 #     print(str(num)+" elements")
 fig = plt.figure(figsize=(n_col/10+12, n_row/10+12))
-dx = float(L)/float(J-1)
-grid = np.array([j*dx for j in range(J)])
 for count,parID in tqdm(enumerate(parID_list),disable=False):
     ax=plt.subplot(n_row,n_col, count+1)
     #rgb_timeseries=timeseries_unstacked_list[row[n]] # Read the numpy matrix with images in the rows
@@ -100,7 +100,7 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
     final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
 
     # ax.pcolormesh(grid, grid, final_concentration[2], shading='auto')
-    rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension='2D',scale_factor=x_gridpoints,save_figure='LargeImage')
+    rgb = plot_redgreen_contrast_nonorm(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension='2D',scale_factor=x_gridpoints,save_figure='LargeImage')
     mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     # # mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     # mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.pkl"%(seed,p_division,L,J,24,2400), "rb" ) )
@@ -109,7 +109,8 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
     # # rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
     # ax.set_title(parID,size=0.1)
     ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
-    ax.imshow(rgb.astype('uint8'), origin= 'lower')
+    ax.imshow(rgb.astype('uint8'), origin= 'lower', norm=colors.LogNorm())
+    # im = ax.imshow(rgb.astype('uint8'), origin= 'lower')
     ax.set_ylabel(parID,size= 1,c='y', labelpad=0.35)
 
 
@@ -117,9 +118,10 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
 # plt.title('1M numerical search 0-%r'%num)
 filename = 'circuit%r_variant%s_bc%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,L,J,T,N)
 # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)
-plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s.png'%(filename,details), dpi=2000)
+# plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s.png'%(filename,details), dpi=2000)
+plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s_nonorm.png'%(filename,details), dpi=2000)
 
-# plt.savefig('h2.png',dpi=2000)
+# plt.savefig('h3.png',dpi=100)
 # plt.savefig('~/Desktop/h2.png',dpi=2000)
 print('gh')
 # plt.clf()

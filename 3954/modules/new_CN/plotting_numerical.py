@@ -1,6 +1,7 @@
 #############################
 #IMPORTS#
 #############################
+from re import L
 import sys
 import os
 
@@ -134,44 +135,46 @@ def plot_redgreen_contrast(final_concentration, mm, mechanism, shape, filename, 
 
     return rgb
 
-def plot_redgreenblue_contrast(final_concentration, mm, mechanism, shape, filename, mask=None, path='test_results',parID=0, scale_factor=10, save_figure=False, dimension='2D'):
+
+def plot_redgreen_contrast_nonorm1(final_concentration, mm, mechanism, shape, filename, path, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
+    print('gelo')
     green = final_concentration[-1]
     red = final_concentration[-2]
-    blue = final_concentration[0]
-    if np.any(mask) != None:
-        blue = blue*mask[:,:,-1]
-    x_grid = np.linspace(0, mm, len(green))
-    normalised_red, redmin, redmax = matrix_rgb_normalisation(red)
-    normalised_green, greenmin, greenmax = matrix_rgb_normalisation(green)
-    normalised_blue, bluemin, bluemax = matrix_rgb_normalisation(blue)
-
-    zeros = np.zeros(normalised_green.shape)
-    rgb = np.dstack((normalised_red, normalised_green, normalised_blue))
+    greenmax,greenmin=np.amax(green), np.amin(green[np.nonzero(green)])
+    redmax,redmin=np.amax(red),  np.amin(red[np.nonzero(red)])
+    zeros = np.zeros(green.shape)
+    rgb = np.dstack((red, green, zeros))
     rgb = np.rot90(rgb)
+    plt.imshow(green)
+    plt.colorbar()
+    plt.show()
+    print(np.amax(green), np.amin(green))
+    print('hj')
+    plt.imshow(red)
+    plt.colorbar()
+    plt.show()
+    print(np.amax(red), np.amin(red))
+
+    print(rgb)
     if save_figure != 'LargeImage':
-        plt.imshow(rgb.astype('uint8'), origin='lower')
-        tick_positions = np.arange(0, len(normalised_green), len(normalised_green) / 4)
-        tick_labels = np.arange(0, len(normalised_green) / scale_factor,
-                                len(normalised_green) / scale_factor / 4).round(decimals=2)
-        plt.xticks(tick_positions, tick_labels)
-        plt.yticks(tick_positions, tick_labels)
-        plt.ylabel('y axis (mm)', size=16)
-        plt.xlabel('x axis (mm)', size=16)
-        plt.yticks(size=15)
-        plt.xticks(size=15)
-        plt.title('parID=' + str(parID), size=14)
-        np.set_printoptions(precision=2)
-        plt.text(1,1,'mCherry = [%r-%r]'%(np.around(redmin,2),np.around(redmax,2)),c='r', size='xx-small')
-        plt.text(1,5,'GPF = [%r-%r]'%(np.around(greenmin,2),np.around(greenmax,2)),c='g', size='xx-small')
-        plt.text(1,10,'BFP = [%r-%r]'%(np.around(bluemin,2),np.around(bluemax,2)),c='b', size='xx-small')
-        plt.tight_layout()
-
-        if save_figure == True:
-            plt.savefig(path + '/%s_%s_rgb.jpeg' % (dimension, filename),dpi=2000)
-            plt.close()
-        else:
+            plt.imshow(rgb.astype('uint8'))
+            tick_positions = np.arange(0, len(green), len(green) / 4)
+            tick_labels = np.arange(0, len(green) / scale_factor,
+                                    len(green) / scale_factor / 4).round(decimals=2)
+            plt.xticks(tick_positions, tick_labels)
+            plt.yticks(tick_positions, tick_labels)
+            plt.ylabel('y axis (mm)', size=16)
+            plt.xlabel('x axis (mm)', size=16)
+            plt.yticks(size=15)
+            plt.xticks(size=15)
+            plt.title('parID=' + str(parID), size=14)
+            np.set_printoptions(precision=2)
+            plt.text(1,1,'mCherry = [%r-%r]'%(np.around(redmin,2),np.around(redmax,2)),c='r')
+            plt.text(1,5,'GPF = [%r-%r]'%(np.around(greenmin,2),np.around(greenmax,2)),c='g')
+            plt.tight_layout()
             plt.show()
-
+            plt.plot(rgb[int(150/2)])
+            plt.show()
 
     return rgb
 

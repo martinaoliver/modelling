@@ -20,6 +20,7 @@ if root == '/Volumes/mo2016' or root=='/rds/general/user/mo2016': #'/rds/general
         modelling_local = modelling_home
 
 if root == '/Users/mo2016' or  root == '/Volumes/mo2016':
+    print('yyyyy')
     import matplotlib as mpl
     mpl.use('tkagg')
 
@@ -28,37 +29,60 @@ modulepath = modelling_local + '/3954/modules/new_CN'
 sys.path.append(modulepath)
 
 
-import numpy as np
+
 from plotting_numerical import *
+
 import pickle
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import colors
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-#system parameters
+import pandas as pd
+import numpy as np
+import matplotlib.animation as animation
+from tqdm import tqdm
+# %matplotlib inline
 
-mechanism = 'fullcircuit'
-shape = 'ca'
-# parID = int(sys.argv[1])
-parID = int(1)
+#############################
+#Opening list with parID's
+# file = open(modelling_ephemeral + '/3954/numerical_confocal/results/simulation/1M_colony_ca/2D/parID_list_8x10T120.txt')
+folder = 'fullcircuit/1M_turingI'#'fullcircuit/1M'#'fullcircuit/1M_turingI'
 circuit_n=2
-variant='5716gaussian'
-folder='5716gaussian'
-save_figure = False
-n_species=6
-#solver parameters
-# L_x=int(sys.argv[2]); x_gridpoints = int(sys.argv[3]); J = L_x*x_gridpoints;  L_y=L_x; I=J
-# T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) ; N = T*t_gridpoints
+variant=0#9
+shape = 'caNodilution'
+mechanism = 'fullcircuit'
+boundarycoeff=1.5
+L=10; x_gridpoints =15; J = L*x_gridpoints
+T =120; t_gridpoints = 10; N = T*t_gridpoints
 
-L_x=int(10); x_gridpoints = int(15); J = L_x*x_gridpoints;  L_y=L_x; I=J
-T =int(120); t_gridpoints = int(10) ; N = T*t_gridpoints
+# L=2; x_gridpoints =50; J = L*x_gridpoints
+# T =24; t_gridpoints = 100; N = T*t_gridpoints
 
+# L=2; x_gridpoints =50; J = L*x_gridpoints
+# T =120; t_gridpoints = 100; N = T*t_gridpoints
+details = '1MturingI'
 
-#load simulation file
-filename = 'circuit%r_variant%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant, shape,mechanism,parID,L_x,J,T,N)#,p_division,kce)
-# savefig_path = modelling_ephemeral + '/3954/numerical_confocal/results/figures/ca/%s'%folder
-U_record = pickle.load( open( modelling_ephemeral + '/3954/numerical_confocal/results/simulation/%s/2D/full_circuit/%s/2Dtimeseries_%s.pkl'%(shape,variant,filename), "rb" ) )
-U_final = pickle.load( open( modelling_ephemeral + '/3954/numerical_confocal/results/simulation/%s/2D/full_circuit/%s/2Dfinal_%s.pkl'%(shape,variant,filename), "rb" ) )
-print('g')
-plot_redgreen_contrast(U_final,L_x,mechanism,shape,filename,'',parID=parID,scale_factor=x_gridpoints,save_figure=save_figure)
+seed=1;p_division=0.5#0.147
+## var=0.23
+# data_path = modelling_ephemeral + '/3954/numerical_confocal/results/simulation/ca/2D/full_circuit/%s'%folder
+data_path = modelling_home + '/3954/numerical_confocal/results/simulation/ca/%s'%folder
+parID=198492
+parID=383779
 
+filename = 'circuit%r_variant%s_bc%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,parID,L,J,T,N)
+final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
+# plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,'',parID=parID,scale_factor=x_gridpoints,save_figure=False)
 
+rgb = plot_redgreen_contrast_nonorm1(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension='2D',scale_factor=x_gridpoints,save_figure=False)
+# plt.imshow(rgb.astype('uint8', casting='safe'))
+plt.imshow(rgb.astype('uint8'))
+plt.show()
 # rgb_timeseries = redgreen_contrast_timeseries(U_record)
 # show_rgbvideo(rgb_timeseries,parID)
+# plt.plot(rgb[int(150/2)])
+# plt.show()
+# # plt.imshow(final_concentration[-2][150/2])
+# # plt.show()
+# plt.plot(rgb[int(150/2)])
+# plt.show()
