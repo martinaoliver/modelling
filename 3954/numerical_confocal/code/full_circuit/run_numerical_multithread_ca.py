@@ -77,7 +77,7 @@ date = date.today().strftime('%m_%d_%Y')
 # Define work to be done per batch of parameter sets
 
 
-def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints,T,L,circuit_n=2, variant = variant,folder=folder, n_species=6,p_division=0.5,seed=1, boundarycoeff=1.5):
+def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints,T,L,circuit_n=2, variant = variant,folder=folder, n_species=6,p_division=0.41, seed=1, boundarycoeff=1.5):
     save_figure = True
     tqdm_disable = True #disable tqdm
 
@@ -95,6 +95,7 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
         D = np.zeros(n_species)
         D[0]=d_A
         D[1]=d_B
+        par_dict['mulva'] = par_dict['mulva'] + np.log(2)*p_division
 
         J = L *x_gridpoints  # number of equally spaced gridpoints in space domain (larger J means more spatial precision(tends towards continuum solution) )
 
