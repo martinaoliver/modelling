@@ -100,7 +100,7 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
     final_concentration = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%filename, 'rb' ) )
 
     # ax.pcolormesh(grid, grid, final_concentration[2], shading='auto')
-    rgb = plot_redgreen_contrast_nonorm(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension='2D',scale_factor=x_gridpoints,save_figure='LargeImage')
+    rgb = plot_redgreen_contrast(final_concentration,L,mechanism,shape,filename,modelling_ephemeral,parID=parID,dimension='2D',scale_factor=x_gridpoints,save_figure='LargeImage')
     mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     # # mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     # mask=pickle.load( open( modelling_home + "/3954/numerical_confocal/code/cellular_automata_templates/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s_fast.pkl"%(seed,p_division,L,J,24,2400), "rb" ) )
@@ -119,10 +119,10 @@ for count,parID in tqdm(enumerate(parID_list),disable=False):
 filename = 'circuit%r_variant%s_bc%s_%s_%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,L,J,T,N)
 # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)
 # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s.png'%(filename,details), dpi=2000)
-plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s_nonorm.png'%(filename,details), dpi=2000)
+plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s.png'%(filename,details), dpi=2000)
 
 # plt.savefig('h3.png',dpi=100)
 # plt.savefig('~/Desktop/h2.png',dpi=2000)
-print('gh')
+print('ghi')
 # plt.clf()
 # plt.close(fig)
