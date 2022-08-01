@@ -20,17 +20,16 @@ if root == '/Volumes/mo2016' or root=='/rds/general/user/mo2016': #'/rds/general
         modelling_local = modelling_home
 
 if root == '/Users/mo2016' or  root == '/Volumes/mo2016':
-    print('yyyyy')
     import matplotlib as mpl
     mpl.use('tkagg')
 
-modulepath = modelling_local + '/3954/modules/new_CN'
+modulepath = modelling_local + '\lib'
 
 sys.path.append(modulepath)
 
 
 
-from plotting_numerical import *
+from numerical.plotting_numerical import *
 
 import pickle
 import numpy as np

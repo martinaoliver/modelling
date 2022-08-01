@@ -23,13 +23,13 @@ if root == '/Users/mo2016' or  root == '/Volumes/mo2016':
     import matplotlib as mpl
     mpl.use('tkagg')
 
-modulepath = modelling_local + '/3954/modules/new_CN'
+modulepath = modelling_local + '/lib'
 
 sys.path.append(modulepath)
 
 
-from adi_function import *
-from plotting_numerical import *
+# from numerical.adi_function import *
+from numerical.plotting_numerical import *
 import pickle
 
 #system parameters

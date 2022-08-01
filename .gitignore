@@ -12,8 +12,7 @@
 **/**.pdf
 **/**hdf5
 **/**gif
-**/**gitignore
 .DS_Store
-
+**/**pycache**
 
 
