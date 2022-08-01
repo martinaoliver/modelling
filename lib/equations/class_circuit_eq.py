@@ -35,7 +35,7 @@ class hill_functions():
     #     inh = 1 / (1 + (U / km) ** (self.n))
     #     return inh
 
-class circuit1_eq(hill_functions):
+class circuit1(hill_functions):
 
         def __init__(self,par_dict):
             for key,value in par_dict.items():
@@ -113,7 +113,7 @@ class circuit1_eq(hill_functions):
             return np.array([JA, JB, JC, JD, JE, JF])
 
 
-class circuit2_eq(hill_functions):
+class circuit2(hill_functions):
 
     def __init__(self,par_dict,stochasticity=0):
         for key,value in par_dict.items():
@@ -215,7 +215,7 @@ class circuit2_eq(hill_functions):
         return np.array([JA, JB, JC, JD, JE, JF])
 
 #nodeC dele (C and E species removed)
-class circuit3_eq(hill_functions):
+class circuit3(hill_functions):
 
     def __init__(self,par_dict):
         for key,value in par_dict.items():
@@ -278,7 +278,7 @@ class circuit3_eq(hill_functions):
         return np.array([JA,JB,JD,JF,JM1,JM2])
 
 
-class circuit4_eq(hill_functions):
+class circuit4(hill_functions):
 
     def __init__(self,par_dict):
         for key,value in par_dict.items():
@@ -330,7 +330,7 @@ class circuit4_eq(hill_functions):
         return np.array([JA,JB,JD,JF])
 
 
-class circuit5_eq(hill_functions):
+class circuit5(hill_functions):
 
     def __init__(self,par_dict):
         for key,value in par_dict.items():
@@ -395,7 +395,7 @@ class circuit5_eq(hill_functions):
         return np.array([JA, JB, JD, JF])
 
 #PORD MODEL ALEXANDER BSC
-class circuit6_eq(hill_functions):
+class circuit6(hill_functions):
 # df = {'k1':0.05, 'k2': 0.01, 'k3':2, 'n1':3, 'n2':3, 'n3':1, 'beta':2.8,'Va': alpha, 'Vb':alpha, 'mua':1, 'mub':1, 'd_A':5e-05, 'd_B':0.0025}
 
     def __init__(self,par_dict):
@@ -437,7 +437,7 @@ class circuit6_eq(hill_functions):
         return np.array([JA,JB])
 
 #PHILIP MAINI STOS SPATIOTEMPORAL OSCILLATING SOLUTION
-class circuit7_eq(hill_functions):
+class circuit7(hill_functions):
     # df = {'alpha':0.95, 'beta': -0.91, 'D':0.45, 'r3':0,  'r2':0}
 
     def __init__(self,par_dict):
@@ -482,7 +482,7 @@ class circuit7_eq(hill_functions):
         return np.array([JA, JB])
 
 #circuit2 (3954): nodeA dele
-class circuit8_eq(hill_functions):
+class circuit8(hill_functions):
 
     def __init__(self,par_dict,stochasticity=1):
         for key,value in par_dict.items():
@@ -526,7 +526,7 @@ class circuit8_eq(hill_functions):
         return np.array([JB, JE, JF])
 
 #circuit2 (3954): nodeB dele (top cassete: cinI dele)
-class circuit9_eq(hill_functions):
+class circuit9(hill_functions):
 
     def __init__(self,par_dict):
         for key,value in par_dict.items():
@@ -579,7 +579,7 @@ class circuit9_eq(hill_functions):
 
 
 #circuit2 (3954): nodeA dele + receptor binding and diffuser
-class circuit10_eq(hill_functions):#correct **
+class circuit10(hill_functions):#correct **
 
     def __init__(self,par_dict):
         for key,value in par_dict.items():
@@ -617,7 +617,7 @@ class circuit10_eq(hill_functions):#correct **
 
 
 #circuit2 (3954): nodeA dele + receptor binding and diffuser
-class circuit10_eq(hill_functions):
+class circuit10(hill_functions):
 
     def __init__(self,par_dict):
         for key,value in par_dict.items():
@@ -655,7 +655,7 @@ class circuit10_eq(hill_functions):
 
 
 #circuit2 (3954): nodeA dele + receptor binding and diffuser
-class circuit11_eq(hill_functions):
+class circuit11(hill_functions):
 
     def __init__(self,par_dict):
         for key,value in par_dict.items():

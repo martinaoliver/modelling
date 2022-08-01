@@ -1,7 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
 from equations.class_circuit_eq import *
-from equations.twonode_eq import *
 import itertools
 
 #This class can return the jacobian which is stored in circuit*_eq class.
@@ -11,12 +10,10 @@ class jacobian():
             setattr(self, key, value)
         setattr(self, 'circuit_n', circuit_n)
 
-        # self.parent_list = [circuit1_eq, circuit2_eq, circuit3_eq, circuit4_eq, circuit5_eq, circuit6_eq, circuit7_eq]
-        self.parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
+        self.parent_list = [circuit1_eq, circuit2_eq, circuit3_eq, circuit4_eq, circuit5_eq, circuit6_eq, circuit7_eq]
 
     def getJacobian(self,x,wvn):  # circuit1_eq
-        # return self.parent_list[self.circuit_n-1].getJacobian(self,x,wvn)
-        return self.parent_list[self.circuit_n].getJacobian(self,x,wvn)
+        return self.parent_list[self.circuit_n-1].getJacobian(self,x,wvn)
 
 
 def calculate_dispersion(par_dict,circuit_n, x,top_dispersion):

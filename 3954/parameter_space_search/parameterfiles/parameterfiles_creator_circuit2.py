@@ -35,7 +35,7 @@ start_time = time.time()
 # date = str(date.today())
 # path = os.path.expanduser(
 #     '~/Documents/modelling/6eq/parameter_space_search')  # path of project folder: folder where code, results and parameterfiles are found.
-circuit_n=2
+circuit_n='circuit2'
 variant=9 #variant1 is variant0 but with varying kce as well.
 
 #######################
@@ -109,7 +109,7 @@ def parameterfile_creator_function(numbercombinations):
     cooperativity = np.full((numbercombinations, 1), 2)
     d_A = np.full((numbercombinations, 1), 2)
     d_B = np.full((numbercombinations, 1), 0.8)
-    parameterindex = np.arange(1, numbercombinations + 1, dtype=np.int).reshape(numbercombinations, 1)
+    parameterindex = np.arange(1, numbercombinations + 1, dtype=int).reshape(numbercombinations, 1)
     points = np.concatenate((parameterindex, bx, bx, bx, bx, bx, bx, points, d_A, d_B, cooperativity), 1)
 
     parameternames = (

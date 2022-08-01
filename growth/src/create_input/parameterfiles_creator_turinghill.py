@@ -122,6 +122,6 @@ n_param_sets = int(sys.argv[1]) # this number needs to be a multiple of 64
 for n in range(1):
     # df = parameterfile_creator_function(batch_size)
     df = parameterfile_creator_function(n_param_sets)
-    pickle.dump(df, open(modellingpath + '/growth/input/parameterfiles/df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), 'wb'))
+    pickle.dump(df, open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), 'wb'))
     print ('Parameterfile a %r created' %n)
     print(df)

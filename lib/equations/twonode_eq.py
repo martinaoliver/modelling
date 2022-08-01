@@ -60,9 +60,9 @@ class turinghill(hill_functions):
         return dadt
 
 
-    def dBdt_f(self,species_list, ):
+    def dBdt_f(self,species_list):
         A,B= species_list
-        dbdt= self.bb+self.Vb*self.noncompetitive_interaction(A,self.kab,1)*self.noncompetitive_interaction(B,self.kbb,0)-self.mua*B
+        dbdt= self.bb+self.Vb*self.noncompetitive_interaction(A,self.kab,1)*self.noncompetitive_interaction(B,self.kbb,0)-self.mub*B
         return dbdt
 
     function_list = [dAdt_f,dBdt_f]
@@ -70,17 +70,17 @@ class turinghill(hill_functions):
 
     def diffusing_dAdt_f(self,species_list,wvn):
         A,B= species_list
-        dadt= self.ba+self.Va*self.noncompetitive_interaction(A,self.kaa, 1)*self.noncompetitive_interaction(B,self.kba, -1)-self.mua*A - A*self.d_A*wvn**2
-        return dadt
+        return self.dAdt_f(species_list) - A*self.d_A*wvn**2
 
 
     def diffusing_dBdt_f(self,species_list,wvn):
         A,B= species_list
-        dbdt= self.bb+self.Vb*self.noncompetitive_interaction(A,self.kab,1)*self.noncompetitive_interaction(B,self.kbb,0)-self.mub*B - B*self.d_B*wvn**2
-        return dbdt
+        return self.dBdt_f(species_list) - B*self.d_B*wvn**2
+
 
 
     def getJacobian(self,x,wvn):
+        A,B=x
         JA = [-2*A**3*self.Va/(self.kaa**4*(A**2/self.kaa**2 + 1)**2*(B**2/self.kba**2 + 1)) + 2*A*self.Va/(self.kaa**2*(A**2/self.kaa**2 + 1)*(B**2/self.kba**2 + 1)) - self.d_A*wvn**2 - self.mua, -2*A**2*B*self.Va/(self.kaa**2*self.kba**2*(A**2/self.kaa**2 + 1)*(B**2/self.kba**2 + 1)**2)]
         JB = [-2*A**3*self.Vb/(self.kab**4*(A**2/self.kab**2 + 1)**2) + 2*A*self.Vb/(self.kab**2*(A**2/self.kab**2 + 1)), -self.d_B*wvn**2 - self.mub]
         return np.array([JA, JB])
@@ -119,10 +119,9 @@ class twonode(hill_functions):
     function_list = [dAdt_f,dBdt_f]
 
     #####this jacobian below is for turing circuit.... think how to get jacobian dependent on interaction matrix.
-    def getJacobian(self,x,wvn):
-        JA = [-2*A**3*self.Va/(self.kaa**4*(A**2/self.kaa**2 + 1)**2*(B**2/self.kba**2 + 1)) + 2*A*self.Va/(self.kaa**2*(A**2/self.kaa**2 + 1)*(B**2/self.kba**2 + 1)) - self.d_A*wvn**2 - self.mua, -2*A**2*B*self.Va/(self.kaa**2*self.kba**2*(A**2/self.kaa**2 + 1)*(B**2/self.kba**2 + 1)**2)]
-        JB = [-2*A**3*self.Vb/(self.kab**4*(A**2/self.kab**2 + 1)**2) + 2*A*self.Vb/(self.kab**2*(A**2/self.kab**2 + 1)), -self.d_B*wvn**2 - self.mub]
-        return np.array([JA, JB])
+    # def getJacobian(self,x,wvn):
+    #     A,B=x
+    #     return np.array([JA, JB])
 
 class schnakenberg():
 
@@ -166,15 +165,7 @@ class schnakenberg():
 
 
     def getJacobian(self,x,wvn):
+        A,B=x
         JA = [2*A*B*self.c3 - self.c2 - self.d_A*wvn**2, A**2*self.c3]
         JB = [-2*A*B*self.c3, -A**2*self.c3 - self.d_B*wvn**2]
         return np.array([JA, JB])
-# #Equations defining the Schnakenberg system.
-# #c is a vector including the kinetic parameters.
-
-# def schnakenberg(u,c=[0.1,1,0.9,1]):
-#     c1,cm1,c2,c3 = c
-#     f_u0 = c1 - cm1*u[0] + c3*(u[0]**2)*u[1]
-#     f_u1 = c2 - c3*(u[0]**2)*u[1]
-#     return f_u0,f_u1
-    

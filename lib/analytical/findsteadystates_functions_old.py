@@ -54,11 +54,12 @@ class newtonraphson_equations(hill_functions):
         setattr(self, 'circuit_n', circuit_n)
         setattr(self, 'stochasticity', 1)
 
-        self.parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
+        self.parent_list = [circuit1_eq, circuit2_eq, circuit3_eq, circuit4_eq, circuit5_eq, circuit6_eq, circuit7_eq]
+
+
     def diff_equations(self, x):
         n=0
-        # circuit = self.parent_list[self.circuit_n-1]
-        circuit = self.parent_list[self.circuit_n]
+        circuit = self.parent_list[self.circuit_n-1]
         function_list = circuit.function_list
         f = np.zeros((len(function_list),))
 
@@ -69,9 +70,7 @@ class newtonraphson_equations(hill_functions):
         return f
 
     def getJacobian(self,x):
-        # return self.parent_list[self.circuit_n-1].getJacobian(self,x,0)
-        
-        return self.parent_list[self.circuit_n].getJacobian(self,x,0)
+        return self.parent_list[self.circuit_n-1].getJacobian(self,x,0)
 
 def newtonraphson_run(par_dict,initial_conditions, circuit_n):
     # - The equations of the system are defined through this command which calls a class containing system equations.

@@ -9,8 +9,9 @@ Created on Wed Apr  8 12:33:13 2020
 # linear stability analysis on a desired parameter set. The parameter set can be inputed either as a
 # dictionary (single parameter set) or as a dataframe (multiple parameter sets).
 
-from findsteadystates_functions import findsteadystates
-from dispersionrelation_functions import dispersionrelation
+
+from analytical.findsteadystates_functions import findsteadystates
+from analytical.dispersionrelation_functions import dispersionrelation
 import pandas as pd
 import numpy as np
 
@@ -34,16 +35,16 @@ def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parI
                 # maxeig, pattern_class, eigenvalues ,oscillations, eigenvalsteadystate= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n)
                 # par_dict['ss_n'],par_dict['ss_list'],par_dict['class'],par_dict['maxeig'],par_dict['oscillations'],par_dict['k0_eig'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,pattern_class,maxeig,oscillations,eigenvalsteadystate,[parID,ss_n]
                 par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,ss_class,system_class,maxeig,[parID,ss_n]
-                output_df = output_df.append(par_dict, ignore_index=True)
+                output_df = pd.concat([output_df,pd.DataFrame([par_dict], columns=par_dict.keys())], ignore_index=True)
         else:
             par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['new_index'] = 0, np.nan, np.nan,'no steady state', np.nan,[parID,0]
-            output_df = output_df.append(par_dict, ignore_index=True)
+            output_df = pd.concat([output_df,pd.DataFrame([par_dict], columns=par_dict.keys())], ignore_index=True)
 
     output_df = output_df.set_index('new_index')
     return output_df
 #Turing analysis carried out on a single parameter combination. The input is a dictionary with the corresponding parameters.
 def detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5000,calculate_unstable=False):
-
+    print(par_dict)
     steadystatelist, number_steadystates = findsteadystates(par_dict, circuit_n,n_species,n_initial_conditions=100) #input a dictionary with the parameters and returns (1) a list with the steady states and (2) the number of steady states.
 
     maxeig_list = []
