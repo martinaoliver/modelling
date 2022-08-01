@@ -10,12 +10,12 @@ cd $PBS_O_WORKDIR
 
 
 
-# python plot_all_ca.py 
+python plot_all_ca.py 
 
 # python sample_general_numerical_ca.py 694 2 50 24 $tg $cf
 # python sample_general_numerical_ca.py 504 10 15 120 $tg 1.5
 # python sample_general_numerical.py 2D $parID 10 120 8 1 0.41 $kce
 # python sample_general_numerical.py 2D $parID 10 120 8 1 0.4
 # python sample_general_numerical.py 2D $parID 2 2 2
-python sample_general_numerical_ca.py 504 10 15 120 $tg 1.5
+# python sample_general_numerical_ca.py 504 10 15 120 $tg 1.5
 
