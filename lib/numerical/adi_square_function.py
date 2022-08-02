@@ -10,13 +10,13 @@ from tqdm import tqdm
 import copy
 from scipy.sparse import linalg
 from scipy.linalg import solve_banded
-from class_circuit_eq import *
+from equations.class_circuit_eq import *
 from scipy.ndimage import laplace
 
 def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
     #for dt/dx^2 <1 (stability criterion): t_gridpoints approx < xgridpoints^2
-    parent_list = [circuit1_eq, circuit2_eq,circuit3_eq,circuit4_eq,circuit5_eq,circuit6_eq,circuit7_eq,circuit8_eq,circuit9_eq, circuit10_eq, circuit11_eq]
-    f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
+    parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
+    f = parent_list[circuit_n](par_dict, stochasticity=stochasticity)
 
     #spatial variables
     dx = float(L_x)/float(J-1); dy = float(L_y)/float(I-1)

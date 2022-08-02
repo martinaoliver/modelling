@@ -68,6 +68,11 @@ class turinghill(hill_functions):
     function_list = [dAdt_f,dBdt_f]
 
 
+    def dudt(self,U):
+        dudt = [self.dAdt_f(U),self.dBdt_f(U)]
+        return dudt
+
+        
     def diffusing_dAdt_f(self,species_list,wvn):
         A,B= species_list
         return self.dAdt_f(species_list) - A*self.d_A*wvn**2
@@ -118,6 +123,9 @@ class twonode(hill_functions):
 
     function_list = [dAdt_f,dBdt_f]
 
+    def dudt(self,U):
+        dudt = [self.dAdt_f(U),self.dBdt_f(U)]
+        return dudt
     #####this jacobian below is for turing circuit.... think how to get jacobian dependent on interaction matrix.
     # def getJacobian(self,x,wvn):
     #     A,B=x
@@ -150,6 +158,9 @@ class schnakenberg():
 
     function_list = [dAdt_f,dBdt_f]
 
+    def dudt(self,U):
+        dudt = [self.dAdt_f(U),self.dBdt_f(U)]
+        return dudt
 
     def diffusing_dAdt_f(self,species_list,wvn):
         A,B= species_list
