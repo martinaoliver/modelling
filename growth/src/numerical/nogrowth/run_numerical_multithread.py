@@ -59,7 +59,7 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
     df_index = np.unique(df.index.get_level_values(0))
     for parID in df_index:
         print('parID = ' + str(parID))
-        mechanism = 'no_growth'
+        mechanism = 'nogrowth'
 
 
         par_dict = df.loc[parID].to_dict()
