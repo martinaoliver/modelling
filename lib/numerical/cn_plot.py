@@ -29,13 +29,12 @@ def plot1D(U,morphogen='both', savefig=False,filename='1'):
 
     plt.ticklabel_format(useOffset=False)
     plt.xlabel('Space')
-    plt.ylabel('Time')
+    # plt.ylabel('Time')
     plt.legend()
     if savefig==True:
         plt.savefig('%s_final.png'%filename)
 
     plt.show()
-    return fig
 
 
 def surfpattern(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):

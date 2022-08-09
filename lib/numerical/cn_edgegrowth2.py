@@ -20,18 +20,17 @@ sys.path.append(modellingpath + '/lib')
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
-def cn_edgegrowth(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2):
+def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2):
     #spatial variables
-    dx = float(L)/float(J-1)
+    dx = float(L)/float(J)
+    print(dx)
     x_grid = np.array([j*dx for j in range(J)])
     x_gridpoints = J/L
     #temporal variables
-    dt = float(T)/float(N-1)
-    t_grid = np.array([n*dt for n in range(N)])
-    
-    dt = float(T)/float(N-1)
+    dt = float(T)/float(N)
     t_grid = np.array([n*dt for n in range(N)])
     t_gridpoints =  N/T 
+    # print(dx,dt,x_gridpoints,t_gridpoints)
 
     parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
     f = parent_list[circuit_n](par_dict, stochasticity=0)
@@ -44,10 +43,10 @@ def cn_edgegrowth(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',ra
 
     a,b=[0.1,1.1]
     steadystate = [a+b, b/(a+b)**2] #klika65 or madz
-
+    initialJ=1
     for index in range(n_species):
-        U0.append(steadystate[index]*(1+np.random.normal(loc=0,scale=0.001,size=J)))
-
+        U0.append(np.full((initialJ), steadystate[index]*(1+np.random.normal(loc=0,scale=0.001,size=initialJ))))
+        # U0.append(steadystate[index]*(1+np.random.normal(loc=0,scale=0.001,size=initialJ)))
     #Look back at mathematical derivation above for understanding of the A and B matrices.
 
     def alpha(D,dt,dx,n_species):
@@ -79,57 +78,71 @@ def cn_edgegrowth(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',ra
     for species_index in range(n_species):
         U_record.append(np.zeros([J, T])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
 
-    def exponential_growth(t, s=0.0001, initialL=1):
+    def exponential_growth(t, s=0.0001, initialL=dx):
         return (initialL*np.exp(s*t))
 
 
-    def linear_growth(t,s=0.00005, initialL=1):
+    def linear_growth(t,s=0.00005, initialL=dx):
         return initialL + t*s
+
 
     #These two lists contain the A and B matrices for every chemical specie. They are adapted to the size of the field, 
     #meaning that if the field is J=3, the matrix will be 3x3.
-    A_list = [A(alphan,J) for alphan in alpha(D,dt,dx,n_species)]  
-    B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
-    A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
+    # A_list = [A(alphan,J) for alphan in alpha(D,dt,dx,n_species)]  
+    # B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
+    # A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
 
 
     #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
     for ti in tqdm(range(N), disable = False): 
+
+        hour = ti / (N / T)
+        if growth == 'exponential':
+            newL = exponential_growth(hour,s=rate)
+
+        if growth == 'linear':
+            newL = linear_growth(hour,s=rate)
+
+        currentJ = int(newL*x_gridpoints)
+        
+        A_list = [A(alphan,currentJ) for alphan in alpha(D,dt,dx,n_species)]  
+        B_list = [B(alphan,currentJ) for alphan in alpha(D,dt,dx,n_species)]   
+        A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
+        
+        if currentJ != len(U[0]):
+            len_full_pad = currentJ - len(U[0])
+            for n in range(n_species):
+                U[n] = np.concatenate((U[n], [U[n][-1]]*len_full_pad))
+
         U_new = copy.deepcopy(U)
         f0 = f.dudt(U_new)
         
         #iterate over every chemical specie when calculating concentrations. 
         for n in range(n_species):
             U_new[n] = A_inv[n].dot(B_list[n].dot(U[n]) +  f0[n]*(dt/2)) # Dot product with inverse rather than solve system of equations
+            a=[0,0,0]
+            if any(x<0 for x in U_new[n]):
+                print('negative')
 
-        
         #storing results
-        hour = ti / (N / T)
-        if growth == 'exponential':
-            newL = int(exponential_growth(hour,s=rate))
 
-        if growth == 'linear':
-            newL = int(linear_growth(hour,s=rate))
-
-    
-        newJ = int(newL*x_gridpoints)
-        len_pad = int((J - newJ) / 2)
-        print(newJ, len_pad)
-        shape = np.concatenate([np.zeros(len_pad),np.ones(newJ),np.zeros(len_pad)])
-        if len(shape)!=len(U_new[0]):
-            shape = np.concatenate([np.zeros(len_pad), np.ones(newJ), np.zeros(len_pad+1)])
-        
+        U_new_padded=[0,0]
+        len_half_pad = int((J - currentJ) / 2)
         for n in range(n_species):
-            U_new[n] = np.multiply(U_new[n], shape)
+            U_new_padded[n] = np.concatenate([np.zeros(len_half_pad),U_new[n],np.zeros(len_half_pad)])
+            if J != len(U_new_padded[n]):
+                U_new_padded[n] = np.concatenate([np.zeros(len_half_pad), U_new[n], np.zeros(len_half_pad+1)])
+        
 
         if hour % 1 == 0 :  #only grow and record at unit time (hour)
             for n in range(n_species):
-                U_record[n][:,int(hour)] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
+                U_record[n][:,int(hour)] = U_new_padded[n] #Solution added into array which records the solution over time (JxT dimensional array)
 
     
         U = copy.deepcopy(U_new)
     
     return U,U_record, U0, x_grid, reduced_t_grid
+
 
 
 
