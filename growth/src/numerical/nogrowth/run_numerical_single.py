@@ -17,7 +17,7 @@ import pickle
 #system parameters
 circuit_n = 'turinghill'
 variant=0 
-n_param_sets = 100000
+n_param_sets = 10
 
 # par_dict = {'c1':0.1, 'c2':1,'c3':0.9,'c4':1, 'd_A': 1, 'd_B':10}
 df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
