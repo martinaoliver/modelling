@@ -55,8 +55,6 @@ batch_size = 2083
 # batch_size = 2
 print(batch_size)
 
-# Get starting parameter set indices for batches
-
 
 # Define work to be done per batch of parameter sets
 def lsa_check(start_batch_index,n_param_sets,df,circuit_n=circuit_n, variant=variant, n_species=n_species):

@@ -64,16 +64,10 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
 
         par_dict = df.loc[parID].to_dict()
 
-        d_A = par_dict['d_A']
-        d_B = par_dict['d_B']
-        D = np.zeros(n_species)
-        D[0]=d_A
-        D[1]=d_B
 
         J = L *x_gridpoints  # number of equally spaced gridpoints in space domain (larger J means more spatial precision(tends towards continuum solution) )
 
         N = T * t_gridpoints
-        # steadystates = [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
         steadystates=par_dict['ss_list']
 
         filename = '%s_variant%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
