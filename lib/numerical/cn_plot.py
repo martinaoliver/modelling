@@ -4,8 +4,9 @@ from matplotlib import cm
 cmap = cm.Spectral_r
 from sklearn import preprocessing
 
-def plot1D(U,morphogen='both', savefig=False,filename='1'):
+def plot1D(U,morphogen='both', savefig=False,filename='1',pad=0.01):
     U = np.round(U,decimals=3)
+    print('agr')
     if morphogen == 0:
         plt.plot(U[0], label='U')
     if morphogen ==1: 
@@ -13,15 +14,15 @@ def plot1D(U,morphogen='both', savefig=False,filename='1'):
     if morphogen == 'both': 
         fig,ax = plt.subplots()
         ax.plot(U[0], label='U', color='blue')
-        ax.set_ylim(np.amin(U[0]), np.amax(U[0]))
-
-
+        ax.set_ylim(np.amin(U[0])+pad, np.amax(U[0])-pad)
+        ax.legend(loc=2) #upper left
         ax.ticklabel_format(useOffset=False)
 
         ax2=ax.twinx()
         ax2.plot(U[1], label='V', color='red')
-        ax2.set_ylim(np.amin(U[1]), np.amax(U[1]))
-
+        print(np.amax(U[1])) 
+        ax2.set_ylim(np.amin(U[1])+pad, np.amax(U[1])-0.9*pad)
+        ax2.legend(loc=1)#upper right
 
         ax.ticklabel_format(useOffset=False)
 
@@ -31,7 +32,6 @@ def plot1D(U,morphogen='both', savefig=False,filename='1'):
     plt.ticklabel_format(useOffset=False)
     plt.xlabel('Space')
     plt.ylabel('Time')
-    plt.legend()
     if savefig==True:
         plt.savefig('%s_final.png'%filename)
 

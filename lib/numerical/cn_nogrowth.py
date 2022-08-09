@@ -42,9 +42,10 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, steadystate='', n_species=2):
     U0 = []
     np.random.seed(1)
 
-    a,b=[0.1,1.1]
-    steadystate = [a+b, b/(a+b)**2] #klika65 or madz
+    # a,b=[0.1,1.1]
+    # steadystate = [a+b, b/(a+b)**2] #klika65 or madz
 
+    steadystate = par_dict['ss_list']
     for index in range(n_species):
         U0.append(steadystate[index]*(1+np.random.normal(loc=0,scale=0.001,size=J)))
 

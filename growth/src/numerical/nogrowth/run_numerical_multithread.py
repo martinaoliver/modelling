@@ -48,11 +48,11 @@ n_param_sets = 100000
 date = date.today().strftime('%m_%d_%Y')
 # Specify size of batches in which to complete computations
 # Does not need to be a factor of number of parameter sets
-batch_size = 2083
+total_params=2
 
 
 
-def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints,T,L,circuit_n=circuit_n, variant = variant,folder=folder, n_species=n_species,var=var):
+def numerical_check(df,x_gridpoints, t_gridpoints,T,L,circuit_n=circuit_n, variant = variant, n_species=n_species):
     save_figure = True
     tqdm_disable = True #disable tqdm
 
@@ -73,14 +73,6 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
         filename = '%s_variant%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
 
 
-     # Define 2D numerical parameters
-        L_x = L
-        L_y = L
-        I = J
-        # try:
-
-        # Run 2D simulation
-        # U_record,U_final = adi_ca(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species, D,tqdm_disable=tqdm_disable)#,p_division=p_division,seed=seed)
         try:
             U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n)            
             pickle.dump(U_final, open(modellingpath + '/growth/numerical/%s/no_growth/data/2Dfinal_%s.pkl'%(circuit_n,filename), 'wb'))
@@ -99,20 +91,23 @@ def numerical_check(start_batch_index,n_param_sets,df,x_gridpoints, t_gridpoints
 start_time = time.perf_counter()
 
 #parameters
-L=int(sys.argv[2]); x_gridpoints = int(sys.argv[3])
-T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) 
+# L=int(sys.argv[2]); x_gridpoints = int(sys.argv[3])
+# T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) 
+
+# L=50; x_gridpoints=5
+# T=2000; t_gridpoints = 25
 
 
+L=50; x_gridpoints=5
+T=10; t_gridpoints = 25
 
 # Load dataframe of parameter sets
-df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+multiple_df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+df = multiple_df.xs(0, level=1)
 
-start = int(sys.argv[6])
-stop = int(sys.argv[7])
-total_params = int(stop-start)
 print('loaded')
 batch_size = int(total_params/Number_of_Threads) + 1
-df = df.iloc[start:stop]
+df = df.iloc[0:total_params]
 batch_indices = list(range(0, len(df), batch_size))
 
 # Create a pool of workers
@@ -125,8 +120,7 @@ for start_batch_index in batch_indices:
     print('main' + str(start_batch_index))
     df_batch = df.iloc[start_batch_index:start_batch_index+batch_size]
 
-    # df_batch = df.iloc[start_batch_index:start_batch_index+2]
-    pool_output.append(pool.apply_async(numerical_check, args=(start_batch_index, n_param_sets,df_batch,x_gridpoints, t_gridpoints,T,L)))
+    pool_output.append(pool.apply_async(numerical_check, args=(df_batch,x_gridpoints, t_gridpoints,T,L)))
 
 # Close the parallel processing job
 pool.close()
