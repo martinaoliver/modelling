@@ -3,7 +3,7 @@ from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
 #Function performing newton_raphson.
-def newton_raphson(f, x_guess,equations_par_dict, max_num_iter=15, tolerance=0.0001, alpha=1.0):
+def newton_raphson(f, x_guess,equations_par_dict, max_num_iter=15, tolerance=0.0001, alpha=1):
     '''
     Function for representing a Newton-Raphson iteration for multidimensional systems of equations
     :param f: function class that must define the following methods:
@@ -28,8 +28,8 @@ def newton_raphson(f, x_guess,equations_par_dict, max_num_iter=15, tolerance=0.0
     # perform the Newton-Raphson iteration algo
     while err > tolerance and iter < max_num_iter and np.all(x!=0):
         # perform newton step
-        x = x - alpha*np.linalg.solve(equations_par_dict.getJacobian(x),fx)
 
+        x = x - alpha*np.linalg.solve(equations_par_dict.getJacobian(x),fx)
 
         # update the function value at the new root estimate
         fx = f(x)

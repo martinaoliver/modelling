@@ -35,14 +35,14 @@ else:
 print('Number of Threads set to ', Number_of_Threads)
 # Number_of_Threads=48
 # Specify name of circuit and variant investigated
-circuit_n='schnakenberg'
+circuit_n='turinghill'
 variant= 0
-
+n_species=2
 # Specifiy number of parameter sets in parameterset file to be loaded
-df_lenght = 10
-n_param_sets = 10
-# df_lenght = 100
-# n_param_sets = 100
+df_lenght = 100000
+n_param_sets = 100000
+# df_lenght = 10
+# n_param_sets = 10
 
 
 # Specify date today
@@ -51,7 +51,7 @@ date = date.today().strftime('%m_%d_%Y')
 # Specify size of batches in which to complete computations
 # Does not need to be a factor of number of parameter sets
 # batch_size = 20000
-batch_size = 2
+batch_size = 2083
 # batch_size = 2
 print(batch_size)
 
@@ -59,12 +59,11 @@ print(batch_size)
 
 
 # Define work to be done per batch of parameter sets
-def lsa_check(start_batch_index,n_param_sets,df,circuit_n='turinghill', variant=0, n_species=2):
+def lsa_check(start_batch_index,n_param_sets,df,circuit_n=circuit_n, variant=variant, n_species=n_species):
     print('pool' + str(start_batch_index))
     output_df = big_turing_analysis_df(df,circuit_n,n_species,print_parID=False)
     print('calculated')
     pickle.dump(output_df, open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets_batch%r.pkl'%(circuit_n,variant,n_param_sets,start_batch_index), 'wb'))
-    # pickle.dump(output_df, open('../results/output_dataframes/lsa_df_circuit%r_variant%r_%rparametersets_batch%r_rbslibrary0.pkl'%(circuit_n,variant,n_param_sets,start_batch_index), 'wb'))
     print('saved')
 # Runs if the module is the main program
 # if __name__ == '__main__':
@@ -72,9 +71,9 @@ print('start_time')
 start_time = time.perf_counter()
 start_parameter = int(0)
 # Load dataframe of parameter sets
-print('df_%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets))
+print('df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets))
 # df= pickle.load( open('../parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
-df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
+df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # df= pickle.load( open("../parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
 batch_indices = list(range(0+start_parameter, len(df) + start_parameter, batch_size))
 # batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))

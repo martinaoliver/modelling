@@ -5,6 +5,7 @@ cmap = cm.Spectral_r
 from sklearn import preprocessing
 
 def plot1D(U,morphogen='both', savefig=False,filename='1'):
+    U = np.round(U,decimals=3)
     if morphogen == 0:
         plt.plot(U[0], label='U')
     if morphogen ==1: 
@@ -35,7 +36,7 @@ def plot1D(U,morphogen='both', savefig=False,filename='1'):
         plt.savefig('%s_final.png'%filename)
 
     plt.show()
-    return fig
+    # return fig
 
 
 def surfpattern(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
