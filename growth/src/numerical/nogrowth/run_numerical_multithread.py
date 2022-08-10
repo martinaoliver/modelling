@@ -26,6 +26,7 @@ import multiprocessing
     Code
 ====================================================
 '''
+print('f')
 # Set number of threads to 1 if no valid number provided
 if len(sys.argv) > 1:
     Number_of_Threads = int(sys.argv[1])

@@ -10,7 +10,7 @@ modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1]
 sys.path.append(modellingpath + '/lib')
 #############
 
-from numerical.cn_nogrowth import cn_nogrowth
+from numerical.cn_nogrowth import edgegrowth1
 from numerical.cn_plot import plot1D, surfpattern
 import pickle
 
@@ -28,7 +28,7 @@ parID= 1 #parameter set to use
 par_dict = df.loc[parID].to_dict()
 
 #run
-U,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n)
+U,U_record, U0, x_grid, reduced_t_grid= edgegrowth1(par_dict,L,J,T,N, circuit_n, rate=0.1)
 
 #plot
 plot1D(U, savefig=False,filename='')
