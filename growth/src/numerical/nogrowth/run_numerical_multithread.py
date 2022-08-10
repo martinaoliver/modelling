@@ -48,7 +48,7 @@ n_param_sets = 100000
 date = date.today().strftime('%m_%d_%Y')
 # Specify size of batches in which to complete computations
 # Does not need to be a factor of number of parameter sets
-total_params=2
+total_params=100000
 
 
 
@@ -74,8 +74,8 @@ def numerical_check(df,x_gridpoints, t_gridpoints,T,L,circuit_n=circuit_n, varia
 
 
         try:
-            U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n)            
-            pickle.dump(U_final, open(modellingpath + '/growth/numerical/%s/no_growth/data/2Dfinal_%s.pkl'%(circuit_n,filename), 'wb'))
+            U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=True)            
+            pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename), 'wb'))
 
         except ValueError:
             print('!!!!!!!!!!!!!')
@@ -94,15 +94,16 @@ start_time = time.perf_counter()
 # L=int(sys.argv[2]); x_gridpoints = int(sys.argv[3])
 # T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) 
 
-# L=50; x_gridpoints=5
-# T=2000; t_gridpoints = 25
-
-
 L=50; x_gridpoints=5
-T=10; t_gridpoints = 25
+T=2000; t_gridpoints = 25
+
+
+# L=50; x_gridpoints=5
+# T=10; t_gridpoints = 25
 
 # Load dataframe of parameter sets
-multiple_df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+multiple_df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+# multiple_df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 df = multiple_df.xs(0, level=1)
 
 print('loaded')

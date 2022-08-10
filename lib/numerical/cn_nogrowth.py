@@ -20,7 +20,7 @@ sys.path.append(modellingpath + '/lib')
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
-def cn_nogrowth(par_dict,L,J,T,N, circuit_n, steadystate='', n_species=2):
+def cn_nogrowth(par_dict,L,J,T,N, circuit_n, steadystate='', n_species=2, tqdm_disable=False):
     #spatial variables
     dx = float(L)/float(J-1)
     x_grid = np.array([j*dx for j in range(J)])
@@ -89,7 +89,7 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, steadystate='', n_species=2):
 
 
     #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
-    for ti in tqdm(range(N), disable = False): 
+    for ti in tqdm(range(N), disable = tqdm_disable): 
         U_new = copy.deepcopy(U)
         f0 = f.dudt(U_new)
         
