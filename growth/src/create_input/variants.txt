@@ -1,0 +1,13 @@
+    variant0 (turinghill):
+    - Vm_range = (10, 1000)
+    - km_range = (0.1, 250)
+    - mu_range = (0.001, 50)
+    - d_B_range = (0.001, 10)
+    - dA = 1
+    - b = 0.01
+    - n = 2
+
+    variant0 (shnakenberg):
+    - c_range = (0.001,100)
+    - d_B_range = (0.001,10)
+    - d_A = 1
