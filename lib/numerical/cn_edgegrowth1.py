@@ -20,7 +20,7 @@ sys.path.append(modellingpath + '/lib')
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
-def cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2):
+def cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2, tqdm_disable=False):
     #spatial variables
     dx = float(L)/float(J)
     x_grid = np.array([j*dx for j in range(J)])
@@ -99,7 +99,7 @@ def cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
 
 
     #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
-    for ti in tqdm(range(N), disable = False): 
+    for ti in tqdm(range(N), disable = tqdm_disable): 
 
         U_new = copy.deepcopy(U)
         f0 = f.dudt(U_new)
@@ -108,8 +108,6 @@ def cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
         for n in range(n_species):
             U_new[n] = A_inv[n].dot(B_list[n].dot(U[n]) +  f0[n]*(dt/2)) # Dot product with inverse rather than solve system of equations
             a=[0,0,0]
-            if any(x<0 for x in U_new[n]):
-                print('negative')
 
         #storing results
         hour = ti / (N / T)
@@ -134,7 +132,8 @@ def cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
 
     
         U = copy.deepcopy(U_new)
-    
+    if np.any(x<0 for x in U_record):
+        print('Negative numbers in solution')
     return U,U_record, U0, x_grid, reduced_t_grid
 
 

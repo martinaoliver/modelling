@@ -23,7 +23,7 @@ n_param_sets = 10
 df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 #solver parameters
 L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=2000; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
+T=2000; t_gridpoints = 2; N=T*t_gridpoints #Number of timepoints
 
 
 

@@ -48,13 +48,12 @@ n_param_sets = 100000
 date = date.today().strftime('%m_%d_%Y')
 # Specify size of batches in which to complete computations
 # Does not need to be a factor of number of parameter sets
-total_params=6
+# total_params=6
+total_params=100000
 
 
 
 def numerical_check(df,x_gridpoints, t_gridpoints,T,L,circuit_n=circuit_n, variant = variant, n_species=n_species):
-    save_figure = True
-    tqdm_disable = True #disable tqdm
 
     df_index = np.unique(df.index.get_level_values(0))
     for parID in df_index:
@@ -71,12 +70,14 @@ def numerical_check(df,x_gridpoints, t_gridpoints,T,L,circuit_n=circuit_n, varia
         steadystates=par_dict['ss_list']
 
         filename = '%s_variant%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
-
+        savefig=True
+        savefigpath = modellingpath + '/growth/out/numerical/%s/%s/fig/'%(circuit_n,mechanism)
 
         try:
-            U_final,U_record, U0, x_grid, reduced_t_grid=  cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, rate=0.025)            
+            U_final,U_record, U0, x_grid, reduced_t_grid=  cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, rate=0.025, tqdm_disable=True)      
             pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename), 'wb'))
-
+            if savefig==True:
+                plot1D(U_final, savefig=True,filename=filename, savefigpath=savefigpath)
         except ValueError:
             print('!!!!!!!!!!!!!')
             print('ValueError --> unstable solution')
@@ -95,7 +96,7 @@ start_time = time.perf_counter()
 # T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) 
 
 L=50; x_gridpoints=5
-T=2000; t_gridpoints = 25
+T=2000; t_gridpoints = 30
 
 
 # L=50; x_gridpoints=5

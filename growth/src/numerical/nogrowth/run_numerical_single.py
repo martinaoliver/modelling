@@ -17,15 +17,15 @@ import pickle
 #system parameters
 circuit_n = 'turinghill'
 variant=0 
-n_param_sets = 10
+n_param_sets = 100000
 
 # par_dict = {'c1':0.1, 'c2':1,'c3':0.9,'c4':1, 'd_A': 1, 'd_B':10}
 # df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 #solver parameters
-L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=10; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
-parID= 1 #parameter set to use
+L=10; x_gridpoints=5; J=L*x_gridpoints;I=J 
+T=6000; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
+parID= 12320 #parameter set to use
 lsa_df = df.xs(0, level=1)
 
 par_dict = lsa_df.loc[parID].to_dict()
@@ -37,3 +37,6 @@ U,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n)
 plot1D(U, savefig=False,filename='')
 surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
 surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+
+
+

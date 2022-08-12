@@ -4,9 +4,9 @@ from matplotlib import cm
 cmap = cm.Spectral_r
 from sklearn import preprocessing
 
-def plot1D(U,morphogen='both', savefig=False,filename='1',pad=0.01):
-    U = np.round(U,decimals=3)
-    print('agr')
+def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=True):
+    if round==True:
+        U = np.round(U,decimals=3)
     if morphogen == 0:
         plt.plot(U[0], label='U')
     if morphogen ==1: 
@@ -14,14 +14,13 @@ def plot1D(U,morphogen='both', savefig=False,filename='1',pad=0.01):
     if morphogen == 'both': 
         fig,ax = plt.subplots()
         ax.plot(U[0], label='U', color='blue')
-        ax.set_ylim(np.amin(U[0])+pad, np.amax(U[0])-pad)
+        ax.set_ylim(np.amin(U[0])-pad, np.amax(U[0])+pad)
         ax.legend(loc=2) #upper left
         ax.ticklabel_format(useOffset=False)
 
         ax2=ax.twinx()
         ax2.plot(U[1], label='V', color='red')
-        print(np.amax(U[1])) 
-        ax2.set_ylim(np.amin(U[1])+pad, np.amax(U[1])-0.9*pad)
+        ax2.set_ylim(np.amin(U[1])-pad, np.amax(U[1])+pad)
         ax2.legend(loc=1)#upper right
 
         ax.ticklabel_format(useOffset=False)
@@ -33,9 +32,10 @@ def plot1D(U,morphogen='both', savefig=False,filename='1',pad=0.01):
     plt.xlabel('Space')
     plt.ylabel('Time')
     if savefig==True:
-        plt.savefig('%s_final.png'%filename)
+        plt.savefig('%s%s.jpeg'%(savefigpath,filename))
 
-    plt.show()
+    else:
+        plt.show()
     # return fig
 
 
