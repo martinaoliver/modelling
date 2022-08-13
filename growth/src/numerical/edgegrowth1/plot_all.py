@@ -33,5 +33,5 @@ filename= lambda parID: '%s_variant%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,varian
 parIDHpsDict = pickle.load( open( modellingpath + '/growth/out/patternAnalysis/%s/%s/parIDHpsDict%s.pkl'%(circuit_n,mechanism,filename('x')), 'rb'))
 start = int(sys.argv[1])
 stop = int(sys.argv[2])
-plotAllFunction(parIDHpsDict, circuit_n, mechanism, filename, start=start, stop=stop,saveFig=True,dpi=2000)
+plotAllFunction(parIDHpsDict, circuit_n, mechanism, filename, start=start, stop=stop)
 

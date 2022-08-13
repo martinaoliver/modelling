@@ -46,3 +46,6 @@ if test==False:
     pickle.dump(parIDHpsDict, open( modellingpath + '/growth/out/patternAnalysis/%s/%s/parIDHpsDict%s.pkl'%(circuit_n,mechanism,filename('x')), 'wb'))
     print('saved')
 
+#add column to lsa_df with Hps and save it to file
+lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+lsa_df_single = lsa_df.xs(0, level=1)

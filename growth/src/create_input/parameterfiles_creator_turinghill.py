@@ -31,7 +31,7 @@ from tqdm import tqdm
 #######################
 
 circuit_n='turinghill'
-variant=0 #variant1 is variant0 but with varying kce as well.
+variant=1
 np.random.seed(1)
 
 
@@ -95,7 +95,7 @@ def parameterfile_creator_function(numbercombinations):
     points = lhs(par_distribution_matrix, numbercombinations)
 
     bx = np.full((numbercombinations, 1), 0.01)
-    cooperativity = np.full((numbercombinations, 1), 2)
+    cooperativity = np.full((numbercombinations, 1), 3)
     d_A = np.full((numbercombinations, 1), 1)
     # d_B = np.full((numbercombinations, 1), 0.8)
     parameterindex = np.arange(1, numbercombinations + 1, dtype=int).reshape(numbercombinations, 1)

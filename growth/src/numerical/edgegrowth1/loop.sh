@@ -1,7 +1,7 @@
-for i in {0..100..10}
+for i in {0..100000..10000}
   do
     echo $i,$(($i+10000))
-    qsub -v start=$i,end=$(($i+10000)) run_qsub.pbs
+    qsub -v start=$i,stop=$(($i+10000)) run_qsub.pbs
  done
 
 # # var_array = (0.1 0.8 0.06 0.04 0.03 0.01 0.001)
