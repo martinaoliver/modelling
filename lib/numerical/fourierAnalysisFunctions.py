@@ -16,4 +16,4 @@ def fourierAnalysisFunction(U0):
     fft_U = fft(U0)
     ps = powerspectrumFunction(fft_U)
     H = entropyFunction(ps)
-    return fft_U, ps, H
+    return H

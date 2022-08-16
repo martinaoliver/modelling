@@ -4,7 +4,7 @@ from matplotlib import cm
 cmap = cm.Spectral_r
 from sklearn import preprocessing
 
-def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=True):
+def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=True, peaks=False):
     if round==True:
         U = np.round(U,decimals=3)
     if morphogen == 0:
@@ -24,13 +24,16 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
         ax2.legend(loc=1)#upper right
 
         ax.ticklabel_format(useOffset=False)
-
+        if np.any(peaks)!=False:
+            print(peaks)
+            ax.plot(peaks[0],U[0][peaks[0]], 'o', color='blue')
+            ax2.plot(peaks[1],U[1][peaks[1]], 'o', color='red')
 
 
 
     plt.ticklabel_format(useOffset=False)
     plt.xlabel('Space')
-    plt.ylabel('Time')
+    plt.ylabel('Concentration')
     if savefig==True:
         plt.savefig('%s%s.jpeg'%(savefigpath,filename))
 

@@ -16,7 +16,7 @@ import pickle
 from tqdm import tqdm
 
 
-def plotAllFunction(parIDdict, circuit_n, mechanism, filename, start=0, stop=10, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disble=True):
+def plotAllFunction(parIDdict, circuit_n, mechanism, filename, start=0, stop=10, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True,pad=0.1):
     fulldataset=len(parIDdict)
     parIDdict = dict(sorted(parIDdict.items(), key=lambda item: item[1])) #sort from lower to higher values
     parIDdict = dict(list(parIDdict.items())[:stop]) #trim to the first stop values
@@ -28,18 +28,28 @@ def plotAllFunction(parIDdict, circuit_n, mechanism, filename, start=0, stop=10,
 
     fig = plt.figure(figsize=(n_col/10+12, n_row/10+12))
 
-    for count,parID in tqdm(enumerate(parIDdict.keys()),disable=tqdm_disble):
+    for count,parID in tqdm(enumerate(parIDdict.keys()),disable=tqdm_disable):
         ax=plt.subplot(n_row,n_col, count+1)
         U = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'rb'))
         U=np.round(U,decimals=3)
-        pad=0.001
         ax.plot(U[0], label='U', color='green', alpha=0.5)
         ax.set_ylim(np.amin(U[0])-pad, np.amax(U[0])+pad)
-
-        ax.plot(U[1], label='U', color='red', alpha=0.5)
-        ax.set_ylim(np.amin(U[1])-pad, np.amax(U[1])+pad)
         ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
-        ax.set_ylabel('%r-%r'%(parID,np.round(parIDdict[parID],decimals=3)),size= 1,c='y', labelpad=0.35)
+
+        ax2=ax.twinx()
+        ax2.plot(U[1], label='U', color='red', alpha=0.5)
+        ax2.set_ylim(np.amin(U[1])-pad, np.amax(U[1])+pad)
+        ax2.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
+        ax2.set_ylabel('%r-%r'%(parID,np.round(parIDdict[parID],decimals=3)),size= 1,c='y', labelpad=0.35)
+
+        # ax2=ax.twinx()
+        # ax2.plot(U[1], label='V', color='red')
+        # ax2.set_ylim(np.amin(U[1])-pad, np.amax(U[1])+pad)
+        # ax2.legend(loc=1)#upper right
+
+
+    
+    
     if saveFig==False:
         plt.show()
     if saveFig==True:

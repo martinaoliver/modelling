@@ -20,9 +20,9 @@ from tqdm import tqdm
 circuit_n='turinghill'
 variant= 0
 n_species=2
-mechanism='edgegrowth1'
+mechanism='nogrowth'
 L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=2000; t_gridpoints = 30; N=T*t_gridpoints #Number of timepoints
+T=2000; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
 filename= lambda parID: '%s_variant%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
 
 parID_list = pickle.load(open( modellingpath + '/growth/out/numerical/%s/%s/data/parID_list_%s.pkl'%(circuit_n,mechanism,filename('x')), "rb" ) )
@@ -31,14 +31,17 @@ stop=len(parID_list)
 parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
 parID_list.sort() #sort from lower to higher values
 parIDHpsDict = {}
-test=False
+parID_list=[41018,30997,2]
+test=True
 for count,parID in enumerate(tqdm(parID_list, disable=True)):
     U = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'rb'))
-    # if test==True:
-    #     plot1D(U)
-    fourierAnalysisOut = [fourierAnalysisFunction(Ux) for Ux in U]
-    meanH = np.mean([H for fft_U,ps,H in fourierAnalysisOut])
+    if test==True:
+        plot1D(U)
+    H = [fourierAnalysisFunction(Ux) for Ux in U]
+    meanH = np.mean(H )
     parIDHpsDict[parID] = meanH
+    if test==True:
+        print(H)
     if count%10000==0:
         pickle.dump(parIDHpsDict, open( modellingpath + '/growth/out/patternAnalysis/%s/%s/parIDHpsDict%s_batch%r.pkl'%(circuit_n,mechanism,filename('x'), count), 'wb'))
 
@@ -47,5 +50,6 @@ if test==False:
     print('saved')
 
 #add column to lsa_df with Hps and save it to file
-lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-lsa_df_single = lsa_df.xs(0, level=1)
+if test==False:
+    lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+    lsa_df_single = lsa_df.xs(0, level=1)

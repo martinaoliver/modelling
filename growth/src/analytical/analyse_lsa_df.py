@@ -14,10 +14,10 @@ sys.path.append(modellingpath + '/lib')
 import pickle
 
 circuit_n='turinghill'
-variant= 0
+variant= 1
 n_species=2
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 100000
+n_param_sets = 2000000
 
 
 df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
@@ -35,6 +35,7 @@ select_turingI=True
 if select_turingI == True:
     states = ['turing I']  
     turingI_df = df.loc[df['system_class'].isin(states)]
+    print(turingI_df)
     if len(turingI_df) > 0:
         turingI_df = turingI_df.xs(0, level=1)
         pickle.dump( turingI_df, open(modellingpath + '/growth/out/analytical/turing_dataframes/turingI_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )

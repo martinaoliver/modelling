@@ -25,9 +25,9 @@ import numpy as np
 circuit_n='turinghill'
 variant= 0
 n_species=2
-mechanism='edgegrowth1'
+mechanism='nogrowth'
 L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=2000; t_gridpoints = 30; N=T*t_gridpoints #Number of timepoints
+T=2000; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
 filename= lambda parID: '%s_variant%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
   
 metric = 'peakDistVar'
