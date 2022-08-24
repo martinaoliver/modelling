@@ -7,7 +7,6 @@ from mpl_toolkits.mplot3d import Axes3D
 import time
 from sklearn.preprocessing import StandardScaler
 import pickle
-from parametercombination_analysis import *
 from numpy import trapz
 from scipy import signal
 
@@ -174,8 +173,10 @@ def plot_all_dispersion(eigenvalues, n_species=6, crop=1000, top=5000, L=100):
     # wvn_list = np.array(list(range(0,5000+1)))*np.pi/100
 
     for n in range(n_species):
-        plt.plot(wvn_list[:crop], eigenvalues.real[:crop,[n]])
-        plt.plot(wvn_list[:crop], eigenvalues.imag[:crop,[n]], linestyle = '--',c='k')
+        # plt.plot(wvn_list[:crop], eigenvalues.real[:crop,[n]])
+        # plt.plot(wvn_list[:crop], eigenvalues.imag[:crop,[n]], linestyle = '--',c='k')
+        plt.plot(wvn_list[:crop], np.real(eigenvalues[n][:crop]))
+        plt.plot(wvn_list[:crop], np.imag(eigenvalues[n][:crop]), linestyle = '--',c='k')
 
 
     plt.xlabel('Wavenumber')

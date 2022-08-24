@@ -13,6 +13,7 @@ sys.path.append(modellingpath + '/lib')
 from numerical.cn_nogrowth import cn_nogrowth
 from numerical.cn_plot import plot1D, surfpattern
 import pickle
+import matplotlib.pyplot as plt
 
 #system parameters
 circuit_n = 'turinghill'
@@ -23,18 +24,19 @@ n_param_sets = 100000
 # df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 #solver parameters
-L=10; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=6000; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
-parID= 12320 #parameter set to use
+L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
+T=2000; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
+parID= 4162 #parameter set to use
 lsa_df = df.xs(0, level=1)
 
 par_dict = lsa_df.loc[parID].to_dict()
 print(par_dict)
 #run
-U,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n)
+U,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=False)
 
 #plot
 plot1D(U, savefig=False,filename='')
+plt.show()
 surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
 surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
 

@@ -4,7 +4,7 @@ from matplotlib import cm
 cmap = cm.Spectral_r
 from sklearn import preprocessing
 
-def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=True, peaks=False):
+def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, peaks=False):
     if round==True:
         U = np.round(U,decimals=3)
     if morphogen == 0:
@@ -21,7 +21,7 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
         ax2=ax.twinx()
         ax2.plot(U[1], label='V', color='red')
         ax2.set_ylim(np.amin(U[1])-pad, np.amax(U[1])+pad)
-        ax2.legend(loc=1)#upper right
+        ax2.legend(loc=1) #upper right
 
         ax.ticklabel_format(useOffset=False)
         if np.any(peaks)!=False:
@@ -37,8 +37,8 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
     if savefig==True:
         plt.savefig('%s%s.jpeg'%(savefigpath,filename))
 
-    else:
-        plt.show()
+    # else:
+    #     plt.show()
     # return fig
 
 

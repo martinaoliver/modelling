@@ -21,7 +21,6 @@ n_param_sets = 2000000
 
 
 df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-print(df)
 print(df['system_class'].value_counts())
 
 select_turing=True
@@ -39,3 +38,6 @@ if select_turingI == True:
     if len(turingI_df) > 0:
         turingI_df = turingI_df.xs(0, level=1)
         pickle.dump( turingI_df, open(modellingpath + '/growth/out/analytical/turing_dataframes/turingI_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
+crop_to = 100000
+cropped_df = df.iloc[:crop_to]
+pickle.dump( cropped_df, open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,100000), "wb" ) )

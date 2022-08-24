@@ -14,9 +14,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle 
 from tqdm import tqdm
+from numerical.generalFunctions import round_it
 
 
-def plotAllFunction(parIDdict, circuit_n, mechanism, filename, start=0, stop=10, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True,pad=0.1):
+def plotAllFunction(parIDdict, circuit_n, mechanism, filename, round=True,start=0, stop=10, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True,pad=0.01, round_to=3):
     fulldataset=len(parIDdict)
     parIDdict = dict(sorted(parIDdict.items(), key=lambda item: item[1])) #sort from lower to higher values
     parIDdict = dict(list(parIDdict.items())[:stop]) #trim to the first stop values
@@ -31,7 +32,8 @@ def plotAllFunction(parIDdict, circuit_n, mechanism, filename, start=0, stop=10,
     for count,parID in tqdm(enumerate(parIDdict.keys()),disable=tqdm_disable):
         ax=plt.subplot(n_row,n_col, count+1)
         U = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'rb'))
-        U=np.round(U,decimals=3)
+        if round==True:
+            U = [[round_it(U0x,round_to) for U0x in U0] for U0 in U]
         ax.plot(U[0], label='U', color='green', alpha=0.5)
         ax.set_ylim(np.amin(U[0])-pad, np.amax(U[0])+pad)
         ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
