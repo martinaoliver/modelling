@@ -20,7 +20,7 @@ sys.path.append(modellingpath + '/lib')
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
-def cn_nogrowth(par_dict,L,J,T,N, circuit_n, steadystate='', n_species=2, tqdm_disable=False):
+def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
     #spatial variables
     dx = float(L)/float(J-1)
     x_grid = np.array([j*dx for j in range(J)])
@@ -42,8 +42,6 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, steadystate='', n_species=2, tqdm_d
     U0 = []
     np.random.seed(1)
 
-    # a,b=[0.1,1.1]
-    # steadystate = [a+b, b/(a+b)**2] #klika65 or madz
 
     steadystate = par_dict['ss_list']
     for index in range(n_species):

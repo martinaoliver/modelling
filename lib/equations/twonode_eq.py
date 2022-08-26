@@ -82,7 +82,10 @@ class turinghill(hill_functions):
         A,B= species_list
         return self.dBdt_f(species_list) - B*self.d_B*wvn**2
 
-
+    def dudt_growth(self,U, cell_matrix):
+        function_list = [self.dAdt_f(U),self.dBdt_f(U)]
+        dudt = [eq*cell_matrix for eq in function_list]
+        return dudt
 
     def getJacobian(self,x,wvn):
         A,B=x
@@ -123,6 +126,11 @@ class twonode(hill_functions):
 
     function_list = [dAdt_f,dBdt_f]
 
+    def dudt_growth(self,U, cell_matrix):
+        function_list = [self.dAdt_f(U),self.dBdt_f(U)]
+        dudt = [eq*cell_matrix for eq in function_list]
+        return dudt
+
     def dudt(self,U):
         dudt = [self.dAdt_f(U),self.dBdt_f(U)]
         return dudt
@@ -162,6 +170,11 @@ class schnakenberg():
         dudt = [self.dAdt_f(U),self.dBdt_f(U)]
         return dudt
 
+    def dudt_growth(self,U, cell_matrix):
+        function_list = [self.dAdt_f(U),self.dBdt_f(U)]
+        dudt = [eq*cell_matrix for eq in function_list]
+        return dudt
+        
     def diffusing_dAdt_f(self,species_list,wvn):
         A,B= species_list
         return self.dAdt_f(species_list) - A*self.d_A*wvn**2

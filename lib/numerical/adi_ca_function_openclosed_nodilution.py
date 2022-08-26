@@ -1,35 +1,40 @@
-import numpy
+#############
+###paths#####
+#############
+import sys
+import os
 
+from importlib_metadata import distribution
+pwd = os.getcwd()
+modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+sys.path.append(modellingpath + '/lib')
+#############
 
-import matplotlib.pyplot as plt
+from equations.class_circuit_eq import *
 import numpy as np
 from scipy.sparse import spdiags, diags
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 import copy
-from scipy.sparse import linalg
 from scipy.linalg import solve_banded
-from class_circuit_eq import *
+
+
+
 
 def adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=1.5):
 
-    parent_list = [circuit1_eq, circuit2_eq,circuit3_eq,circuit4_eq,circuit5_eq,circuit6_eq,circuit7_eq,circuit8_eq,circuit9_eq, circuit10_eq, circuit11_eq]
+    parent_list = [circuit1, circuit2,circuit3,circuit4,circuit5,circuit6,circuit7,circuit8,circuit9, circuit10, circuit11]
     f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
 
     #spatial variables
     dx = float(L_x)/float(J-1); dy = float(L_y)/float(I-1)
-    x_grid = numpy.array([j*dx for j in range(J)]); y_grid = numpy.array([i*dy for i in range(I)])
+    x_grid = np.array([j*dx for j in range(J)]); y_grid = np.array([i*dy for i in range(I)])
     diffusing_species =np.nonzero(D)[0]
     nondiffusing_species = np.nonzero(D==0)[0]
 
-    # #time variables
-    # def t_gridpoints_stability(T, dx):
-    #     N = T/(0.49*(dx**2)) + 1
-    #     return int(N)
-    # N = t_gridpoints_stability(L_x,dx,T)
+
 
     dt = float(T)/float(N-1)
-    t_grid = numpy.array([n*dt for n in range(N)])
+    t_grid = np.array([n*dt for n in range(N)])
 
     alpha = [D[n]*dt/(2.*dx*dx) for n in range(n_species)]
 
@@ -57,7 +62,7 @@ def adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,
         return A
     def diagonal_form(a, upper = 1, lower= 1):
         """
-        a is a numpy square matrix
+        a is a np square matrix
         this function converts a square matrix to diagonal ordered form
         returned matrix in ab shape which can be used directly for scipy.linalg.solve_banded
         """
