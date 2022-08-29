@@ -3,7 +3,7 @@ from scipy.sparse import spdiags, diags
 from tqdm import tqdm
 import copy
 from scipy.linalg import solve_banded
-
+import matplotlib.pyplot as plt
 
 #############
 ###paths#####
@@ -68,15 +68,17 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
         B = diags(diagonals, [ -1, 0,1]).toarray()
         return B
 
-        
+    record_every_x_hours = 10
+
     #storage variables
-    reduced_t_grid = np.linspace(0,T,T)
+    reduced_t_grid = np.arange(0,T,record_every_x_hours) 
     U = copy.deepcopy(U0) 
         #copydeepcopy is useful to make sure the original U0 concentration is not modified and we can retrieve it later on if needed. 
         #we will work with U and U_new from here onwards (U_new is the updated U after calculation).
     U_record=[]
+    record_every_x_hours = 10
     for species_index in range(n_species):
-        U_record.append(np.zeros([J, T])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
+        U_record.append(np.zeros([ int(T/record_every_x_hours), J])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
 
 
     #These two lists contain the A and B matrices for every chemical specie. They are adapted to the size of the field, 
@@ -98,11 +100,11 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
         
         #storing results
         hour = ti / (N / T)
-        if hour % 1 == 0 :  #only grow and record at unit time (hour)
+        if hour % record_every_x_hours == 0 :  #only grow and record every 10 hours unit time (hour)
             for n in range(n_species):
-                U_record[n][:,int(hour)] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
-
-    
+                U_record[n][int(hour/record_every_x_hours), :] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
+            plt.plot(U[0])
+            plt.show()
         U = copy.deepcopy(U_new)
     
     return U,U_record, U0, x_grid, reduced_t_grid

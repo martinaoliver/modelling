@@ -45,12 +45,13 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
 def surfpattern(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
     if normalize == True:
         results = [preprocessing.normalize(array, norm="l1") for array in results]
-
-    results = np.transpose(results[morphogen])
-    x_grid = grids[0]
+    results = results[morphogen]
+    x_grid = grids[0] 
     t_grid = grids[1]
-    values = results.reshape(len(t_grid),len(x_grid))
+    values = results.reshape(len(x_grid),len(t_grid))
     x, t = np.meshgrid(x_grid, t_grid)
+    # t,x = np.meshgrid(t_grid, x_grid)
+    # plt.contourf(t,x,results, cmap=cmap)
     plt.contourf(x,t,results, cmap=cmap)
     if logResults==True:
         plt.colorbar(label='Concentration (logscale)')

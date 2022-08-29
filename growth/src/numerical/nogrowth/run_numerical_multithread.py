@@ -20,7 +20,7 @@ import pandas as pd
 import numpy as np
 import time
 import multiprocessing
-
+import matplotlib.pyplot as plt
 '''
 ====================================================
     Code
@@ -69,14 +69,17 @@ def numerical_check(df,x_gridpoints, t_gridpoints,T,L,circuit_n=circuit_n, varia
         steadystates=par_dict['ss_list']
 
         filename = '%s_variant%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
-        savefig=True
+        savefig=False
         savefigpath = modellingpath + '/growth/out/numerical/%s/%s/fig/'%(circuit_n,mechanism)
 
         try:
             U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=True)            
             pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename), 'wb'))
+            pickle.dump(U_record, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename), 'wb'))
+            # print(np.shape(U_record))
             if savefig==True:
                 plot1D(U_final, savefig=True,filename=filename, savefigpath=savefigpath)
+                plt.close()
         except ValueError:
             print('!!!!!!!!!!!!!')
             print('ValueError --> unstable solution')
@@ -98,8 +101,8 @@ L=50; x_gridpoints=5
 T=5000; t_gridpoints = 30
 
 
-# L=50; x_gridpoints=5
-# T=10; t_gridpoints = 25
+# L=2; x_gridpoints=2
+# T=100; t_gridpoints = 2
 
 # Load dataframe of parameter sets
 multiple_df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
