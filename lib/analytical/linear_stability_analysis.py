@@ -10,6 +10,7 @@ Created on Wed Apr  8 12:33:13 2020
 # dictionary (single parameter set) or as a dataframe (multiple parameter sets).
 
 
+import sys
 from analytical.findsteadystates_functions import findsteadystates
 from analytical.dispersionrelation_functions import dispersionrelation
 import pandas as pd
@@ -57,7 +58,6 @@ def detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5
         for ss_n in range(number_steadystates): #perform linear stability analysis on all steady states found
             steadystate_values_ss_n = steadystatelist[ss_n]
             ss_class, system_class, eigenvalues, maxeig= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n,top_dispersion)
-
             system_class_list.append(system_class)
             ss_class_list.append(system_class)
             eigenvalues_list.append(eigenvalues)

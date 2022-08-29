@@ -53,6 +53,12 @@ def stability_no_diffusion(eigenvalues):
     else:
         complex_ss=False
 
+    #oscillations overall
+    if np.iscomplex(eigenvalues).any():
+        complex_dispersion=True
+    else:
+        complex_dispersion=False
+
     #stability in  ss
     if eigenvalues_ss > 0:
         stability_ss = 'unstable'
@@ -77,9 +83,9 @@ def stability_no_diffusion(eigenvalues):
         elif stability_ss == 'unstable':
             ss_class =  'unstable spiral'
 
-    return ss_class, complex_ss, stability_ss
+    return ss_class, complex_ss, stability_ss, complex_dispersion
 
-def stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss):
+def stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss, complex_dispersion):
     maxeig = np.amax(eigenvalues) #highest eigenvalue of all wvn's and all the 6 eigenvalues.
     maxeig_real = maxeig.real #real part of maxeig
 
@@ -104,23 +110,40 @@ def stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss):
 
 
     elif stability_ss == 'unstable': #fully unstable or hopf
-        if complex_ss==False:
+        if complex_dispersion==False:
                 system_class = 'simple unstable'
 
-        elif complex_ss==True and eigenvalues.imag[-1,-1]==0: #hopf
+        # elif complex_dispersion==True and eigenvalues.imag[-1,-1]==0: #hopf
+        elif complex_dispersion==True: 
+            
+            # and eigenvalues.imag[-1,-1]==0: #hopf
             #sign changes
             real_dominant_eig = eigenvalues.real[:,-1]
-            sign_changes = len(list(itertools.groupby(real_dominant_eig, lambda real_dominant_eig: real_dominant_eig > 0))) -1
-            if sign_changes == 1:
-                system_class = 'hopf'
-
-            elif sign_changes > 1:
-                if np.any(eigenvalues[-1,-1] == maxeig_real):
-                    system_class = 'turing II hopf'
-                elif np.all(eigenvalues[-1,-1] != maxeig_real): #highest instability does not appear with highest wavenumber)
-                    system_class = 'turing I hopf'
+            indexZeros = np.where(np.diff(np.sign(real_dominant_eig)))[0]
+            sign_changes = len(indexZeros)
+            if sign_changes>0:
+                if np.iscomplex([eigenvalues[:,-1][index] for index in indexZeros]).any():
+                    
+                    hopf=True
                 else:
-                    system_class = 'unclassified'
+                    hopf=False
+
+            if sign_changes == 1:
+                if hopf==True:
+                    system_class = 'hopf'
+                if hopf==False:
+                    system_class = 'complex unstable'
+            elif sign_changes > 1:
+                if hopf==True:
+                    if np.any(eigenvalues[-1,-1] == maxeig_real):
+                        system_class = 'turing II hopf'
+                    elif np.all(eigenvalues[-1,-1] != maxeig_real): #highest instability does not appear with highest wavenumber)
+                        system_class = 'turing I hopf'
+                    else:
+                        system_class='unclassified'
+                else:
+                    system_class = 'turing semi-hopf'
+
             else:
                 system_class = 'unclassified'
         else:
@@ -142,8 +165,8 @@ def dispersionrelation(par_dict,steadystate_values_ss_n,circuit_n,top_dispersion
     eigenvalues = calculate_dispersion(par_dict,circuit_n, x,top_dispersion)
 
     #Classify equilibrium point (no diffusion)
-    ss_class, complex_ss, stability_ss = stability_no_diffusion(eigenvalues)
+    ss_class, complex_ss, stability_ss, complex_dispersion = stability_no_diffusion(eigenvalues)
 
-    system_class, maxeig= stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss)
+    system_class, maxeig= stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss, complex_dispersion)
 
     return ss_class, system_class, eigenvalues, maxeig

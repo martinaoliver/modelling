@@ -1,5 +1,5 @@
 import numpy as np
-
+np.random.seed(1)
 #This function return a loguniform distribution with values from 10^low to 10^high
 def loguniform(low=-3, high=3, size=None):
     return (10)**(np.random.uniform(low, high, size))
