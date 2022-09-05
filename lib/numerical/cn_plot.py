@@ -5,6 +5,7 @@ cmap = cm.Spectral_r
 from sklearn import preprocessing
 
 def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, peaks=False):
+    print(np.amax(U[0]), np.amin(U[0]))
     if round==True:
         U = np.round(U,decimals=3)
     if morphogen == 0:

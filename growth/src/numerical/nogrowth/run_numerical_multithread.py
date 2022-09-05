@@ -36,7 +36,7 @@ print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
 circuit_n='turinghill'
-variant= 2
+variant= 0
 n_species=2
 
 # Specifiy number of parameter sets in parameterset file to be loaded
@@ -107,11 +107,13 @@ T=5000; t_gridpoints = 30
 # Load dataframe of parameter sets
 multiple_df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # multiple_df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+# df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 df = multiple_df.xs(0, level=1)
 
 print('loaded')
 batch_size = int(total_params/Number_of_Threads) + 1
 df = df.iloc[0:total_params]
+print(df.head())
 batch_indices = list(range(0, len(df), batch_size))
 
 # Create a pool of workers

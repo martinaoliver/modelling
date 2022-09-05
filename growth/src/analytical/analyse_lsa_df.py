@@ -14,7 +14,7 @@ sys.path.append(modellingpath + '/lib')
 import pickle
 
 circuit_n='turinghill'
-variant= 1
+variant= 2
 n_species=2
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 2000000
@@ -32,7 +32,7 @@ if select_turing == True:
 
 select_turingI=True
 if select_turingI == True:
-    states = ['turing I']  
+    states = ['turing I', 'turing I oscillatory']
     turingI_df = df.loc[df['system_class'].isin(states)]
     print(turingI_df)
     if len(turingI_df) > 0:

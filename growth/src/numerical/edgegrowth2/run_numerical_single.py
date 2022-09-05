@@ -24,8 +24,9 @@ n_param_sets = 10
 multiple_df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 df = multiple_df.xs(0, level=1)
 #solver parameters
-L=10; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=100; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
+L=30; x_gridpoints=5; J=L*x_gridpoints;I=J 
+T=50; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
+
 
 
 parID= 10 #parameter set to use

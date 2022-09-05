@@ -44,7 +44,6 @@ def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parI
     return output_df
 #Turing analysis carried out on a single parameter combination. The input is a dictionary with the corresponding parameters.
 def detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5000,calculate_unstable=False):
-    print(par_dict)
     steadystatelist, number_steadystates = findsteadystates(par_dict, circuit_n,n_species,n_initial_conditions=100) #input a dictionary with the parameters and returns (1) a list with the steady states and (2) the number of steady states.
 
     maxeig_list = []

@@ -19,13 +19,14 @@ import pickle
 
 circuit_n='turinghill'
 mechanism='nogrowth'
-variant=2
+variant=0
 
 L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
 T=5000; t_gridpoints = 30; N=T*t_gridpoints #Number of timepoints
 
 filename= lambda parID: '%s_variant%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
-datafile= modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename('*'))
+print(filename(1))
+datafile= modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename('*'))
 print(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename('*')))
 files = glob.glob(datafile)
 print(len(files))

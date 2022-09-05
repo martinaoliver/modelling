@@ -61,7 +61,7 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
         U0X=np.random.uniform(low=steadystate[index] - perturbation, high=steadystate[index] + perturbation, size=J)
         U0.append(U0X)   
     U0 = [U0x * cellMatrix for U0x in U0]
-    # U0 = U0*cellMatrix
+
     #Look back at mathematical derivation above for understanding of the A and B matrices.
 
     def alpha(D,dt,dx,n_species):
@@ -83,15 +83,21 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
         B = diags(diagonals, [ -1, 0,1]).toarray()
         return B
 
-        
+
+
     #storage variables
-    reduced_t_grid = np.linspace(0,T,T)
+    record_every_x_hours = 10
+    reduced_t_grid = np.arange(0,T,record_every_x_hours)     
+
     U = copy.deepcopy(U0) 
         #copydeepcopy is useful to make sure the original U0 concentration is not modified and we can retrieve it later on if needed. 
         #we will work with U and U_new from here onwards (U_new is the updated U after calculation).
     U_record=[]
+    record_every_x_hours = 10
     for species_index in range(n_species):
-        U_record.append(np.zeros([J, T])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
+        U_record.append(np.zeros([ int(T/record_every_x_hours), J])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
+
+
 
     def exponential_growth(t, s=0.0001, initialL=dx):
         return (initialL*np.exp(s*t))
@@ -103,9 +109,11 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
 
     #These two lists contain the A and B matrices for every chemical specie. They are adapted to the size of the field, 
     #meaning that if the field is J=3, the matrix will be 3x3.
-    # A_list = [A(alphan,J) for alphan in alpha(D,dt,dx,n_species)]  
-    # B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
-    # A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
+
+    A_list = [A(alphan,J) for alphan in alpha(D,dt,dx,n_species)]  
+    B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
+    A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
+
 
 
     #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
@@ -119,20 +127,18 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
             newL = linear_growth(hour,s=rate)
 
         currentJ = int(newL*x_gridpoints)
-        print(newL,currentJ)
-
         cellMatrix = cellMatrixFunction(currentJ)
 
 
-        A_list = [A(alphan,J) for alphan in alpha(D,dt,dx,n_species)]  
-        B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
-        A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
+        # A_list = [A(alphan,J) for alphan in alpha(D,dt,dx,n_species)]  
+        # B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
+        # A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
 
 
-        if currentJ != len(U[0]):
-            len_full_pad = currentJ - len(U[0])
-            for n in range(n_species):
-                U[n] = np.concatenate((U[n], [U[n][-1]]*len_full_pad))
+        # if currentJ != len(U[0]):
+        #     len_full_pad = currentJ - len(U[0])
+        #     for n in range(n_species):
+        #         U[n] = np.concatenate((U[n], [U[n][-1]]*len_full_pad))
 
         U_new = copy.deepcopy(U)
         f0 = f.dudt_growth(U_new, cellMatrix)
@@ -140,27 +146,25 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
         #iterate over every chemical specie when calculating concentrations. 
         for n in range(n_species):
             U_new[n] = A_inv[n].dot(B_list[n].dot(U[n]) +  f0[n]*(dt/2)) # Dot product with inverse rather than solve system of equations
-            # a=[0,0,0]
             if any(x<0 for x in U_new[n]):
                 print('negative')
             
-
-        # #storing results
-
-        # U_new_padded=[0,0]
-        # len_half_pad = int((J - currentJ) / 2)
-        # for n in range(n_species):
-        #     U_new_padded[n] = np.concatenate([np.zeros(len_half_pad),U_new[n],np.zeros(len_half_pad)])
-        #     if J != len(U_new_padded[n]):
-        #         U_new_padded[n] = np.concatenate([np.zeros(len_half_pad), U_new[n], np.zeros(len_half_pad+1)])
         
 
-        if hour % 1 == 0 :  #only grow and record at unit time (hour)
+
+        # if hour % 1 == 0 :  #only grow and record at unit time (hour)
+        #     for n in range(n_species):
+        #         U_record[n][int(hour),:] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
+
+        hour = ti / (N / T)
+        if hour % record_every_x_hours == 0 :  #only grow and record every 10 hours unit time (hour)
+
             for n in range(n_species):
-                U_record[n][:,int(hour)] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
-
-
+                U_record[n][int(hour/record_every_x_hours), :] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
         U = copy.deepcopy(U_new)
+    
+
+
 
     
     return U,U_record, U0, x_grid, reduced_t_grid, cellMatrix

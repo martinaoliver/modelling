@@ -12,8 +12,9 @@ sys.path.append(modellingpath + '/lib')
 
 from numerical.cn_edgegrowth1 import cn_edgegrowth1
 from numerical.cn_plot import plot1D, surfpattern
-import pickle
 
+import pickle
+import matplotlib.pyplot as plt
 #system parameters
 circuit_n = 'turinghill'
 variant=0 
@@ -22,8 +23,8 @@ n_param_sets = 10
 # par_dict = {'c1':0.1, 'c2':1,'c3':0.9,'c4':1, 'd_A': 1, 'd_B':10}
 df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 #solver parameters
-L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=2000; t_gridpoints = 2; N=T*t_gridpoints #Number of timepoints
+L=30; x_gridpoints=5; J=L*x_gridpoints;I=J 
+T=50; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
 
 
 
@@ -36,6 +37,7 @@ U,U_record, U0, x_grid, reduced_t_grid= cn_edgegrowth1(par_dict,L,J,T,N, circuit
 
 #plot
 plot1D(U, savefig=False,filename='')
+plt.show()
 surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
 surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
 

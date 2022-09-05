@@ -168,10 +168,13 @@ def plot_highest_dispersion(eigenvalues,crop = 1000, top = 5000, L=100):
     plt.tight_layout()
     plt.show()
 
-def plot_all_dispersion(eigenvalues, n_species=6, crop=1000, top=5000, L=100):
+def plot_all_dispersion(eigenvalues, n_species=6, crop=False, top=5000, L=100):
     wvn_list = np.array(list(range(0, top + 1))) * np.pi / L
     # wvn_list = np.array(list(range(0,5000+1)))*np.pi/100
-
+    real_dominant_eig = eigenvalues.real[:,-1]
+    indexZeros = np.where(np.diff(np.sign(real_dominant_eig)))[0]
+    if crop==False:
+        crop=indexZeros[-1]+5
     for n in range(n_species):
         plt.plot(wvn_list[:crop], eigenvalues.real[:crop,[n]])
         plt.plot(wvn_list[:crop], eigenvalues.imag[:crop,[n]], linestyle = '--',c='k')

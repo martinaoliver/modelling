@@ -23,7 +23,7 @@ variant= 0
 n_species=2
 mechanism='nogrowth'
 L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=2000; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
+T=5000; t_gridpoints = 30; N=T*t_gridpoints #Number of timepoints
 filename= lambda parID: '%s_variant%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
 
 parID_list = pickle.load(open( modellingpath + '/growth/out/numerical/%s/%s/data/parID_list_%s.pkl'%(circuit_n,mechanism,filename('x')), "rb" ) )
@@ -50,11 +50,13 @@ for count,parID in enumerate(tqdm(parID_list, disable=False)):
         plt.subplot(122)
         plot1D(U)
         plt.show()
+        plt.close()
         plt.subplot(121)
         plotFourier(U[0])
         plt.subplot(122)
         plotFourier(U[1])
         plt.show()
+        plt.close()
         print('--------------')
         print('--------------')
         print('--------------')
@@ -83,3 +85,5 @@ if test==False:
     # lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
     # lsa_df_single = lsa_df.xs(0, level=1)
     print(lsa_df.head())
+
+print(lsa_df['system_class'].value_counts())

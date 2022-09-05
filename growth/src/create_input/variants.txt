@@ -23,7 +23,7 @@
     n=3
 
 
-    variant2 (turinghill):
+    variant2 (turinghill): #natalie's variant
     b_range = (0.1,100)
     Vm_range = (0.1, 100)
     km_range = (0.1, 100)

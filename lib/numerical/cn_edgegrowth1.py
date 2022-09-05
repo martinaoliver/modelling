@@ -66,15 +66,18 @@ def cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
         B = diags(diagonals, [ -1, 0,1]).toarray()
         return B
 
-        
     #storage variables
-    reduced_t_grid = np.linspace(0,T,T)
+    record_every_x_hours = 10
+    reduced_t_grid = np.arange(0,T,record_every_x_hours)     
+
     U = copy.deepcopy(U0) 
         #copydeepcopy is useful to make sure the original U0 concentration is not modified and we can retrieve it later on if needed. 
         #we will work with U and U_new from here onwards (U_new is the updated U after calculation).
     U_record=[]
+    record_every_x_hours = 10
     for species_index in range(n_species):
-        U_record.append(np.zeros([J, T])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
+        U_record.append(np.zeros([ int(T/record_every_x_hours), J])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
+
 
     def exponential_growth(t, s=0.0001, initialL=1):
         return (initialL*np.exp(s*t))
@@ -126,9 +129,11 @@ def cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
         for n in range(n_species):
             U_new[n] = np.multiply(U_new[n], shape)
 
-        if hour % 1 == 0 :  #only grow and record at unit time (hour)
+        hour = ti / (N / T)
+        if hour % record_every_x_hours == 0 :  #only grow and record every 10 hours unit time (hour)
             for n in range(n_species):
-                U_record[n][:,int(hour)] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
+                U_record[n][int(hour/record_every_x_hours), :] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
+        U = copy.deepcopy(U_new)
 
     
         U = copy.deepcopy(U_new)

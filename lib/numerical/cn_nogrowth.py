@@ -103,8 +103,6 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
         if hour % record_every_x_hours == 0 :  #only grow and record every 10 hours unit time (hour)
             for n in range(n_species):
                 U_record[n][int(hour/record_every_x_hours), :] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
-            plt.plot(U[0])
-            plt.show()
         U = copy.deepcopy(U_new)
     
     return U,U_record, U0, x_grid, reduced_t_grid
