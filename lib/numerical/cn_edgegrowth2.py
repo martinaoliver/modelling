@@ -20,7 +20,7 @@ sys.path.append(modellingpath + '/lib')
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
-def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2, perturbation=0.01):
+def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2, perturbation=0.01, boundaryCoeff=1, tqdm_disable=False):
     #spatial variables
     dx = float(L)/float(J)
     x_grid = np.array([j*dx for j in range(J)])
@@ -51,6 +51,8 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
             cellMatrix = np.concatenate((np.zeros(len_half_pad),np.ones(currentJ),np.zeros(len_half_pad)))
         elif (len_half_pad*2+currentJ)<J:
             cellMatrix = np.concatenate((np.zeros(len_half_pad),np.ones(currentJ),np.zeros(len_half_pad+1)))
+        else:
+            print('ERROR: cellMatrix too large')
         return cellMatrix
     initialJ=1
     cellMatrix=cellMatrixFunction(initialJ)
@@ -69,7 +71,7 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
 
     def A(alphan,J):
         bottomdiag = [-alphan for j in range(J-1)]
-        centraldiag = [1.+alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+alphan]
+        centraldiag = [1.+boundaryCoeff*alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+boundaryCoeff*alphan]
         topdiag = [-alphan for j in range(J-1)]
         diagonals = [bottomdiag,centraldiag,topdiag]
         A = diags(diagonals, [ -1, 0,1]).toarray()
@@ -77,7 +79,7 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
 
     def B(alphan,J):
         bottomdiag = [alphan for j in range(J-1)]
-        centraldiag = [1.-alphan]+[1.-2.*alphan for j in range(J-2)]+[1.-alphan]
+        centraldiag = [1.-boundaryCoeff*alphan]+[1.-2.*alphan for j in range(J-2)]+[1.-boundaryCoeff*alphan]
         topdiag = [alphan for j in range(J-1)]
         diagonals = [bottomdiag,centraldiag,topdiag]
         B = diags(diagonals, [ -1, 0,1]).toarray()
@@ -114,11 +116,11 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
     B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
     A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
 
-
+    newL = initialJ*dx
 
     #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
-    for ti in tqdm(range(N), disable = False): 
-
+    for ti in tqdm(range(N), disable = tqdm_disable): 
+        previousL = copy.deepcopy(newL)
         hour = ti / (N / T)
         if growth == 'exponential':
             newL = exponential_growth(hour,s=rate)
@@ -126,13 +128,10 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
         if growth == 'linear':
             newL = linear_growth(hour,s=rate)
 
-        currentJ = int(newL*x_gridpoints)
-        cellMatrix = cellMatrixFunction(currentJ)
+        if newL != previousL:
+            currentJ = int(newL*x_gridpoints)
+            cellMatrix = cellMatrixFunction(currentJ)
 
-
-        # A_list = [A(alphan,J) for alphan in alpha(D,dt,dx,n_species)]  
-        # B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
-        # A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
 
 
         # if currentJ != len(U[0]):
@@ -150,23 +149,15 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
                 print('negative')
             
         
-
-
-        # if hour % 1 == 0 :  #only grow and record at unit time (hour)
-        #     for n in range(n_species):
-        #         U_record[n][int(hour),:] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
-
         hour = ti / (N / T)
         if hour % record_every_x_hours == 0 :  #only grow and record every 10 hours unit time (hour)
-
             for n in range(n_species):
                 U_record[n][int(hour/record_every_x_hours), :] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
+        
         U = copy.deepcopy(U_new)
     
 
 
-
-    
     return U,U_record, U0, x_grid, reduced_t_grid, cellMatrix
 
 

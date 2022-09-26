@@ -169,4 +169,4 @@ def dispersionrelation(par_dict,steadystate_values_ss_n,circuit_n,top_dispersion
 
     system_class, maxeig= stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss, complex_dispersion)
 
-    return ss_class, system_class, eigenvalues, maxeig
+    return ss_class, system_class, eigenvalues, maxeig, complex_dispersion

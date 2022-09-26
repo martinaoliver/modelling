@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 #system parameters
 circuit_n = 'turinghill'
 variant=0 
-n_param_sets = 100000
+n_param_sets = 2000000
 mechanism = 'nogrowth'
 
 #dataframes with parameters and lsa output
@@ -27,15 +27,15 @@ multiple_lsa_df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_d
 lsa_df = multiple_lsa_df.xs(0, level=1)
 
 #solver parameters
-L=150; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=2000; t_gridpoints = 25; N=T*t_gridpoints #Number of timepoints
+L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
+T=5000; t_gridpoints = 30; N=T*t_gridpoints #Number of timepoints
 #solver parameters
 # L=10; x_gridpoints=5; J=L*x_gridpoints;I=J 
 # T=100; t_gridpoints = 2; N=T*t_gridpoints #Number of timepoints
 
 filename = lambda parID: '%s_variant%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
 
-parID= 2 #parameter set to use
+parID= 47 #parameter set to use
 par_dict = lsa_df.loc[parID].to_dict()
 print(par_dict)
 #run

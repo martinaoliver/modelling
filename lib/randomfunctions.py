@@ -157,8 +157,8 @@ def plot_highest_dispersion(eigenvalues,crop = 1000, top = 5000, L=100):
     wvn_list = np.array(list(range(0,top+1)))*np.pi/L
     # wvn_list = np.array(list(range(0,5000+1)))*np.pi/100
 
-    plt.plot(wvn_list[:crop], eigenvalues.real[:crop,[5]], label='Real highest eigenvalue', c='k')
-    plt.plot(wvn_list[1:crop], eigenvalues.imag[1:crop,[5]], linestyle = '--', label = 'Imaginary highest eigenvalue', c='k')
+    plt.plot(wvn_list[:crop], eigenvalues.real[:crop,[-1]], label='Real highest eigenvalue', c='k')
+    plt.plot(wvn_list[1:crop], eigenvalues.imag[1:crop,[-1]], linestyle = '--', label = 'Imaginary highest eigenvalue', c='k')
 
     plt.legend()
     plt.xlabel('Wavenumber')
@@ -166,7 +166,7 @@ def plot_highest_dispersion(eigenvalues,crop = 1000, top = 5000, L=100):
     plt.axhline(y=0, color='k', linestyle='-', linewidth = 0.1)
     plt.grid()
     plt.tight_layout()
-    plt.show()
+
 
 def plot_all_dispersion(eigenvalues, n_species=6, crop=False, top=5000, L=100):
     wvn_list = np.array(list(range(0, top + 1))) * np.pi / L
@@ -187,7 +187,7 @@ def plot_all_dispersion(eigenvalues, n_species=6, crop=False, top=5000, L=100):
     plt.axhline(y=0, color='green', linestyle='-', linewidth=0.1)
     plt.grid()
     plt.tight_layout()
-    plt.show()
+    # plt.show()
 
 def standardise_df(df):
     standardised_array = StandardScaler().fit_transform(df.values)

@@ -40,7 +40,7 @@ variant= 0
 n_species=2
 
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 100000
+n_param_sets = 2000000
 
 
 
@@ -48,7 +48,7 @@ n_param_sets = 100000
 date = date.today().strftime('%m_%d_%Y')
 # Specify size of batches in which to complete computations
 # Does not need to be a factor of number of parameter sets
-total_params=100000
+total_params=10
 
 
 
@@ -105,17 +105,18 @@ T=5000; t_gridpoints = 30
 # T=100; t_gridpoints = 2
 
 # Load dataframe of parameter sets
-multiple_df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+# multiple_df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # multiple_df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
-df = multiple_df.xs(0, level=1)
-
+# df = multiple_df.xs(0, level=1)
+df= pickle.load( open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+total_params=len(df)
+print(total_params)
 print('loaded')
 batch_size = int(total_params/Number_of_Threads) + 1
 df = df.iloc[0:total_params]
 print(df.head())
 batch_indices = list(range(0, len(df), batch_size))
-
 # Create a pool of workers
 pool = multiprocessing.Pool(Number_of_Threads)
 
@@ -125,7 +126,6 @@ for start_batch_index in batch_indices:
 
     print('main' + str(start_batch_index))
     df_batch = df.iloc[start_batch_index:start_batch_index+batch_size]
-
     pool_output.append(pool.apply_async(numerical_check, args=(df_batch,x_gridpoints, t_gridpoints,T,L)))
 
 # Close the parallel processing job

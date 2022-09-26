@@ -40,4 +40,4 @@ print(len(parID_list))
 
 pickle.dump( parID_list, open( modellingpath + '/growth/out/numerical/%s/%s/data/parID_list_%s.pkl'%(circuit_n,mechanism,filename('x')), "wb" ) )
 print('------')
-print(parID_list.count('1'))
+print(parID_list.count('5089'))

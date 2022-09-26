@@ -43,7 +43,7 @@ print(patternsDict)
 start = 0
 stop = len(patternsDict) 
 # stop=10
-plotAllFunction(patternsDict, circuit_n, mechanism, filename, start=start, stop=stop,round=False, tqdm_disable=False, saveFig=False,pad=0, metric=metric)
+plotAllFunction(patternsDict, circuit_n, mechanism, filename, start=start, stop=stop,round=False, tqdm_disable=False, saveFig=True,pad=0, metric=metric)
 
 
 # df = pickle.load( open( modellingpath + '/growth/out/patternAnalysis/%s/%s/%s/%s_df_%s.pkl'%(circuit_n,mechanism,metric,metric,filename('x')), 'rb'))

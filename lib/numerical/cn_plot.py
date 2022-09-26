@@ -2,10 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
 cmap = cm.Spectral_r
+cmap=cm.coolwarm
 from sklearn import preprocessing
 
+
 def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, peaks=False):
-    print(np.amax(U[0]), np.amin(U[0]))
     if round==True:
         U = np.round(U,decimals=3)
     if morphogen == 0:
@@ -37,10 +38,8 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
     plt.ylabel('Concentration')
     if savefig==True:
         plt.savefig('%s%s.jpeg'%(savefigpath,filename))
-
-    # else:
-    #     plt.show()
-    # return fig
+    else:
+        plt.show()
 
 
 def surfpattern(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
@@ -51,6 +50,7 @@ def surfpattern(results,grids,growth='linear', rate=0, morphogen = 0,savefig=Fal
     t_grid = grids[1]
     values = results.reshape(len(x_grid),len(t_grid))
     x, t = np.meshgrid(x_grid, t_grid)
+
     # t,x = np.meshgrid(t_grid, x_grid)
     # plt.contourf(t,x,results, cmap=cmap)
     plt.contourf(x,t,results, cmap=cmap)
@@ -64,4 +64,4 @@ def surfpattern(results,grids,growth='linear', rate=0, morphogen = 0,savefig=Fal
     plt.xlabel('Space')
     if savefig==True:
         plt.savefig('%s_overtime.png'%filename)
-    plt.show()
+    # plt.show()

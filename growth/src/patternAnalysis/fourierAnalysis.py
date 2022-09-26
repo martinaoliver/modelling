@@ -69,15 +69,16 @@ for count,parID in enumerate(tqdm(parID_list, disable=False)):
 if test==False:
     pickle.dump(parIDPsEntropy, open( modellingpath + '/growth/out/patternAnalysis/%s/%s/psEntropy/parIDpsEntropyDict_%s.pkl'%(circuit_n,mechanism,filename('x')), 'wb'))
     print('saved')
-
+test=False
+parIDPsEntropy = pickle.load(open( modellingpath + '/growth/out/patternAnalysis/%s/%s/psEntropy/parIDpsEntropyDict_%s.pkl'%(circuit_n,mechanism,filename('x')), 'rb'))
 #add column to lsa_df with Hps and save it to file
 if test==False:
-    n_param_sets = 100000
+    n_param_sets = 2000000
     lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
     lsa_df = lsa_df.xs(0, level=1)
     for parID in lsa_df.index:
         if parID not in parIDPsEntropy.keys():
-            parIDPsEntropy[parID]= 0 
+            parIDPsEntropy[parID]= np.nan
 
     lsa_df['psEntropy'] = lsa_df.index.to_series().map(parIDPsEntropy)
     pickle.dump(lsa_df , open( modellingpath + '/growth/out/patternAnalysis/%s/%s/psEntropy/psEntropy_df_%s.pkl'%(circuit_n,mechanism,filename('x')), 'wb'))

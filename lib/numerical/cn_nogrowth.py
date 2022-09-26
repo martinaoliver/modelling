@@ -1,3 +1,4 @@
+from re import S
 import numpy as np
 from scipy.sparse import spdiags, diags
 from tqdm import tqdm
@@ -41,7 +42,6 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
 
     U0 = []
     np.random.seed(1)
-
 
     steadystate = par_dict['ss_list']
     for index in range(n_species):

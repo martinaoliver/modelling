@@ -31,37 +31,51 @@ def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parI
         if number_steadystates > 0:
             for ss_n in range(number_steadystates): #perform linear stability analysis on all steady states found
                 steadystate_values_ss_n = steadystatelist[ss_n]
-                ss_class, system_class, eigenvalues, maxeig= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n,top_dispersion)
+                ss_class, system_class, eigenvalues, maxeig, complex_dispersion= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n,top_dispersion)
                 # maxeig, pattern_class, eigenvalues ,oscillations, eigenvalsteadystate= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n)
                 # par_dict['ss_n'],par_dict['ss_list'],par_dict['class'],par_dict['maxeig'],par_dict['oscillations'],par_dict['k0_eig'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,pattern_class,maxeig,oscillations,eigenvalsteadystate,[parID,ss_n]
-                par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,ss_class,system_class,maxeig,[parID,ss_n]
+                par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['complex_dispersion'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,ss_class,system_class,maxeig,complex_dispersion,[parID,ss_n]
                 output_df = pd.concat([output_df,pd.DataFrame([par_dict], columns=par_dict.keys())], ignore_index=True)
         else:
-            par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['new_index'] = 0, np.nan, np.nan,'no steady state', np.nan,[parID,0]
+            par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['complex_dispersion'],par_dict['new_index'] = 0, np.nan, np.nan,'no steady state', np.nan,np.nan,[parID,0]
             output_df = pd.concat([output_df,pd.DataFrame([par_dict], columns=par_dict.keys())], ignore_index=True)
 
     output_df = output_df.set_index('new_index')
     return output_df
 #Turing analysis carried out on a single parameter combination. The input is a dictionary with the corresponding parameters.
-def detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5000,calculate_unstable=False):
-    steadystatelist, number_steadystates = findsteadystates(par_dict, circuit_n,n_species,n_initial_conditions=100) #input a dictionary with the parameters and returns (1) a list with the steady states and (2) the number of steady states.
+from analytical.findsteadystates_functions import findsteadystates
+from analytical.dispersionrelation_functions import dispersionrelation
+import pandas as pd
+import numpy as np
 
+def detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5000,calculate_unstable=False,steadystate=False):
+    if np.any(steadystate)==False:
+        steadystatelist, number_steadystates = findsteadystates(par_dict, circuit_n,n_species,n_initial_conditions=100) #input a dictionary with the parameters and returns (1) a list with the steady states and (2) the number of steady states.
+    else:
+        steadystatelist = []
+        steadystatelist.append(steadystate)
+        number_steadystates = len(steadystatelist)
+
+        
+    system_class_list = []
     maxeig_list = []
     system_class_list = []
     ss_class_list = []
     eigenvalues_list=[]
     maxeig_list = []
+    complex_dispersion_list = []
 
 
     if number_steadystates > 0:
         for ss_n in range(number_steadystates): #perform linear stability analysis on all steady states found
             steadystate_values_ss_n = steadystatelist[ss_n]
-            ss_class, system_class, eigenvalues, maxeig= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n,top_dispersion)
+            ss_class, system_class, eigenvalues, maxeig,complex_dispersion= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n,top_dispersion)
             system_class_list.append(system_class)
             ss_class_list.append(system_class)
             eigenvalues_list.append(eigenvalues)
             maxeig_list.append(maxeig)
+            complex_dispersion_list.append(complex_dispersion)
 
     else:
         eigenvalues=[]
-    return steadystatelist, number_steadystates, ss_class_list, system_class_list, eigenvalues_list, maxeig_list
+    return steadystatelist, number_steadystates, ss_class_list, system_class_list, eigenvalues_list, maxeig_list, complex_dispersion_list
