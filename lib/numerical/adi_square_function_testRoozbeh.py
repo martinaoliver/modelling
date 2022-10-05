@@ -17,12 +17,18 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
     #for dt/dx^2 <1 (stability criterion): t_gridpoints approx < xgridpoints^2
     # parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'turinghill':turinghill}
     # f = parent_list[circuit_n](par_dict, stochasticity=stochasticity)
-    def f(U,n_species=2):
+    def f_Turing(U,n_species=2):
         dudt = [0]*n_species
         dudt[0]= 5*U[0] - 6*U[1] + 1
         dudt[1] = 6*U[0]- 7*U[1] 
         return dudt
 
+    def f(U,a=2,b=3):
+        dudt = [0]*2
+        dudt[0]= a-(b+1)*U[0] + (U[0]**2)*U[1]
+        dudt[1] = b*U[0] - (U[0]**2)*U[1]
+        return dudt
+    D=[0.02,0.4]
     #spatial variables
     dx = float(L_x)/float(J-1); dy = float(L_y)/float(I-1)
     x_grid = numpy.array([j*dx for j in range(J)]); y_grid = numpy.array([i*dy for i in range(I)])
@@ -43,10 +49,11 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
     perturbation=0.001
     np.random.seed(1)
 
-    if np.all(steadystates)==0:
-        steadystates=[0.1]*n_species
+    # if np.all(steadystates)==0:
+    #     steadystates=[0.1]*n_species
     # cell_matrix = np.zeros(shape=(I,J))
     # cell_matrix[int(I/2), int(J/2)] = 1
+    steadystates = [2,3/2]
     for index in range(n_species):
         U0.append(np.random.uniform(low=steadystates[index] - perturbation, high=steadystates[index] + perturbation, size=(I, J)))
     # U0 = U0*cell_matrix
@@ -155,22 +162,20 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
         # f0 = f.dudt(U)
         f0 = f(U)
         for i in range(I):
-            for n in diffusing_species:
+            for n in range(n_species):
                 # U_half[n][:,i] = solve_banded((1, 1), ab_list[n], b('y',i,alpha[n],U[n]) +  f0[n][:,i]*(dt/2)) #CN step in one dimension to get banded(tridiagonal) A matrix
                 U_half[n][:,i] = A_inv[n].dot(b('y',i,alpha[n],U[n])+  f0[n][:,i]*(dt/2)) # Dot product with inverse rather than solve system of equations
-            for n in nondiffusing_species: #Species with D=0, no CN included, basic euler
-                U_half[n][:,i] =  U[n][:,i] + f0[n][:,i]*(dt/2)
+
 
         #Second step: solve in x direction from n+1/2 -> n+1
         U_new = copy.deepcopy(U_half)
         # f1 = f.dudt(U_half)
         f1 = f(U_half)
         for j in range(J):
-            for n in diffusing_species:
+            for n in range(n_species):
                 # U_new[n][j,:] = solve_banded((1, 1), ab_list[n], b('x',j,alpha[n],U_half[n]) + f1[n][j,:]*(dt/2))
                 U_new[n][j,:] = A_inv[n].dot(b('x',j,alpha[n],U_half[n])+  f1[n][j,:]*(dt/2)) # Dot product with inverse rather than solve system of equations
-            for n in nondiffusing_species:
-                U_new[n][j,:] =  U_half[n][j,:] + f1[n][j,:]*(dt/2)
+
 
         # hour = ti / (N / T)
         # # print(np.amax(np.abs(D[0]*laplace(U[0]) + f.dudt(U)[0]))) 

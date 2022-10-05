@@ -41,7 +41,7 @@ n_species=6
 general_df= pickle.load( open(modellingpath + '/3954/parameter_space_search/parameterfiles/df_circuit%r_variant%s_%rparametersets_%rvar.pkl'%(circuit_n,variant,parametersets_n), "rb" ) )
 # general_df= pickle.load( open(modellingpath + '/3954/parameter_space_search/results/turing_dataframes/turing_lsa_df_circuit2_variant0_1000000parametersets.pkl', "rb" ) )
 # par_dict = general_df.loc[parID].to_dict()
-par_dict = general_df.iloc[parID].to_dict()
+par_dict = {}
 print(par_dict)
 d_A = par_dict['d_A']
 d_B = par_dict['d_B']
