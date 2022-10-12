@@ -5,6 +5,8 @@ from tqdm import tqdm
 import copy
 from scipy.linalg import solve_banded
 import matplotlib.pyplot as plt
+import numba
+from numba import cuda, float32
 
 #############
 ###paths#####
@@ -86,25 +88,31 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
     A_list = [A(alphan,J) for alphan in alpha(D,dt,dx,n_species)]  
     B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
     A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
+    
+    numba.jit(nopython=True)
+    def cn_forloop(U,N,T,A_inv,B_list, record_every_x_hours):
+        #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
+        print('entering numba for loop')
+        for ti in range(N): 
+            U_new = U.copy()
+            f0 = f.dudt(U_new)
 
-
-    #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
-    print('entering forloop not numba')
-    for ti in tqdm(range(N), disable = tqdm_disable): 
-        U_new = copy.deepcopy(U)
-        f0 = f.dudt(U_new)
-        
-        #iterate over every chemical specie when calculating concentrations. 
-        for n in range(n_species):
-            U_new[n] = A_inv[n].dot(B_list[n].dot(U[n]) +  f0[n]*(dt/2)) # Dot product with inverse rather than solve system of equations
-
-        
-        #storing results
-        hour = ti / (N / T)
-        if hour % record_every_x_hours == 0 :  #only grow and record every 10 hours unit time (hour)
+            #iterate over every chemical specie when calculating concentrations. 
             for n in range(n_species):
-                U_record[n][int(hour/record_every_x_hours), :] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
-        U = copy.deepcopy(U_new)
+                U_new[n] = A_inv[n].dot(B_list[n].dot(U[n]) +  f0[n]*(dt/2)) # Dot product with inverse rather than solve system of equations
+
+
+            #storing results
+            hour = ti / (N / T)
+
+
+            if hour % record_every_x_hours == 0 :  #only grow and record every 10 hours unit time (hour)
+                for n in range(n_species):
+                    U_record[n][int(hour/record_every_x_hours), :] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
+            U = U_new.copy()
+        return U,U_record
+    
+    U,U_record = cn_forloop(U,N,T,A_inv,B_list,record_every_x_hours)
     
     return U,U_record, U0, x_grid, reduced_t_grid
 

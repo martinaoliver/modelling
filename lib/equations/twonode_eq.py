@@ -20,9 +20,11 @@ sys.path.append(modellingpath + '/lib')
 
 ###imports###
 import numpy as np
+import numba
+from numba import cuda, float32
 #############
 
-
+# @numba.jit(nopython=True)
 class hill_functions():
 
     def __init__(self, par_dict):
@@ -45,7 +47,7 @@ class hill_functions():
         if interaction == 0:
             return 1
 
-
+# @numba.jit(nopython=True)
 class turinghill(hill_functions):
 
     def __init__(self,par_dict,stochasticity=0):

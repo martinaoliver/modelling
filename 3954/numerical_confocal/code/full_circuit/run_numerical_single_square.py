@@ -5,6 +5,7 @@ import sys
 import os
 
 from importlib_metadata import distribution
+
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
 sys.path.append(modellingpath + '/lib')
@@ -14,7 +15,8 @@ sys.path.append(modellingpath + '/lib')
 #############
 from numerical.adi_ca_function_openclosed_nodilution import adi_ca_openclosed_nodilution
 from numerical.plotting_numerical import *
-from numerical.adi_square_function_testRoozbeh import adi
+from numerical.adi_square_function_testRoozbeh_numba import adi as adi_numba
+# from numerical.adi_square_function_testRoozbeh import adi
 
 import numpy as np
 import pickle
@@ -60,26 +62,29 @@ print(par_dict)
 # L_x=int(sys.argv[2]); x_gridpoints = int(sys.argv[3]); L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
 # T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) ; N = T*t_gridpoints
 
-L_x=10; x_gridpoints = 15; L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
+L_x=10; x_gridpoints = 3; L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
 T =120; t_gridpoints = 10 ; N = T*t_gridpoints
+
+L_x=1; x_gridpoints = 25; L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
+T =2; t_gridpoints =  int(1/0.05) ; N = T*t_gridpoints
 
 suggested_tgridpoints = x_gridpoints**2
 
 filename = 'circuit%r_variant%s_bc%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,parID,L,J,T,N)
 # U_record,U_final = adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=seed, p_division=p_division, tqdm_disable=tqdm_disable, growth='Fast', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
-U_record,U_final = adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0)#,p_division=p_division,seed=seed)
+U_record,U_final = adi_numba(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0)#,p_division=p_division,seed=seed)
 # def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
 
+
+index = -1
+_ = plt.figure(figsize=(8,4))
+plt.subplot(121)
 plt.imshow(U_final[-1])
-plt.show()
+plt.colorbar(shrink=.75)
+plt.subplot(122)
 plt.imshow(U_final[0])
+plt.colorbar(shrink=.75)
 plt.show()
-
-
-
-
-
-
 
 
 

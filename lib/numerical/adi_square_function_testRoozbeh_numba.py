@@ -14,6 +14,7 @@ from equations.class_circuit_eq import *
 from scipy.ndimage import laplace
 import numba
 from numba import cuda, float32
+# @numba.jit(nopython=True)
 
 def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
     #for dt/dx^2 <1 (stability criterion): t_gridpoints approx < xgridpoints^2
@@ -25,11 +26,24 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
         dudt[1] = 6*U[0]- 7*U[1] 
         return dudt
 
-    def f(U,a=2,b=3):
-        dudt = [0]*2
-        dudt[0]= a-(b+1)*U[0] + (U[0]**2)*U[1]
-        dudt[1] = b*U[0] - (U[0]**2)*U[1]
-        return dudt
+    @numba.jit(nopython=True)
+    def f(c, t, f_args):
+        A, B = f_args
+        u = c[0, :, :]
+        v = c[1, :, :]
+        u2 = u**2
+        u2v = u2 * v
+        fu = A - (B + 1) * u + u2v
+        fv = B * u - u2v
+        return np.stack((fu, fv))
+
+
+    # @numba.jit(nopython=True)
+    # def f(U,a=2,b=3):
+    #     dudt = [0]*2
+    #     dudt[0]= a-(b+1)*U[0] + (U[0]**2)*U[1]
+    #     dudt[1] = b*U[0] - (U[0]**2)*U[1]
+    #     return dudt
     D=[0.02,0.4]
     #spatial variables
     dx = float(L_x)/float(J-1); dy = float(L_y)/float(I-1)
@@ -103,6 +117,7 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
 
 
     #b vector (left-hand side of Ax=b)
+    @numba.jit(nopython=True)
     def b(axis,ij,alphan,Un):
         b_t_stencil = np.array( [0] + [(1-alphan)] + [alphan])
         b_c_stencil = np.array( [alphan] + [(1-2*alphan)] + [alphan])
@@ -113,42 +128,41 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
             i = ij
             if i > 0 and i < I-1:
                 for j in range(0,J):
-                    ux_three = [Un[j,i-1], Un[j,i], Un[j,i+1]]
-                    # sub_b = np.sum(ux_three*b_c_stencil)
+                    # ux_three = [Un[j,i-1], Un[j,i], Un[j,i+1]]
+                    ux_three = np.array( [Un[j,i-1]] +  [Un[j,i]]+  [Un[j,i+1]])
                     sub_b = sum(ux_three*b_c_stencil)
                     b[j] = sub_b
 
-
             if i == 0:
                 for j in range(0,J):
-                    ux_three = [0 , Un[j,i], Un[j,i+1]]
-                    sub_b = np.sum(ux_three*b_t_stencil)
+                    ux_three = np.array([0] +[Un[j,i]]+[Un[j,i+1]])
+                    sub_b = sum(ux_three*b_t_stencil)
                     b[j] = sub_b
 
             if i == I-1:
                 for j in range(0,J):
-                    ux_three = [Un[j,i-1], Un[j,i] , 0]
-                    sub_b = np.sum(ux_three*b_b_stencil)
+                    ux_three = np.array([Un[j,i-1]] + [Un[j,i]] + [0])
+                    sub_b = sum(ux_three*b_b_stencil)
                     b[j] = sub_b
 
         if axis == 'x':
             j = ij
             if j > 0 and  j < J-1:
                 for i in range(0,I):
-                    uy_three = [Un[j-1,i], Un[j,i], Un[j+1,i]]
-                    sub_b = np.sum(uy_three*b_c_stencil)
+                    uy_three = np.array([Un[j-1,i]]+ [Un[j,i]] + [Un[j+1,i]])
+                    sub_b = sum(uy_three*b_c_stencil)
                     b[i] = sub_b
 
             if j == 0:
                 for i in range(0,I):
-                    uy_three = [0, Un[j,i], Un[j+1,i]]
-                    sub_b = np.sum(uy_three*b_t_stencil)
+                    uy_three = np.array([0] +[Un[j,i]] +  [Un[j+1,i]])
+                    sub_b = sum(uy_three*b_t_stencil)
                     b[i] = sub_b
 
             if j == J-1:
                 for i in range(0,I):
-                    uy_three = [Un[j-1,i], Un[j,i], 0]
-                    sub_b = np.sum(uy_three*b_b_stencil)
+                    uy_three = np.array([Un[j-1,i]] + [Un[j,i]] + [0])
+                    sub_b = sum(uy_three*b_b_stencil)
                     b[i] = sub_b
 
         return b
@@ -163,55 +177,59 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
     A_inv = [np.linalg.inv(a) for a in A_list]
     # unittime=0
 
-    for ti in tqdm(range(N), disable = tqdm_disable):
-        #First step: solve in y direction from n -> n+1/2
-        U_half = U.copy()
-        # f0 = f.dudt(U)
-        f0 = f(U)
-        for i in range(I):
-            for n in range(n_species):
-                # U_half[n][:,i] = solve_banded((1, 1), ab_list[n], b('y',i,alpha[n],U[n]) +  f0[n][:,i]*(dt/2)) #CN step in one dimension to get banded(tridiagonal) A matrix
-                U_half[n][:,i] = A_inv[n].dot(b('y',i,alpha[n],U[n])+  f0[n][:,i]*(dt/2)) # Dot product with inverse rather than solve system of equations
-                # U_half[n][:,i] = A_inv[n].dot(b('y',i,alpha[n],U[n])+  f0[n][:,i]*(dt/2)) # Dot product with inverse rather than solve system of equations
+    numba.jit(nopython=True)
+    def adi_forloop(U,N,A_inv):
+
+        # print('inside forloop')
+        for ti in range(N):
+            #First step: solve in y direction from n -> n+1/2
+            U_half = U.copy()
+            # f0 = f.dudt(U)
+            f0 = f(U, ti, (2,3))
+            for i in range(I):
+                for n in range(n_species):
+                    # U_half[n][:,i] = solve_banded((1, 1), ab_list[n], b('y',i,alpha[n],U[n]) +  f0[n][:,i]*(dt/2)) #CN step in one dimension to get banded(tridiagonal) A matrix
+                    U_half[n][:,i] = A_inv[n].dot(b('y',i,alpha[n],U[n])+  f0[n][:,i]*(dt/2)) # Dot product with inverse rather than solve system of equations
+                    # U_half[n][:,i] = A_inv[n].dot(1+  f0[n][:,i]*(dt/2)) # Dot product with inverse rather than solve system of equations
+
+            #Second step: solve in x direction from n+1/2 -> n+1
+            U_new = U_half.copy()
+            # f1 = f.dudt(U_half)
+            f1 = f(U_half, ti, (2,3))
+            for j in range(J):
+                for n in range(n_species):
+                    # U_new[n][j,:] = solve_banded((1, 1), ab_list[n], b('x',j,alpha[n],U_half[n]) + f1[n][j,:]*(dt/2))
+                    U_new[n][j,:] = A_inv[n].dot(b('x',j,alpha[n],U_half[n])+  f1[n][j,:]*(dt/2)) # Dot product with inverse rather than solve system of equations
+                    # U_new[n][j,:] = A_inv[n].dot(1+  f1[n][j,:]*(dt/2)) # Dot product with inverse rather than solve system of equations
+                    # check whether dot or * is faster in numba
+
+            # hour = ti / (N / T)
+            # # print(np.amax(np.abs(D[0]*laplace(U[0]) + f.dudt(U)[0]))) 
+            # if hour % 10 == 0:  #only consider division at unit time (hour)
+            #     #append results into top_array for records
+            #     for species_index in range(n_species):
+            #         U_record[species_index][:, :, int(hour)] = U_new[species_index] #issue in this line
+            # if hour % 50 == 0:   
+            #     uprime_list=[np.amax(np.abs(U_new[n]-U[n])) for n in range(n_species)]
+            #     # print(np.amax(uprime_list))
+
+            #     if all(i <= 10e-4 for i in uprime_list):
+            #         if hour > 200:
+            #             # print('Error1')
+            #             # print(np.amax(np.abs(U_new[-2]-U[-2])))
+            #             # print('Error2')
+            #             # print([np.amax(np.abs(D[i]*laplace(U[i]) + f.dudt(U)[i])) for i in range(n_species)])
+            #             print('converged')
+            #             return U_record, U
+            #             break
 
 
-        #Second step: solve in x direction from n+1/2 -> n+1
-        U_new = U_half.copy()
-        # f1 = f.dudt(U_half)
-        f1 = f(U_half)
-        for j in range(J):
-            for n in range(n_species):
-                # U_new[n][j,:] = solve_banded((1, 1), ab_list[n], b('x',j,alpha[n],U_half[n]) + f1[n][j,:]*(dt/2))
-                U_new[n][j,:] = A_inv[n].dot(b('x',j,alpha[n],U_half[n])+  f1[n][j,:]*(dt/2)) # Dot product with inverse rather than solve system of equations
-
-
-        # hour = ti / (N / T)
-        # # print(np.amax(np.abs(D[0]*laplace(U[0]) + f.dudt(U)[0]))) 
-        # if hour % 10 == 0:  #only consider division at unit time (hour)
-        #     #append results into top_array for records
-        #     for species_index in range(n_species):
-        #         U_record[species_index][:, :, int(hour)] = U_new[species_index] #issue in this line
-        # if hour % 50 == 0:   
-        #     uprime_list=[np.amax(np.abs(U_new[n]-U[n])) for n in range(n_species)]
-        #     # print(np.amax(uprime_list))
-
-        #     if all(i <= 10e-4 for i in uprime_list):
-        #         if hour > 200:
-        #             # print('Error1')
-        #             # print(np.amax(np.abs(U_new[-2]-U[-2])))
-        #             # print('Error2')
-        #             # print([np.amax(np.abs(D[i]*laplace(U[i]) + f.dudt(U)[i])) for i in range(n_species)])
-        #             print('converged')
-        #             return U_record, U
-        #             break
-
-
-        U = U_new.copy()
-    
-
-
-    #check if solution is correct
-    # print(np.amax(D[-1]*laplace(U) + f.dudt(U)[-1]))
+            U = U_new.copy()
+        
+        return U_record, U
+    U_record, U = adi_forloop(U,N,A_inv)
+        #check if solution is correct
+        # print(np.amax(D[-1]*laplace(U) + f.dudt(U)[-1]))
     return U_record, U
 
 
