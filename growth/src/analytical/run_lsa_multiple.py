@@ -33,7 +33,7 @@ n_param_sets = 100000
 start_batch_index = 0
 batch_size = 2083
 # obtain a dictionary with some parameters to use in our analysis
-df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+df= pickle.load( open(modellingpath + "/3954/paper/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 df_batch = df.iloc[start_batch_index:start_batch_index+batch_size]
 
 #Run analysis on 1M parameter sets

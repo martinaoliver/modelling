@@ -51,8 +51,8 @@ date = date.today().strftime('%m_%d_%Y')
 # Specify size of batches in which to complete computations
 # Does not need to be a factor of number of parameter sets
 # batch_size = 20000
-batch_size = 10
-# batch_size = 2
+# batch_size = 10
+batch_size = 2
 print(batch_size)
 
 
