@@ -35,12 +35,12 @@ else:
 print('Number of Threads set to ', Number_of_Threads)
 # Number_of_Threads=48
 # Specify name of circuit and variant investigated
-circuit_n='turinghill'
-variant= 2
-n_species=2
+circuit_n='circuit12'
+variant=0
+n_species=9
 # Specifiy number of parameter sets in parameterset file to be loaded
-df_lenght = 10
-n_param_sets = 10
+df_lenght = 1000
+n_param_sets = 1000
 # df_lenght = 10
 # n_param_sets = 10
 

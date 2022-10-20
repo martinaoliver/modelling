@@ -6,6 +6,7 @@ import os
 
 
 
+
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
 sys.path.append(modellingpath + '/lib')
@@ -87,13 +88,14 @@ iptg= {'name':'iptg','distribution':'gaussian', 'mean':1000, 'noisetosignal':0.1
 
 
 nsamples=int(sys.argv[1])
-
-parameterTypeList = [D_parameters,b_parameters,V_parameters,K_parameters,mu_parameters,n_parameters,k_parameters]
-for parameterType in parameterTypeList:
-    stackedDistributions = preLhs(parameterType)
-    lhsDist = lhs(stackedDistributions,nsamples)
-    lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
-    plotDist(parameterType,lhsDist_df)
+plotDistributions=False
+if plotDistributions == True:
+    parameterTypeList = [D_parameters,b_parameters,V_parameters,K_parameters,mu_parameters,n_parameters,k_parameters]
+    for parameterType in parameterTypeList:
+        stackedDistributions = preLhs(parameterType)
+        lhsDist = lhs(stackedDistributions,nsamples)
+        lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
+        plotDist(parameterType,lhsDist_df)
 
 parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
 stackedDistributions = preLhs(parameterDictList)
