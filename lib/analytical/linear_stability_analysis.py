@@ -15,19 +15,20 @@ from analytical.findsteadystates_functions import findsteadystates
 from analytical.dispersionrelation_functions import dispersionrelation
 import pandas as pd
 import numpy as np
-
+from tqdm import tqdm
 #Turing analysis carried out on a dataframe. The input is a df with every parameter set.
-def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parID=False):
+def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parID=False, tqdm_disable=True):
     len_df = len(df) #lenght of dataframe (number of parameter sets to analyse)
     output_df = pd.DataFrame(data=None, columns=df.columns)
     # par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['new_index'] =[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
 
-    for parID in df.index:
+    for parID in tqdm(df.index,disable=False):
         if print_parID == True:
             print(parID)
         
         par_dict = df.loc[parID].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
         steadystatelist, number_steadystates = findsteadystates(par_dict,circuit_n,n_species, n_initial_conditions = 100) #input a dictionary with the parameters and returns (1) a list with the steady states and (2) the number of steady states.
+        print(steadystatelist)
         if number_steadystates > 0:
             for ss_n in range(number_steadystates): #perform linear stability analysis on all steady states found
                 steadystate_values_ss_n = steadystatelist[ss_n]

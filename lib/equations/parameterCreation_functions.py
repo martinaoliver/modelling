@@ -1,11 +1,17 @@
+from unicodedata import name
 from sklearn.utils import column_or_1d
 
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+import seaborn as sns
+from matplotlib import pyplot as plt
+
+
+np.random.seed(1)
 
 def lhs(data, nsample):
-    nvar,m = data.shape
+    m, nvar = data.shape
     ran = np.random.uniform(size=(nsample, nvar))
     s = np.zeros((nsample, nvar))
     for j in tqdm(range(0, nvar)):
@@ -13,23 +19,30 @@ def lhs(data, nsample):
         P = ((idx - ran[:, j]) / nsample) * 100
         s[:, j] = np.percentile(data[:, j], P)
 
+    if np.any(s<0):
+        print('WARNING: negative values in lhs')
+        s[s<0] = 0.001
+        
     return s
-
-
-
-
 
 def loguniform(size, low=-3, high=3):
     return (10) ** (np.random.uniform(low, high, size))
 
 
 
-def parameterGaussian(name, mean, stdev, size):
+def parameterGaussian(name, mean, stdev, size,noisetosignal=True):
+    stdev = noisetosignal * mean
     gaussianDistribution = np.random.normal(mean, stdev, size)
-    # pd_column = pd.DataFrame({name:distribution})
     return gaussianDistribution
 
-def parameterLoguniform(name, min, max, size):
+def parameterLogNormal(name, mean, sigma, size):
+    # if scaleStdev==True:
+    #     stdev = stdev * mean
+    lognormalDistribution = np.random.lognormal(mean, sigma, size)
+    # lognormalDistribution[lognormalDistribution >= 0]
+    return lognormalDistribution
+
+def parameterLogUniform(name, min, max, size):
     loguniformDistribution = loguniform(size)
     croppedLoguniformDistribution = np.array([x for x in loguniformDistribution if min <= x <= max])
     return croppedLoguniformDistribution
@@ -42,16 +55,53 @@ def parameterFixed(name, value, size):
 
 def parameterDistribution(parameterDict,size):
     if parameterDict['distribution']=='gaussian':
-        dist = parameterGaussian(parameterDict['name'],parameterDict['mean'], parameterDict['stdev'],size)
+        dist = parameterGaussian(parameterDict['name'],parameterDict['mean'], parameterDict['noisetosignal'],size)
     if parameterDict['distribution']=='loguniform':
-        dist =  parameterLoguniform(parameterDict['name'],parameterDict['min'], parameterDict['max'],size)
+        dist =  parameterLogUniform(parameterDict['name'],parameterDict['min'], parameterDict['max'],size)
     if parameterDict['distribution']=='fixed':
-        dist =  parameterLoguniform(parameterDict['name'],parameterDict['value'],size)
+        dist =  parameterFixed(parameterDict['name'],parameterDict['value'],size)
+    # sns.histplot(dist, bins=100)
+    # plt.show()
     return dist
 
 def preLhs(parameterDictList):
     parameterDistributionList = [parameterDistribution(parameterDict,100000) for parameterDict in parameterDictList]
     distributionMinimumLenght = np.amin([len(x) for x in parameterDistributionList])
     croppedParameterDistributionList = [x[:distributionMinimumLenght] for x in parameterDistributionList]
-    stackedDistributions = np.stack(croppedParameterDistributionList,axis=0)
+    # for dist in croppedParameterDistributionList:
+    #     sns.histplot(dist, bins=100)
+    #     plt.show()
+    stackedDistributions = np.column_stack((croppedParameterDistributionList))
     return stackedDistributions
+
+def plotDist(parameterDictList,lhsDist_df):
+    nvar = len(parameterDictList)
+  
+    fig,axs = plt.subplots(nrows=1,ncols=nvar,figsize=(nvar*5,5))
+    for count,parameter in enumerate(parameterDictList):
+        name = parameter['name']
+        lhsDistColumn = lhsDist_df[name]
+        sns.histplot(lhsDistColumn, ax=axs[count], bins=100)
+        axs[count].set(ylabel ='',yticks=[],yticklabels=[])
+        axs[count].set_xlabel(name, fontsize=15)
+        # axs[count].set_xscale('log')
+    plt.show()
+
+# def plotDist(parameterDictList,lhsDist_df):
+
+#     nvar=len(parameterDictList)
+#     n_col = int(np.sqrt(nvar))
+#     n_col = 7
+#     n_row = int(np.floor(nvar/n_col)+1)    # number of rows in the figure of the cluster
+
+
+#     fig = plt.figure(figsize=(n_col/44, n_row/4))
+#     for count,parameter in enumerate(parameterDictList):
+#         ax=plt.subplot(n_row,n_col, count+1)
+#         name = parameter['name']
+#         lhsDistColumn = lhsDist_df[name]
+#         sns.histplot(lhsDistColumn, ax=ax, bins=100)
+#         ax.set(ylabel='',yticks=[],yticklabels=[])
+
+#     plt.show()
+#     plt.close

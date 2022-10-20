@@ -41,6 +41,9 @@ def newton_raphson(f, x_guess,equations_par_dict, max_num_iter=15, tolerance=0.0
         # print("Iteration {0}: Error of {1} with an estimate of {2}".format(iter, err, x))
 
         iter = iter + 1
+        # print(f'prex{x}')
+        # x = np.round(x,4)
+        # print(f'postx{x}')
     if err < tolerance:
         if sum(item < 0 for item in x) == 0 :
             return (x, err, 0)
@@ -54,7 +57,8 @@ class newtonraphson_equations(hill_functions):
         setattr(self, 'circuit_n', circuit_n)
         setattr(self, 'stochasticity', 1)
 
-        self.parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
+        self.parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'circuit12':circuit12, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
+        
     def diff_equations(self, x):
         n=0
         # circuit = self.parent_list[self.circuit_n-1]
@@ -88,19 +92,25 @@ def newtonraphson_run(par_dict,initial_conditions, circuit_n):
     for n in range(len(initial_conditions)):
         #this command performs newton raphson on a specific initial condition with the defined system (equations, parameters).
         xn = newton_raphson(f,initial_conditions[n],equations_par_dict)
+
         if xn == None: #no steady state found at that initial condition
             pass
+
         elif xn[2]==0: #steady state found at that initial condition
+            # print(f'prexn[0]{xn[0]}')
+            # xn[0] = np.round(xn[0],3)
+            # print(f'postxn[0]{xn[0]}')
+            steadystate = np.round(xn[0],4)
             if countlist == 0: #Always add to add clusteredsteadystates in the first iteration of this for loop.
-                clusteredsteadystates[0,:] = xn[0]
+                clusteredsteadystates[0,:] = steadystate
                 clusteredcountlist +=1 #keeps count of number of steady states added to clusteredsteadystates
 
             if countlist > 0: #if not the first iteration, the steady state it must be compared against previous steady states stored to see if its the same
                 logiclist = []
                 for i in range(clusteredcountlist):
-                    logiclist.append(np.allclose(clusteredsteadystates[i], xn[0], rtol=10**-2, atol=0)) #PROCEED IF NO TRUES FOUND
+                    logiclist.append(np.allclose(clusteredsteadystates[i], steadystate, rtol=10**-2, atol=0)) #PROCEED IF NO TRUES FOUND
                 if not True in logiclist: #no similar steady states previously found
-                    clusteredsteadystates[clusteredcountlist] = xn[0]
+                    clusteredsteadystates[clusteredcountlist] = steadystate
                     clusteredcountlist +=1
             countlist +=1
 
@@ -110,8 +120,8 @@ def newtonraphson_run(par_dict,initial_conditions, circuit_n):
         clusteredsteadystates = clusteredsteadystates[~np.all(clusteredsteadystates == 0, axis=1)]
 
     # - Remove any steady states with zero to avoid errors down the line
-    clusteredsteadystates = clusteredsteadystates[np.all(clusteredsteadystates != 0, axis=1)]
-
+    # clusteredsteadystates = clusteredsteadystates[np.all(clusteredsteadystates != 0, axis=1)]
+    clusteredsteadystates[clusteredsteadystates==0]=1e-300 #set zeros to practically zero to avoid errors
     return clusteredsteadystates
 
 
