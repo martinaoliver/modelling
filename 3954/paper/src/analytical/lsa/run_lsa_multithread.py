@@ -39,8 +39,8 @@ circuit_n='circuit12'
 variant=0
 n_species=9
 # Specifiy number of parameter sets in parameterset file to be loaded
-df_lenght = 1000
-n_param_sets = 1000
+df_lenght = 10
+n_param_sets = 10
 # df_lenght = 10
 # n_param_sets = 10
 
@@ -52,7 +52,7 @@ date = date.today().strftime('%m_%d_%Y')
 # Does not need to be a factor of number of parameter sets
 # batch_size = 20000
 # batch_size = 10
-batch_size = 2
+batch_size = 5
 print(batch_size)
 
 
