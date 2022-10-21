@@ -36,11 +36,11 @@ print('Number of Threads set to ', Number_of_Threads)
 # Number_of_Threads=48
 # Specify name of circuit and variant investigated
 circuit_n='circuit12'
-variant=0
+variant=1
 n_species=9
 # Specifiy number of parameter sets in parameterset file to be loaded
-df_lenght = 10
-n_param_sets = 10
+df_lenght = 1000000
+n_param_sets = 1000000
 # df_lenght = 10
 # n_param_sets = 10
 
@@ -52,7 +52,7 @@ date = date.today().strftime('%m_%d_%Y')
 # Does not need to be a factor of number of parameter sets
 # batch_size = 20000
 # batch_size = 10
-batch_size = 5
+batch_size = 208333
 print(batch_size)
 
 

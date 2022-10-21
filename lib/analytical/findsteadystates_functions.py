@@ -3,7 +3,7 @@ from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
 #Function performing newton_raphson.
-def newton_raphson(f, x_guess,equations_par_dict, max_num_iter=15, tolerance=0.0001, alpha=1):
+def newton_raphson(f, x_guess,equations_par_dict, max_num_iter=15, tolerance=0.000001, alpha=1):
     '''
     Function for representing a Newton-Raphson iteration for multidimensional systems of equations
     :param f: function class that must define the following methods:
@@ -38,12 +38,9 @@ def newton_raphson(f, x_guess,equations_par_dict, max_num_iter=15, tolerance=0.0
         err = np.linalg.norm(fx)
 
         # update the iteration counter
-        # print("Iteration {0}: Error of {1} with an estimate of {2}".format(iter, err, x))
-
+ 
         iter = iter + 1
-        # print(f'prex{x}')
-        # x = np.round(x,4)
-        # print(f'postx{x}')
+
     if err < tolerance:
         if sum(item < 0 for item in x) == 0 :
             return (x, err, 0)
@@ -97,9 +94,7 @@ def newtonraphson_run(par_dict,initial_conditions, circuit_n):
             pass
 
         elif xn[2]==0: #steady state found at that initial condition
-            # print(f'prexn[0]{xn[0]}')
-            # xn[0] = np.round(xn[0],3)
-            # print(f'postxn[0]{xn[0]}')
+
             steadystate = np.round(xn[0],4)
             if countlist == 0: #Always add to add clusteredsteadystates in the first iteration of this for loop.
                 clusteredsteadystates[0,:] = steadystate

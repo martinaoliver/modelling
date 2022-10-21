@@ -18,19 +18,19 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=12
-variant=0
+variant=1
 #diffusion parameters
-DU = {'name':'DU','distribution':'gaussian', 'mean':1, 'noisetosignal':0.1}
-DV= {'name':'DV','distribution':'gaussian', 'mean':1, 'noisetosignal':0.1}
+DU = {'name':'DU','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
+DV= {'name':'DV','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
 D_parameters = [DU,DV]
 
 #background parameters
-bA = {'name':'bA','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.1}
-bB = {'name':'bB','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.1}
-bC = {'name':'bC','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.1}
-bD = {'name':'bD','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.1}
-bE = {'name':'bE','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.1}
-bF = {'name':'bF','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.1}
+bA = {'name':'bA','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.05}
+bB = {'name':'bB','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.05}
+bC = {'name':'bC','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.05}
+bD = {'name':'bD','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.05}
+bE = {'name':'bE','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.05}
+bF = {'name':'bF','distribution':'gaussian', 'mean':0.1, 'noisetosignal':0.05}
 b_parameters = [bA,bB,bC,bD,bE,bF]
 
 #maximum production parameters (V)
@@ -43,24 +43,24 @@ VF = {'name':'VF','distribution':'loguniform', 'min':10, 'max':1000}
 V_parameters = [VA,VB,VC,VD,VE,VF]
 
 #[] at half activation parameters (K)
-Kbd = {'name':'Kbd','distribution':'gaussian', 'mean':430, 'noisetosignal':0.1} #lit 430, exp 870
-Kab = {'name':'Kab','distribution':'gaussian', 'mean':0.4, 'noisetosignal':0.1} 
-Kda = {'name':'Kda','distribution':'gaussian', 'mean':0.6, 'noisetosignal':0.1} 
-Kfe = {'name':'Kfe','distribution':'gaussian', 'mean':20, 'noisetosignal':0.1}
-Kee = {'name':'Kee','distribution':'gaussian', 'mean':20, 'noisetosignal':0.1}
-Keb = {'name':'Keb','distribution':'gaussian', 'mean':20, 'noisetosignal':0.1}
-Kce = {'name':'Kce','distribution':'gaussian', 'mean':5.6, 'noisetosignal':0.1}
-KaTc = {'name':'KaTc','distribution':'gaussian', 'mean':1.26*10**3, 'noisetosignal':0.1}
-Kiptg = {'name':'Kiptg','distribution':'gaussian', 'mean':1.5*10**3, 'noisetosignal':0.1}
+Kbd = {'name':'Kbd','distribution':'gaussian', 'mean':430, 'noisetosignal':0.05} #lit 430, exp 870
+Kab = {'name':'Kab','distribution':'gaussian', 'mean':0.4, 'noisetosignal':0.05} 
+Kda = {'name':'Kda','distribution':'gaussian', 'mean':0.6, 'noisetosignal':0.05} 
+Kfe = {'name':'Kfe','distribution':'gaussian', 'mean':20, 'noisetosignal':0.05}
+Kee = {'name':'Kee','distribution':'gaussian', 'mean':20, 'noisetosignal':0.05}
+Keb = {'name':'Keb','distribution':'gaussian', 'mean':20, 'noisetosignal':0.05}
+Kce = {'name':'Kce','distribution':'gaussian', 'mean':5.6, 'noisetosignal':0.05}
+KaTc = {'name':'KaTc','distribution':'gaussian', 'mean':1.26*10**3, 'noisetosignal':0.05}
+Kiptg = {'name':'Kiptg','distribution':'gaussian', 'mean':1.5*10**3, 'noisetosignal':0.05}
 K_parameters = [Kbd,Kab,Kda,Kfe,Kee,Keb,Kce,KaTc,Kiptg]
 
 #degradation parameters (mu)
-muLVA = {'name':'muLVA','distribution':'gaussian', 'mean':1.143, 'noisetosignal':0.1}
-muAAV = {'name':'muAAV','distribution':'gaussian', 'mean':0.633, 'noisetosignal':0.1}
-muASV = {'name':'muASV','distribution':'gaussian', 'mean':0.3, 'noisetosignal':0.1}
-muUb = {'name':'muUb','distribution':'gaussian', 'mean':0.0225, 'noisetosignal':0.1}
-muVb = {'name':'muVb','distribution':'gaussian', 'mean':0.0225, 'noisetosignal':0.1}
-muaTc = {'name':'muaTc','distribution':'gaussian', 'mean':0.0101, 'noisetosignal':0.1}
+muLVA = {'name':'muLVA','distribution':'gaussian', 'mean':1.143, 'noisetosignal':0.05}
+muAAV = {'name':'muAAV','distribution':'gaussian', 'mean':0.633, 'noisetosignal':0.05}
+muASV = {'name':'muASV','distribution':'gaussian', 'mean':0.3, 'noisetosignal':0.05}
+muUb = {'name':'muUb','distribution':'gaussian', 'mean':0.0225, 'noisetosignal':0.05}
+muVb = {'name':'muVb','distribution':'gaussian', 'mean':0.0225, 'noisetosignal':0.05}
+muaTc = {'name':'muaTc','distribution':'gaussian', 'mean':0.0101, 'noisetosignal':0.05}
 muU = {'name':'muU','distribution':'loguniform', 'min':0.0225, 'max':3}
 muV = {'name':'muV','distribution':'loguniform', 'min':0.0225, 'max':3}
 mu_parameters = [muLVA,muAAV,muASV,muUb,muVb,muaTc,muU,muV]
@@ -78,12 +78,12 @@ niptg = {'name':'niptg','distribution':'fixed', 'value':1}
 n_parameters = [nbd,nab,nda,nfe,nee,neb,nce,naTc,niptg]
 
 #kinetic rates parameters (k)
-k1 = {'name':'k1','distribution':'gaussian', 'mean':0.0183, 'noisetosignal':0.1}
-k2 = {'name':'k2','distribution':'gaussian', 'mean':0.0183, 'noisetosignal':0.1}
+k1 = {'name':'k1','distribution':'gaussian', 'mean':0.0183, 'noisetosignal':0.05}
+k2 = {'name':'k2','distribution':'gaussian', 'mean':0.0183, 'noisetosignal':0.05}
 k_parameters = [k1,k2]
 
 #molecule concentrations parameters (C)
-iptg= {'name':'iptg','distribution':'gaussian', 'mean':1000, 'noisetosignal':0.1}
+iptg= {'name':'iptg','distribution':'gaussian', 'mean':1000, 'noisetosignal':0.05}
 #atc concentration comes as an initial condition
 
 
