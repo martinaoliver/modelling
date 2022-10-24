@@ -29,7 +29,7 @@ shape = 'ca'
 parID = 1
 
 circuit_n=12
-variant=1
+variant=0
 
 # folder = 'fullcircuit/1M_turingI'#'fullcircuit/1M'#'fullcircuit/1M_turingI'
 n_species = 9
@@ -46,12 +46,13 @@ lsa_df= pickle.load( open(modellingpath + '/3954/paper/input/parameterfiles/df_c
 par_dict = lsa_df.loc[parID].to_dict()
 # par_dict = general_df.iloc[parID].to_dict()
 
-d_A = par_dict['d_A']
-d_B = par_dict['d_B']
+# d_A = par_dict['dU']
+# d_B = par_dict['dV']
 
 D = np.zeros(n_species)
-D[0]=d_A
-D[1]=d_B
+# D[0]=d_A
+# D[1]=d_B
+D[:2] = [par_dict['DU'],par_dict['DV'] ]
 print(par_dict)
 # par_dict['mulva'] = par_dict['mulva'] + np.log(2)*p_division
 
@@ -60,15 +61,15 @@ print(par_dict)
 # L_x=int(sys.argv[2]); x_gridpoints = int(sys.argv[3]); L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
 # T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) ; N = T*t_gridpoints
 
-L_x=1; x_gridpoints = 128; L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
-T =128; t_gridpoints = 1 ; N = T*t_gridpoints
+L_x=10; x_gridpoints = 5; L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
+T =10; t_gridpoints = 10 ; N = T*t_gridpoints
 
 suggested_tgridpoints = x_gridpoints**2
 
 filename = 'circuit%r_variant%s_bc%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,parID,L,J,T,N)
 # U_record,U_final = adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=seed, p_division=p_division, tqdm_disable=tqdm_disable, growth='Fast', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
-U_record,U_final = adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0)#,p_division=p_division,seed=seed)
 # def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
+U_record,U_final =  adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=1.5)
 
 plt.imshow(U_final[-1])
 plt.show()
