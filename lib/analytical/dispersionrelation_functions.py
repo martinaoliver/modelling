@@ -101,11 +101,11 @@ def stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss, complex
                 elif np.all(eigenvalues.imag[:,-1]<=0): #if the highest eigenvalue does not contain imaginary numbers
                     system_class = 'turing I'
                 else:
-                    system_class = 'unclassified'
+                    system_class = 'unclassified1'
             else:
-                system_class = 'unclassified'
+                system_class = 'unclassified2'
         else:
-            system_class = 'unclassified'
+            system_class = 'unclassified3'
 
 
 
@@ -140,16 +140,16 @@ def stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss, complex
                     elif np.all(eigenvalues[-1,-1] != maxeig_real): #highest instability does not appear with highest wavenumber)
                         system_class = 'turing I hopf'
                     else:
-                        system_class='unclassified'
+                        system_class='unclassified4'
                 else:
                     system_class = 'turing semi-hopf'
 
             else:
-                system_class = 'unclassified'
+                system_class = 'unclassified5'
         else:
-            system_class = 'unclassified'
+            system_class = 'unclassified6'
     else:
-        system_class = 'unclassified'
+        system_class = 'unclassified7'
 
 
 

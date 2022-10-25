@@ -33,7 +33,7 @@ parID=32095
 par_dict = df.loc[parID].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
 #Run analysis on 1M parameter sets
 out = detailed_turing_analysis_dict(par_dict, circuit_n, n_species)
-plot_all_dispersion(out[-2][0],2, crop=40)
+plot_all_dispersion(out[4][0],2, crop=100)
 print(out[3])
 multiple_df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 par_dict = multiple_df.loc[parID].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set

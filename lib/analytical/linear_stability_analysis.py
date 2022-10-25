@@ -21,23 +21,19 @@ def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parI
     len_df = len(df) #lenght of dataframe (number of parameter sets to analyse)
     output_df = pd.DataFrame(data=None, columns=df.columns)
     # par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['new_index'] =[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
-<<<<<<< HEAD
-w2
-    for parID in tqdm(df.index,disable=True):
-        
-=======
 
     for parID in tqdm(df.index,disable=tqdm_disable):
         if print_parID == True:
             print(parID)
->>>>>>> 15459fb5dc7f53db81c687dd1e0a8dfd5b59ee81
         try:
         
             par_dict = df.loc[parID].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
             steadystatelist, number_steadystates = findsteadystates(par_dict,circuit_n,n_species, n_initial_conditions = 100) #input a dictionary with the parameters and returns (1) a list with the steady states and (2) the number of steady states.
             if number_steadystates > 7:
                 print(f'WARNING: number_steadystates - {number_steadystates}, parID:{parID}')
-            if number_steadystates > 0:
+                par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['complex_dispersion'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,np.nan,np.nan,np.nan,np.nan,[parID,ss_n]
+                output_df = pd.concat([output_df,pd.DataFrame([par_dict], columns=par_dict.keys())], ignore_index=True)
+            elif number_steadystates > 0:
                 for ss_n in range(number_steadystates): #perform linear stability analysis on all steady states found
                     steadystate_values_ss_n = steadystatelist[ss_n]
                     ss_class, system_class, eigenvalues, maxeig, complex_dispersion= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n,top_dispersion)
