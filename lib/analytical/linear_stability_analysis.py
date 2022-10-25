@@ -21,9 +21,16 @@ def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parI
     len_df = len(df) #lenght of dataframe (number of parameter sets to analyse)
     output_df = pd.DataFrame(data=None, columns=df.columns)
     # par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['new_index'] =[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
+<<<<<<< HEAD
 w2
     for parID in tqdm(df.index,disable=True):
         
+=======
+
+    for parID in tqdm(df.index,disable=tqdm_disable):
+        if print_parID == True:
+            print(parID)
+>>>>>>> 15459fb5dc7f53db81c687dd1e0a8dfd5b59ee81
         try:
         
             par_dict = df.loc[parID].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
