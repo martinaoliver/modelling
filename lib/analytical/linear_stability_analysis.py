@@ -29,7 +29,7 @@ def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parI
         
             par_dict = df.loc[parID].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
             steadystatelist, number_steadystates = findsteadystates(par_dict,circuit_n,n_species, n_initial_conditions = 100) #input a dictionary with the parameters and returns (1) a list with the steady states and (2) the number of steady states.
-            if number_steadystates > 7:
+            if number_steadystates > 10:
                 print(f'WARNING: number_steadystates - {number_steadystates}, parID:{parID}')
                 par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['complex_dispersion'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,np.nan,np.nan,np.nan,np.nan,[parID,ss_n]
                 output_df = pd.concat([output_df,pd.DataFrame([par_dict], columns=par_dict.keys())], ignore_index=True)
