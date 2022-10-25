@@ -39,8 +39,8 @@ circuit_n='circuit12'
 variant=1
 n_species=9
 # Specifiy number of parameter sets in parameterset file to be loaded
-df_lenght = 1000000
 n_param_sets = 1000000
+
 # df_lenght = 10
 # n_param_sets = 10
 
@@ -51,9 +51,9 @@ date = date.today().strftime('%m_%d_%Y')
 # Specify size of batches in which to complete computations
 # Does not need to be a factor of number of parameter sets
 # batch_size = 20000
-# batch_size = 10
+# batch_size = 2
 batch_size = 208333
-print(batch_size)
+print(f'batch_size: {batch_size}')
 
 
 # Define work to be done per batch of parameter sets
@@ -69,11 +69,14 @@ print('start_time')
 start_time = time.perf_counter()
 start_parameter = int(0)
 # Load dataframe of parameter sets
-print('df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets))
 # df= pickle.load( open('../parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
 df= pickle.load( open(modellingpath + "/3954/paper/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+print('df_loaded')
+print('df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets))
 # df= pickle.load( open("../parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
-batch_indices = list(range(0+start_parameter, len(df) + start_parameter, batch_size))
+df_lenght = len(df)
+# df_lenght=10
+batch_indices = list(range(0+start_parameter, df_lenght + start_parameter, batch_size))
 # batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))
 
 # Create a pool of workers

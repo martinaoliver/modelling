@@ -29,6 +29,8 @@ def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parI
         
             par_dict = df.loc[parID].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
             steadystatelist, number_steadystates = findsteadystates(par_dict,circuit_n,n_species, n_initial_conditions = 100) #input a dictionary with the parameters and returns (1) a list with the steady states and (2) the number of steady states.
+            if number_steadystates > 7:
+                print(f'WARNING: number_steadystates - {number_steadystates}, parID:{parID}')
             if number_steadystates > 0:
                 for ss_n in range(number_steadystates): #perform linear stability analysis on all steady states found
                     steadystate_values_ss_n = steadystatelist[ss_n]
