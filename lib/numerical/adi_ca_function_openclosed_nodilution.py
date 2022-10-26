@@ -204,6 +204,7 @@ def adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,
 
         if hour % 1 == 0:  #only consider recording at unit time (hour)
             #append results into top_array for records
+            
             for species_index in range(n_species):
                 U_record[species_index][:, :, int(hour)] = U_new[species_index] #issue in this line
             if growth=='Slow': 
