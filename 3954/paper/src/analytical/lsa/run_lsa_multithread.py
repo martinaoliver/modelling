@@ -52,7 +52,8 @@ date = date.today().strftime('%m_%d_%Y')
 # Does not need to be a factor of number of parameter sets
 # batch_size = 20000
 # batch_size = 2
-batch_size = 208333
+batch_size = 20833
+# batch_size =int(n_param_sets/Number_of_Threads)
 print(f'batch_size: {batch_size}')
 
 
