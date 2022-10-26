@@ -113,7 +113,7 @@ n_parameters = [nbd,nab,nda,nfe,nee,neb,nce,naTc,niptg]
 # k1 = {'name':'k1','distribution':'gaussian', 'mean':0.0183, 'noisetosignal':0.05}
 # k2 = {'name':'k2','distribution':'gaussian', 'mean':0.0183, 'noisetosignal':0.05}
 
-# k1 = {'name':'k1','distribution':'fixed', 'value':0.0183}
+k1 = {'name':'k1','distribution':'fixed', 'value':0.0183}
 k2 = {'name':'k2','distribution':'fixed', 'value':0.0183}
 k_parameters = [k1,k2]
 
