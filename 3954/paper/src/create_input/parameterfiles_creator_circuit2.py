@@ -18,14 +18,12 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=12
-variant=3
+variant=2
 #diffusion parameters
 # DU = {'name':'DU','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
 # DV= {'name':'DV','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
-# DU = {'name':'DU','distribution':'loguniform', 'min':0.001, 'max':10}
-# DV = {'name':'DV','distribution':'loguniform', 'min':0.001, 'max':10}
-DU = {'name':'DU','distribution':'fixed', 'value':0.001}
-DV = {'name':'DV','distribution':'fixed', 'value':10}
+DU = {'name':'DU','distribution':'loguniform', 'min':0.001, 'max':10}
+DV = {'name':'DV','distribution':'loguniform', 'min':0.001, 'max':10}
 
 D_parameters = [DU,DV]
 
