@@ -13,7 +13,6 @@ sys.path.append(modellingpath + '/lib')
 ###Imports#####
 #############
 from numerical.adi_ca_function_openclosed_nodilution import adi_ca_openclosed_nodilution
-from numerical.adi_ca_function_openclosed_nodilution_preMask import adi_ca_openclosed_nodilution_preMask
 from numerical.plotting_numerical import *
 from numerical.adi_square_function import adi
 
@@ -40,7 +39,7 @@ save_figure = False
 tqdm_disable = False #disable tqdm
 # boundarycoeff = float(sys.argv[6])
 boundarycoeff = 1.5
-seed=1;p_division=1#0.147#0.5
+seed=1;p_division=1;boundaryCoeff=1.5
 
 # open parameter dictionaries
 lsa_df= pickle.load( open(modellingpath + '/3954/paper/input/parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,parametersets_n), "rb" ) )
@@ -61,20 +60,24 @@ print(par_dict)
 #solver parameters
 # L_x=int(sys.argv[2]); x_gridpoints = int(sys.argv[3]); L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
 # T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) ; N = T*t_gridpoints
+
+
 L=5; dx =0.2; J = int(L/dx)
 T =10; dt = 0.1; N = int(T/dt)
 
-
-
-
-cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
-memory_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+# suggested_tgridpoints = x_gridpoints**2
 
 
 filename = 'circuit%r_variant%s_bc%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,parID,L,J,T,N)
-# U_record,U_final = adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=seed, p_division=p_division, tqdm_disable=tqdm_disable, growth='Fast', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
+U_record,U_final = adi_ca_openclosed_nodilution_preMask(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=seed, p_division=p_division, tqdm_disable=tqdm_disable, growth='Fast', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
 # def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
-U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, memory_matrix_record,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=1.5)
+
+model_args = [par_dict, circuit_n, n_species, D]
+solver_args=[L,dx,J,T,dt,N]
+system_args = [p_division, seed, boundaryCoeff]
+U_record,U_final =  adi_ca_openclosed_nodilution(model_args, solver_args,system_args)
+
+# par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=1.5)
 
 plt.imshow(U_final[-1])
 plt.show()
@@ -82,7 +85,7 @@ plt.imshow(U_final[0])
 plt.show()
 
 
-a = pickle.load()
+
 
 
 

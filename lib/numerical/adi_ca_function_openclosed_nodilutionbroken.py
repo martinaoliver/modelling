@@ -20,8 +20,13 @@ import matplotlib.pyplot as plt
 
 
 
-def adi_ca_openclosed_nodilution(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,tqdm_disable=False, p_division=1,stochasticity=0, seed=1,growth='Slow', boundarycoeff=1.5):
-    
+def adi_ca_openclosed_nodilution(model_args, solver_args,system_args, tqdm_disable=False,stochasticity=0):
+
+    par_dict, circuit_n, n_species, D = model_args
+    L,dx,J,T,dt,N = solver_args
+    p_division, seed, boundaryCoeff = system_args
+
+
     parent_list = [circuit1, circuit2,circuit3,circuit4,circuit5,circuit6,circuit7,circuit8,circuit9, circuit10, circuit11, circuit12]
     f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
 
@@ -51,7 +56,7 @@ def adi_ca_openclosed_nodilution(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,
     #A matrix (right-hand side of Ax=b)
     def A(alphan):
         bottomdiag = [-alphan for j in range(J-1)]
-        centraldiag = [1.+boundarycoeff*alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+boundarycoeff*alphan]
+        centraldiag = [1.+boundaryCoeff*alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+boundaryCoeff*alphan]
         topdiag = [-alphan for j in range(J-1)]
         diagonals = [bottomdiag,centraldiag,topdiag]
         A = diags(diagonals, [ -1, 0,1]).toarray()
@@ -88,9 +93,9 @@ def adi_ca_openclosed_nodilution(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,
 
     #b vector (left-hand side of Ax=b)
     def b(axis,ij,alphan,Un):
-        b_t_stencil = np.array( [0] + [(1-boundarycoeff*alphan)] + [alphan])
+        b_t_stencil = np.array( [0] + [(1-boundaryCoeff*alphan)] + [alphan])
         b_c_stencil = np.array( [alphan] + [(1-2*alphan)] + [alphan])
-        b_b_stencil = np.array( [alphan] + [(1-boundarycoeff*alphan)] + [0])
+        b_b_stencil = np.array( [alphan] + [(1-boundaryCoeff*alphan)] + [0])
 
         b = np.zeros(J)
         if axis == 'y':
@@ -208,12 +213,12 @@ def adi_ca_openclosed_nodilution(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,
                 #return new cell matrix and updated concentrations with dilution
                 U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
                 cell_matrix = copy.deepcopy(cell_matrix_new)
-        # if growth=='Fast':
-        #     if (ti%tdivider==0):
-        #         #predict if division occurs based on the p_division, the current cell matrix
-        #         #return new cell matrix and updated concentrations with dilution
-        #         U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
-        #         cell_matrix = copy.deepcopy(cell_matrix_new)
+        if growth=='Fast':
+            if (ti%tdivider==0):
+                #predict if division occurs based on the p_division, the current cell matrix
+                #return new cell matrix and updated concentrations with dilution
+                U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
+                cell_matrix = copy.deepcopy(cell_matrix_new)
         
 
     U = copy.deepcopy(U_new)
