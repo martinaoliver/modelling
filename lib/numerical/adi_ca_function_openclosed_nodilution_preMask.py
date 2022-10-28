@@ -28,10 +28,11 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
     #spatial variables
     L_x=L;L_y=L;dy=dx;I=J
 
+    #define diffussion species
     diffusing_species =np.nonzero(D)[0]
     nondiffusing_species = np.nonzero(D==0)[0]
 
-
+    #alpha parameter required for ADI solver
     alpha = [D[n]*dt/(2.*dx*dy) for n in range(n_species)]
 
 
@@ -41,16 +42,10 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
     steadystates=[0.1]*n_species
     np.random.seed(seed)
 
-    # cell_matrix = np.zeros(shape=(I,J))
-    # cell_matrix[int(I/2), int(J/2)] = 1
-
     cell_matrix = cell_matrix_record[:,:,0]
     for index in range(n_species):
         U0.append(np.random.uniform(low=steadystates[index] - perturbation, high=steadystates[index] + perturbation, size=(I, J)))
     U0 = U0*cell_matrix
-    print('Initial mask')
-    plt.imshow(cell_matrix, cmap='Greys')# plot_2D_final_concentration(final_concentration,grids,filename,n_species=n_species)
-    plt.show()
 
     #A matrix (right-hand side of Ax=b)
     def A(alphan):
@@ -141,57 +136,24 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
         return b
 
 
-    # def check_neighbours(cell_matrix,y_pos,x_pos): #returns grid with the neighbouring points
-    #     top_array = [cell_matrix[y_pos-1, x_pos-1], cell_matrix[y_pos-1,x_pos], cell_matrix[y_pos-1,x_pos+1]]
-    #     middle_array = [cell_matrix[y_pos, x_pos-1], np.nan, cell_matrix[y_pos,x_pos+1]]
-    #     bottom_array = [cell_matrix[y_pos+1, x_pos-1], cell_matrix[y_pos+1,x_pos], cell_matrix[y_pos+1,x_pos+1]]
-    #     neighbours_cellmatrix = np.array([top_array,middle_array,bottom_array])
-    #     return neighbours_cellmatrix
-    # def cell_automata_colony(species_list,cell_matrix, p_division):
-    #     new_species_list = copy.deepcopy(species_list)
-    #     original_species_list = copy.deepcopy(species_list)
-    #     cell_matrix_new = copy.deepcopy(cell_matrix)
-    #     for y_pos in np.linspace(1,len(cell_matrix)-2,len(cell_matrix)-2):
-    #         for x_pos in np.linspace(1,len(cell_matrix)-2,len(cell_matrix)-2):
-    #             y_pos = int(y_pos)
-    #             x_pos = int(x_pos)
-    #             if cell_matrix[y_pos, x_pos]!=0:
-    #                 neighbours_cellmatrix = check_neighbours(cell_matrix,y_pos,x_pos)
-    #                 if 0 in neighbours_cellmatrix:
-    #                     cell_division=np.random.choice([1,0],p=[p_division,1-p_division])
-    #                     if cell_division==1:
-    #                         index_nocells=np.where(np.array(neighbours_cellmatrix )== 0)
-    #                         divided_cell_index = np.random.choice(range(len(index_nocells[0])))
-    #                         index_newcell_y, index_newcell_x = (index_nocells[n][divided_cell_index] for n in range(2))
-    #                         for count,species in enumerate(original_species_list):
-    #                             # new_species_list[count][index_newcell_y+y_pos-1,index_newcell_x+x_pos-1] += species[y_pos,x_pos]/2
-    #                             # new_species_list[count][y_pos,x_pos] += species[y_pos,x_pos]/2
-    #                             new_species_list[count][index_newcell_y+y_pos-1,index_newcell_x+x_pos-1] += species[y_pos,x_pos]
-    #                             new_species_list[count][y_pos,x_pos] += species[y_pos,x_pos]
-    #                         cell_matrix_new[index_newcell_y+y_pos-1,index_newcell_x+x_pos-1]=1
-
-
-    #     return new_species_list, cell_matrix_new
-
-
-    U = copy.deepcopy(U0)
+    #create initial [] matrices and record arrays
+    U = U0.copy()
     U_record = []
     for species_index in range(n_species):
         U_record.append(np.zeros([J, I, T])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
 
-    # t_resolution=(N/T)
-    # tdivider=0.1*t_resolution #every 0.1 hour we divide. 
-    
+
+    #define parameters for divisio frequency
     divisionTimeHours=1 #cells consider division every x hours
     divisionTimeUnits=int(divisionTimeHours/dt) #cells consider division every x timeunits. If dt=0.1, x=10
-    print(f'divisionTimeUnits{divisionTimeHours}')
     
     for ti in tqdm(range(0,N), disable = tqdm_disable):
-        #First step: solve in y direction from n -> n+1/2
-        cell_matrix = cell_matrix_record[:,:,ti]
-        
 
-        U_half = copy.deepcopy(U)
+        #define current cell matrix for time ti
+        cell_matrix = cell_matrix_record[:,:,ti]
+
+        #First step: solve in y direction from n -> n+1/2        
+        U_half = U.copy()
         f0 = f.dudt_growth(U,cell_matrix)
         for i in range(I):
             for n in diffusing_species:
@@ -200,48 +162,20 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
                 U_half[n][:,i] =  U[n][:,i] + f0[n][:,i]*(dt/2)
 
         #Second step: solve in x direction from n+1/2 -> n+1
-        U_new = copy.deepcopy(U_half)
+        U_new = U_half.copy()
         f1 = f.dudt_growth(U_half,cell_matrix)
         for j in range(J):
             for n in diffusing_species:
                 U_new[n][j,:] = solve_banded((1, 1), ab_list[n], b('x',j,alpha[n],U_half[n]) + f1[n][j,:]*(dt/2))
             for n in nondiffusing_species:
                 U_new[n][j,:] =  U_half[n][j,:] + f1[n][j,:]*(dt/2)
-
-        hour = ti / (N / T)
+       
+        #if at this time, division occurs: add mother [] to daughter cells
         if (ti%divisionTimeUnits==0):
-            print(ti, 'division')
             daughterToMotherDict = daughterToMotherDictList[ti-1]
             for newCell,oldCell in daughterToMotherDict.items():
-                print('oldnew')
-                print( U_new[:,oldCell[0],oldCell[1]])
-                print( U_new[:,newCell[0],newCell[1]])
                 U_new[:,newCell[0],newCell[1]] = U_new[:,oldCell[0],oldCell[1]]
-                print( U_new[:,newCell[0],newCell[1]])
 
+        U = U_new.copy()
 
-            
-            
-        # # if hour % 1 == 0:  #only consider recording at unit time (hour)
-        #     #append results into top_array for records
-            
-        #     for species_index in range(n_species):
-        #         U_record[species_index][:, :, int(hour)] = U_new[species_index] #issue in this line
-        #     if growth=='Slow': 
-        #         #predict if division occurs based on the p_division, the current cell matrix
-        #         #return new cell matrix and updated concentrations with dilution
-        #         U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
-        #         cell_matrix = copy.deepcopy(cell_matrix_new)
-        # # if growth=='Fast':
-        # #     if (ti%tdivider==0):
-        # #         #predict if division occurs based on the p_division, the current cell matrix
-        # #         #return new cell matrix and updated concentrations with dilution
-        # #         U_new, cell_matrix_new = cell_automata_colony(U_new, cell_matrix, p_division)
-        # #         cell_matrix = copy.deepcopy(cell_matrix_new)
-        
-
-    U = copy.deepcopy(U_new)
-    print('Final Mask')
-    plt.imshow(cell_matrix, cmap='Greys')# plot_2D_final_concentration(final_concentration,grids,filename,n_species=n_species)
-    plt.show()
     return U_record, U

@@ -1,32 +1,13 @@
-#############################
-#IMPORTS#
-#############################
-from re import L
+#############
+###paths#####
+#############
 import sys
 import os
 
-from numpy import searchsorted
-
+from importlib_metadata import distribution
 pwd = os.getcwd()
-root = pwd.rpartition("mo2016")[0] + pwd.rpartition("mo2016")[1] #/Volumes/mo2016/ or '/Users/mo2016/' or '/rds/general/mo2016/'
-if root == '/Users/mo2016':
-    modelling_ephemeral = '/Volumes/mo2016/ephemeral/Documents/modelling'
-    modelling_home = '/Volumes/mo2016/home/Documents/modelling'
-    modelling_local = root + '/Documents/modelling'
-
-
-if root == '/Volumes/mo2016' or root=='/rds/general/user/mo2016': #'/rds/general' or root=='/Volumes':
-        modelling_ephemeral = root + '/ephemeral/Documents/modelling'
-        modelling_home = root  + '/home/Documents/modelling'
-        modelling_local = modelling_home
-
-if root == '/Users/mo2016' or  root == '/Volumes/mo2016':
-    import matplotlib as mpl
-    mpl.use('tkagg')
-
-modulepath = modelling_local + '/3954/modules/new_CN'
-
-sys.path.append(modulepath)
+modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+sys.path.append(modellingpath + '/lib')
 
 import numpy as np
 import matplotlib.pyplot as plt

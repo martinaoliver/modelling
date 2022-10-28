@@ -30,17 +30,17 @@ shape = 'ca'
 # parID = int(sys.argv[1])
 parID = 1
 
-circuit_n=12
+circuit_n=2
 variant=0
 
 # folder = 'fullcircuit/1M_turingI'#'fullcircuit/1M'#'fullcircuit/1M_turingI'
-n_species = 9
+n_species = 6
 
 parametersets_n = 10 #1000000
 save_figure = False
 tqdm_disable = False #disable tqdm
 # boundarycoeff = float(sys.argv[6])
-boundarycoeff = 1.5
+boundarycoeff = 1
 seed=1;p_division=1#0.147#0.5
 
 # open parameter dictionaries
@@ -54,7 +54,7 @@ par_dict = lsa_df.loc[parID].to_dict()
 D = np.zeros(n_species)
 # D[0]=d_A
 # D[1]=d_B
-D[:2] = [par_dict['DU'],par_dict['DV'] ]
+D[:2] = [par_dict['DA'],par_dict['DB'] ]
 print(par_dict)
 # par_dict['mulva'] = par_dict['mulva'] + np.log(2)*p_division
 
@@ -75,11 +75,11 @@ daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/nu
 filename = 'circuit%r_variant%s_bc%s_%s_%sID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,mechanism,parID,L,J,T,N)
 # U_record,U_final = adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n,n_species,D, seed=seed, p_division=p_division, tqdm_disable=tqdm_disable, growth='Fast', boundarycoeff=boundarycoeff)#,p_division=p_division,seed=seed)
 # def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
-U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=1.5)
+U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=boundarycoeff)
 
 
 plt.imshow(U_final[0])
-plt.show()
+# plt.show()
 
 
 
