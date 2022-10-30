@@ -23,7 +23,7 @@ n_param_sets = 1000000
 
 print(f'Circuit:{circuit_n}, Variant:{variant}')
 
-df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 print(df['system_class'].value_counts())
 
 # #values for which complex dispersion = true
@@ -31,11 +31,11 @@ print(df['system_class'].value_counts())
 # complex_df.index  = complex_df.index.droplevel(-1)
 
 # #values that have instabilities
-# instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
-# instabilities_df = df.loc[df['system_class'].isin(instabilities)]
-# instabilities_df.index  = instabilities_df.index.droplevel(-1)
-# print(instabilities_df['system_class'].value_counts())
-# pickle.dump( instabilities_df, open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
+instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
+instabilities_df = df.loc[df['system_class'].isin(instabilities)]
+instabilities_df.index  = instabilities_df.index.droplevel(-1)
+print(instabilities_df['system_class'].value_counts())
+pickle.dump( instabilities_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instabilities_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 
 # instabilityComplex_df = pd.concat([complex_df, instabilities_df])
 # pickle.dump( instabilityComplex_df, open(modellingpath + '/growth/out/analytical/instabilityComplex/instabilityComplex_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
