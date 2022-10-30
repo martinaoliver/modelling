@@ -1,5 +1,7 @@
 import numpy as np
 from numpy.random import normal
+import numba
+
 # - This file contains the definitions for every circuit used. Every circuit is composed of different
 # molecular interactions.
 
@@ -173,7 +175,7 @@ class circuit2(hill_functions):
         function_list = [self.dAdt_f(U),self.dBdt_f(U),self.dCdt_f(U), self.dDdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
         dudt = [eq*cell_matrix for eq in function_list]
         return dudt
-
+    @numba.jit(nopython=True)
     def dudt(self,U):
         dudt = [self.dAdt_f(U),self.dBdt_f(U),self.dCdt_f(U), self.dDdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
         return dudt

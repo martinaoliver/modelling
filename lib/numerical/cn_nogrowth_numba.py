@@ -89,18 +89,31 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
     B_list = [B(alphan,J) for alphan in alpha(D,dt,dx,n_species)]   
     A_inv = [np.linalg.inv(a) for a in A_list] # Find inverse matrix of A. speeds calculation as only need to get the inverse once. suitable for non-growing systems only
     
-    numba.jit(nopython=True)
-    def cn_forloop(U,N,T,A_inv,B_list, record_every_x_hours):
+
+    def cn_forloop(U,N,T,A_inv,B_list, record_every_x_hours, dt):
+        U = tuple(U)
+        A_inv = tuple(A_inv)
+        B_list = tuple(B_list)
+
+        @numba.jit(nopython=True)
+        def matrix_solving(Un, A_invn, B_listn, f0n, dt):
+            U_newn = A_invn.dot(B_listn.dot(Un) +  f0n*(dt/2)) 
+            return U_newn
+
+
+
         #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
         print('entering numba for loop')
         for ti in range(N): 
-            U_new = U.copy()
+            
+            # U_new = copy.deepcopy(U)
             f0 = f.dudt(U_new)
 
             #iterate over every chemical specie when calculating concentrations. 
-            for n in range(n_species):
-                U_new[n] = A_inv[n].dot(B_list[n].dot(U[n]) +  f0[n]*(dt/2)) # Dot product with inverse rather than solve system of equations
 
+            U_new = [matrix_solving(U[n], A_inv[n], B_list[n], f0[n], dt) for n in range(n_species)]
+                # U_new[n] = A_inv[n].dot(B_list[n].dot(U[n]) +  f0[n]*(dt/2)) # Dot product with inverse rather than solve system of equations
+            # U_new = tuple(solver_loop(U,  A_inv, B_list, n_species))
 
             #storing results
             hour = ti / (N / T)
@@ -109,10 +122,10 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
             if hour % record_every_x_hours == 0 :  #only grow and record every 10 hours unit time (hour)
                 for n in range(n_species):
                     U_record[n][int(hour/record_every_x_hours), :] = U_new[n] #Solution added into array which records the solution over time (JxT dimensional array)
-            U = U_new.copy()
+            U = copy.deepcopy(U_new)
         return U,U_record
     
-    U,U_record = cn_forloop(U,N,T,A_inv,B_list,record_every_x_hours)
+    U,U_record = cn_forloop(U,N,T,A_inv,B_list,record_every_x_hours, dt)
     
     return U,U_record, U0, x_grid, reduced_t_grid
 

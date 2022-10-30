@@ -40,8 +40,8 @@ parametersets_n = 10 #1000000
 save_figure = False
 tqdm_disable = False #disable tqdm
 # boundarycoeff = float(sys.argv[6])
-boundarycoeff = 1
-seed=1;p_division=1#0.147#0.5
+boundarycoeff = 1.7
+p_division=0.5;seed=1
 
 # open parameter dictionaries
 lsa_df= pickle.load( open(modellingpath + '/3954/paper/input/parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,parametersets_n), "rb" ) )
@@ -62,8 +62,9 @@ print(par_dict)
 #solver parameters
 # L_x=int(sys.argv[2]); x_gridpoints = int(sys.argv[3]); L=L_x; J = L*x_gridpoints;  L_y=L_x; I=J
 # T =int(sys.argv[4]); t_gridpoints = int(sys.argv[5]) ; N = T*t_gridpoints
-L=5; dx =0.2; J = int(L/dx)
-T =10; dt = 0.1; N = int(T/dt)
+
+L=8; dx =0.05; J = int(L/dx)
+T =125; dt = 0.05; N = int(T/dt)
 
 
 
