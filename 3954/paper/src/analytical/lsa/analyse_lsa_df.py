@@ -35,8 +35,8 @@ instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory
 instabilities_df = df.loc[df['system_class'].isin(instabilities)]
 instabilities_df.index  = instabilities_df.index.droplevel(-1)
 print(instabilities_df['system_class'].value_counts())
-pickle.dump( instabilities_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instabilities_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
-
+pickle.dump( instabilities_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
+len(instabilities_df)
 # instabilityComplex_df = pd.concat([complex_df, instabilities_df])
 # pickle.dump( instabilityComplex_df, open(modellingpath + '/growth/out/analytical/instabilityComplex/instabilityComplex_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 
