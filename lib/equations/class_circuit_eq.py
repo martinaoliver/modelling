@@ -846,7 +846,6 @@ class circuit13(hill_functions):
             setattr(self,key,value)
         setattr(self, 'stochasticity', stochasticity)
 
-≈X
     def dUdt_f(self,X,wvn=0):
         U,V,A,B,C,D,E,F = X
         dUdt= self.k1*A - self.muU*U - U*self.DU*wvn**2
