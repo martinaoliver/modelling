@@ -836,3 +836,116 @@ class circuit12(hill_functions):
         JaTc = [0, 0, 0, 0, 0, 0, 0, 0, -self.muaTc]
         return np.array([JU,JV,JA,JB,JC,JD,JE,JF,JaTc ])
 
+
+
+#diffusers, proteins and regulators modelled
+class circuit13(hill_functions):
+
+    def __init__(self,par_dict,stochasticity=0):
+        for key,value in par_dict.items():
+            setattr(self,key,value)
+        setattr(self, 'stochasticity', stochasticity)
+
+
+    def dUdt_f(self,X,wvn=0):
+        U,V,A,B,C,D,E,F = X
+        dUdt= self.k1*A - self.muU*U - U*self.DU*wvn**2
+        if self.stochasticity ==1:
+            dUdt+=dUdt*normal(0,0.05,1)
+        return dUdt
+
+    def dVdt_f(self,X,wvn=0):
+        U,V,A,B,C,D,E,F = X
+        dVdt= self.k2*A - self.muV*V - V*self.DV*wvn**2
+        if self.stochasticity ==1:
+            dVdt+=dVdt*normal(0,0.05,1)
+        return dVdt
+
+
+    def dAdt_f(self,X):
+        U,V,A,B,C,D,E,F = X
+        iptg_regulated_K = self.Kda * (1+(self.iptg/self.Kiptg)**self.niptg)
+        dAdt= self.bA+self.VA*self.noncompetitiveinh(D,iptg_regulated_K,self.nda)-self.muASV*A
+        if self.stochasticity ==1:
+            dAdt+=dAdt*normal(0,0.05,1)
+        return dAdt
+
+
+    def dBdt_f(self,X):
+        U,V,A,B,C,D,E,F = X
+        dBdt= self.bB+self.VB*self.noncompetitiveact(U,self.Kab,self.nab)*self.noncompetitiveinh(E,self.Keb,self.nab)-self.muASV*B
+        if self.stochasticity ==1:
+            dBdt+=dBdt*normal(0,0.05,1)
+        return dBdt
+
+
+    def dCdt_f(self,X):
+        U,V,A,B,C,D,E,F = X
+        dCdt= self.bC+self.VC*self.noncompetitiveinh(D,self.Kda, self.nda)-self.muLVA*C
+        if self.stochasticity ==1:
+            dCdt+=dCdt*normal(0,0.05,1)
+        return dCdt
+
+    def dDdt_f(self,X):
+        U,V,A,B,C,D,E,F = X
+        dDdt= self.bD+self.VD*self.noncompetitiveact(V,self.Kbd,self.nbd)-self.muLVA*D
+        if self.stochasticity ==1:
+            dDdt+=dDdt*normal(0,0.05,1)
+        return dDdt
+
+    def dEdt_f(self,X):
+        U,V,A,B,C,D,E,F = X
+        dEdt= self.bE+self.VE*self.noncompetitiveinh(C,self.Kce,self.nce)*self.noncompetitiveinh(F,self.Kfe, self.nfe)*self.noncompetitiveact(E,self.Kee,self.nee)-self.muLVA*E
+        if self.stochasticity ==1:
+            dEdt+=dEdt*normal(0,0.05,1)
+        return dEdt
+        
+    def dFdt_f(self,X):
+        U,V,A,B,C,D,E,F = X
+        dFdt= self.bF+self.VF*self.noncompetitiveact(V,self.Kbd,self.nbd)-self.muLVA*F
+        if self.stochasticity ==1:
+            dFdt+=dFdt*normal(0,0.05,1)
+        return dFdt
+
+
+    # def function_list(self,X,wvn):
+        # return [self.dUdt_f,self.dVdt_f,self.dAdt_f,self.dBdt_f,self.dCdt_f,self.dDdt_f,self.dEdt_f,self.dFdt_f,self.daTc_f]
+    function_list = [dUdt_f,dVdt_f,dAdt_f,dBdt_f,dCdt_f,dDdt_f,dEdt_f,dFdt_f]
+
+    def dudt_growth(self,X, cell_matrix):
+        function_list = [self.dUdt_f(X),self.dVdt_f(X),self.dAdt_f(X),self.dBdt_f(X),self.dCdt_f(X), self.dDdt_f(X),self.dEdt_f(X),self.dFdt_f(X)]
+        dudt = [eq*cell_matrix for eq in function_list]
+        return dudt
+
+    def dudt(self,X):
+        dudt = [self.dUdt_f(X),self.dVdt_f(X),self.dAdt_f(X),self.dBdt_f(X),self.dCdt_f(X), self.dDdt_f(X),self.dEdt_f(X),self.dFdt_f(X)]
+        return dudt
+
+
+    # def dudt(self,X,growth=False,cell_matrix=None):
+    #     dXdt = [self.dUdt_f(X),self.dVdt_f(X),self.dAdt_f(X),self.dBdt_f(X),self.dCdt_f(X), self.dDdt_f(X),self.dEdt_f(X),self.dFdt_f(X), self.daTcdt_f(X)]
+    #     if growth==False:
+    #         return dXdt
+    #     if growth==True:
+    #         dXdt_growth = [eq*cell_matrix for eq in dXdt]
+
+
+    # def dudt_growth(self,U, cell_matrix):
+    #     function_list = [self.dAdt_f(U),self.dBdt_f(U),self.dCdt_f(U), self.dDdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
+    #     dudt = [eq*cell_matrix for eq in function_list]
+    #     return dudt
+
+    def getJacobian(self,X,wvn):
+
+        U,V,A,B,C,D,E,F,aTc = X
+        JU = [-self.DU*wvn**2 - self.muU, 0, self.k1, 0, 0, 0, 0, 0, 0]
+        JV = [0, -self.DV*wvn**2 - self.muV, self.k2, 0, 0, 0, 0, 0, 0]
+        JA = [0, 0, -self.muASV, 0, 0, -self.VA*self.nda*(D/(self.Kda*((self.iptg/self.Kiptg)**self.niptg + 1)))**self.nda/(D*((D/(self.Kda*((self.iptg/self.Kiptg)**self.niptg + 1)))**self.nda + 1)**2), 0, 0, 0]
+        JB = [self.VB*self.nab*(self.Kab/U)**self.nab/(U*((E/self.Keb)**self.nab + 1)*((self.Kab/U)**self.nab + 1)**2), 0, 0, -self.muASV, 0, 0, -self.VB*self.nab*(E/self.Keb)**self.nab/(E*((E/self.Keb)**self.nab + 1)**2*((self.Kab/U)**self.nab + 1)), 0, 0]
+        JC = [0, 0, 0, 0, -self.muLVA, -self.VC*self.nda*(D/(self.Kda*((self.iptg/self.Kiptg)**self.niptg + 1)))**self.nda/(D*((D/(self.Kda*((self.iptg/self.Kiptg)**self.niptg + 1)))**self.nda + 1)**2), 0, 0, 0]
+        JD = [0, self.VD*self.nbd*(self.Kbd/V)**self.nbd/(V*((self.Kbd/V)**self.nbd + 1)**2), 0, 0, 0, -self.muLVA, 0, 0, 0]
+        JE = [0, 0, 0, 0, -self.VE*self.nce*(C/(self.Kce*((aTc/self.KaTc)**self.naTc + 1)))**self.nce/(C*((self.Kee/E)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)*((C/(self.Kce*((aTc/self.KaTc)**self.naTc + 1)))**self.nce + 1)**2), 0, -self.muLVA + self.VE*self.nee*(self.Kee/E)**self.nee/(E*((self.Kee/E)**self.nee + 1)**2*((F/self.Kfe)**self.nfe + 1)*((C/(self.Kce*((aTc/self.KaTc)**self.naTc + 1)))**self.nce + 1)), -self.VE*self.nfe*(F/self.Kfe)**self.nfe/(F*((self.Kee/E)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)**2*((C/(self.Kce*((aTc/self.KaTc)**self.naTc + 1)))**self.nce + 1)), self.VE*self.naTc*self.nce*(aTc/self.KaTc)**self.naTc*(C/(self.Kce*((aTc/self.KaTc)**self.naTc + 1)))**self.nce/(aTc*((self.Kee/E)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)*((aTc/self.KaTc)**self.naTc + 1)*((C/(self.Kce*((aTc/self.KaTc)**self.naTc + 1)))**self.nce + 1)**2)]
+        JF = [0, self.VF*self.nbd*(self.Kbd/V)**self.nbd/(V*((self.Kbd/V)**self.nbd + 1)**2), 0, 0, 0, 0, 0, -self.muLVA, 0]
+        JaTc = [0, 0, 0, 0, 0, 0, 0, 0, -self.muaTc]
+        return np.array([JU,JV,JA,JB,JC,JD,JE,JF,JaTc ])
+

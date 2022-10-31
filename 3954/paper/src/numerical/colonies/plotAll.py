@@ -30,7 +30,7 @@ p_division=0.5;seed=1
 
 L=8; dx =0.05; J = int(L/dx)
 T =125; dt = 0.05; N = int(T/dt)
-T =1; dt = 0.05; N = int(T/dt)
+# T =1; dt = 0.05; N = int(T/dt)
 x_gridpoints=int(1/dx)
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)

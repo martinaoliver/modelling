@@ -19,7 +19,7 @@ from numerical.plotting_numerical import *
 from matplotlib import colors
 
 
-def plotAllFunction1D(parIDdict, circuit_n, mechanism, filename, round=True,start=0, stop=-1, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True,pad=0.01, round_to=3,metric='peakDistVar'):
+def plotAllFunction1D(parIDdict, circuit_n, mechanism, filename, round=True,start=0, stop=-1, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True,pad=0.01, round_to=3,metric='peakDistVar', print_parID=False):
     fulldataset=len(parIDdict)
     parIDdict = dict(sorted(parIDdict.items(), key=lambda item: item[1])) #sort from lower to higher values
     parIDdict = dict(list(parIDdict.items())[:stop]) #trim to the first stop values
@@ -32,7 +32,8 @@ def plotAllFunction1D(parIDdict, circuit_n, mechanism, filename, round=True,star
     fig = plt.figure(figsize=(n_col/10+12, n_row/10+12))
 
     for count,parID in tqdm(enumerate(parIDdict.keys()),disable=tqdm_disable):
-        print(parID)
+        if print_parID ==True:
+            print(parID)
 
         ax=plt.subplot(n_row,n_col, count+1)
         U = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'rb'))
