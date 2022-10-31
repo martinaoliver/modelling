@@ -838,7 +838,7 @@ class circuit12(hill_functions):
 
 
 
-#diffusers, proteins and regulators modelled
+#diffusers, proteins modelled
 class circuit13(hill_functions):
 
     def __init__(self,par_dict,stochasticity=0):
@@ -846,7 +846,7 @@ class circuit13(hill_functions):
             setattr(self,key,value)
         setattr(self, 'stochasticity', stochasticity)
 
-
+≈X
     def dUdt_f(self,X,wvn=0):
         U,V,A,B,C,D,E,F = X
         dUdt= self.k1*A - self.muU*U - U*self.DU*wvn**2
