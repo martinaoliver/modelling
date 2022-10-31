@@ -36,19 +36,18 @@ print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
 circuit_n=2
-variant= 0
+variant= '48257gaussian0.1nsr'
+# variant=0
 n_species=6
-folder = 'circuit2variant0_1M'
+folder = 'circuit2variant48257gaussian0.1nsr'
 # Specifiy number of parameter sets in parameterset file to be loaded
-nsamples = 1000000
+nsamples = 2000
+# nsamples = 1000000
 
 
 
 # Specify date today
 date = date.today().strftime('%m_%d_%Y')
-# Specify size of batches in which to complete computations
-# Does not need to be a factor of number of parameter sets
-total_params=10
 
 
 
@@ -106,7 +105,8 @@ start_time = time.perf_counter()
 
 
 # Load dataframe of parameter sets
-df= pickle.load( open(modellingpath + '/3954/paper/input/parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+# df= pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # df = instabilities_df
 total_params=len(df)

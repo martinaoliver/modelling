@@ -123,6 +123,7 @@ n_species=6
 # T =10; t_gridpoints = 10; N = T*t_gridpoints
 L=8; dx =0.05; J = int(L/dx)
 T =125; dt = 0.05; N = int(T/dt)
+T =125; dt = 0.04; N = int(T/dt)
 
 # L=int(sys.argv[1]); x_gridpoints =int(sys.argv[2]); J = L*x_gridpoints
 # T =int(sys.argv[3]); t_gridpoints = int(sys.argv[4]); N = T*t_gridpoints
