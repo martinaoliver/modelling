@@ -38,7 +38,7 @@ print('Number of Threads set to ', Number_of_Threads)
 circuit_n=2
 variant= 0
 n_species=6
-
+folder = 'circuit2variant0_1M'
 # Specifiy number of parameter sets in parameterset file to be loaded
 nsamples = 1000000
 
@@ -52,7 +52,7 @@ total_params=10
 
 
 
-def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
+def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder=folder):
     L=8; dx =0.05; J = int(L/dx)
     T =125; dt = 0.05; N = int(T/dt)
     boundarycoeff = 1.7
@@ -61,7 +61,7 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
 
     cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
-    # T =1; dt = 0.05; N = int(T/dt)
+    T =1; dt = 0.05; N = int(T/dt)
     D = np.zeros(n_species)
 
 
@@ -73,15 +73,15 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
         par_dict = df.loc[parID].to_dict()
         D[:2] = [par_dict['DA'],par_dict['DB'] ]
 
-        steadystates=par_dict['ss_list']
+        # steadystates=par_dict['ss_list']
 
         filename = 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
         savefig=False
-        savefigpath = modellingpath + '/3954/paper/out/numerical/colonies/figures/'
+        savefigpath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s/'%(folder)
 
         try:
             U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=True, p_division=p_division,stochasticity=0, seed=seed,growth='Slow', boundarycoeff=boundarycoeff)
-            pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/2Dfinal_%s.pkl'%filename, "wb" ) )
+            pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) )
             # pickle.dump(U_record, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename), 'wb'))
             # print(np.shape(U_record))
             if savefig==True:
@@ -106,9 +106,9 @@ start_time = time.perf_counter()
 
 
 # Load dataframe of parameter sets
-
-instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-df = instabilities_df
+df= pickle.load( open(modellingpath + '/3954/paper/input/parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+# instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+# df = instabilities_df
 total_params=len(df)
 # total_params=10
 print(total_params)

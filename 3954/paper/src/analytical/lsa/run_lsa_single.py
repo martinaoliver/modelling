@@ -22,11 +22,11 @@ import pickle
 #######################
 
 
-circuit_n='circuit2'
+circuit_n='circuit13'
 variant=0
 
 parID = 7 #takes the first parameter set of the dataframe... can choose any
-n_species=6 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
+n_species=8 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
 
 df_lenght = 10
 n_param_sets = 10
