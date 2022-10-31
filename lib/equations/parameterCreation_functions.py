@@ -30,8 +30,8 @@ def loguniform(size, low=-3, high=3):
 
 
 
-def parameterGaussian(name, mean, stdev, size,noisetosignal=True):
-    stdev = noisetosignal * mean
+def parameterGaussian(name, mean, stdev, size,nsr=True):
+    stdev = nsr * mean
     gaussianDistribution = np.random.normal(mean, stdev, size)
     return gaussianDistribution
 

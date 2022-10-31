@@ -38,7 +38,7 @@ def adi_ca_openclosed_nodilution(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,
     #Define initial conditions and cell matrix
     U0 = []
     perturbation=0.001
-    steadystates=[0.1]*n_species
+    steadystates=[10]*n_species
     np.random.seed(seed)
 
     cell_matrix = np.zeros(shape=(I,J))

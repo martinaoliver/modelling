@@ -28,14 +28,13 @@ import matplotlib.pyplot as plt
 shape = 'ca'
 # parID = int(sys.argv[1])
 parID = 1
-
 circuit_n=2
-variant=0
+variant= '48257gaussian0.1nsr'
+n_species=6
+folder = 'circuit2variant48257gaussian0.1nsr'
 
-# folder = 'fullcircuit/1M_turingI'#'fullcircuit/1M'#'fullcircuit/1M_turingI'
-n_species = 6
 
-nsamples =  10
+nsamples =  2000
 save_figure = False
 tqdm_disable = False #disable tqdm
 # boundarycoeff = float(sys.argv[6])
@@ -43,7 +42,7 @@ boundarycoeff = 1.7
 p_division=0.5;seed=1
 
 # open parameter dictionaries
-df= pickle.load( open(modellingpath + '/3954/paper/input/parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+df= pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 
 

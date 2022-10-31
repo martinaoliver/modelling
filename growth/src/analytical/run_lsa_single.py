@@ -22,14 +22,14 @@ import pickle
 
 
 circuit_n='turinghill'
-variant=2 
+variant=2
 n_species=2 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
 
 n_param_sets = 100000
 
 # obtain a dictionary with some parameters to use in our analysis
 df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
-parID=32095
+parID=972876
 par_dict = df.loc[parID].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
 #Run analysis on 1M parameter sets
 out = detailed_turing_analysis_dict(par_dict, circuit_n, n_species)
