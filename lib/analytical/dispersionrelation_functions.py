@@ -12,7 +12,7 @@ class jacobian():
         setattr(self, 'circuit_n', circuit_n)
 
         # self.parent_list = [circuit1_eq, circuit2_eq, circuit3_eq, circuit4_eq, circuit5_eq, circuit6_eq, circuit7_eq]
-        self.parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'circuit12':circuit12, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
+        self.parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'circuit12':circuit12, 'circuit13':circuit13, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
 
     def getJacobian(self,x,wvn):  # circuit1_eq
         # return self.parent_list[self.circuit_n-1].getJacobian(self,x,wvn)
@@ -105,7 +105,7 @@ def stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss, complex
             else:
                 system_class = 'unclassified2'
         else:
-            system_class = 'unclassified3'
+            system_class = 'max_eig_real other' 
 
 
 
@@ -140,16 +140,16 @@ def stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss, complex
                     elif np.all(eigenvalues[-1,-1] != maxeig_real): #highest instability does not appear with highest wavenumber)
                         system_class = 'turing I hopf'
                     else:
-                        system_class='unclassified4'
+                        system_class='Hopf other'
                 else:
                     system_class = 'turing semi-hopf'
 
             else:
-                system_class = 'unclassified5'
+                system_class = 'Zero sign changes'
         else:
-            system_class = 'unclassified6'
+            system_class = 'Complexity other'
     else:
-        system_class = 'unclassified7'
+        system_class = 'Stability other'
 
 
 

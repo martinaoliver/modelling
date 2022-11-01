@@ -142,6 +142,6 @@ stackedDistributions = preLhs(parameterDictList)
 lhsDist = lhs(stackedDistributions,nsamples)
 lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterDictList])
 # plotDist(parameterDictList,lhsDist_df)
-pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
+pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
 
 print(lhsDist_df)

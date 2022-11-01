@@ -42,20 +42,22 @@ parID= 1 #parameter set to use
 par_dict = lsa_df.loc[parID].to_dict()
 print(par_dict)
 #run
-U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=False)
+# U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=False)
 
-# pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'wb'))
-# pickle.dump(U_record, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'wb'))
+# # pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'wb'))
+# # pickle.dump(U_record, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'wb'))
 
-#plot
-plot1D(U_final, savefig=False)
-plt.show()
+# #plot
+# plot1D(U_final, savefig=False)
+# plt.show()
 
 
-surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-# surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-plt.show()
-print(np.amax(U_final[1]), np.amin(U_final[1]))
+# surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+# # surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+# plt.show()
+# print(np.amax(U_final[1]), np.amin(U_final[1]))
+
+
 U_finaln,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth_numba(par_dict,L,J,T,N, circuit_n, tqdm_disable=False)
 
 # pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'wb'))

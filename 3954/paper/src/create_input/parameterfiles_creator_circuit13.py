@@ -17,15 +17,15 @@ import numpy as np
 import pandas as pd
 import pickle as pkl
 # %matplotlib inline
-circuit_n=2
+circuit_n=13
 variant=0
-#diffusion parameters
-# DU = {'name':'DU','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
-# DV= {'name':'DV','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
-DA = {'name':'DA','distribution':'fixed', 'value':1}
-DB = {'name':'DB','distribution':'loguniform', 'min':0.001, 'max':10}
 
-D_parameters = [DA,DB]
+
+#diffusion parameters
+DU = {'name':'DU','distribution':'fixed', 'value':0.001}
+DV = {'name':'DV','distribution':'fixed', 'value':10}
+
+D_parameters = [DU,DV]
 
 #background parameters
 bA = {'name':'bA','distribution':'fixed', 'value':0.01}
@@ -34,7 +34,6 @@ bC = {'name':'bC','distribution':'fixed', 'value':0.01}
 bD = {'name':'bD','distribution':'fixed', 'value':0.01}
 bE = {'name':'bE','distribution':'fixed', 'value':0.01}
 bF = {'name':'bF','distribution':'fixed', 'value':0.01}
-
 b_parameters = [bA,bB,bC,bD,bE,bF]
 
 #maximum production parameters (V)
@@ -49,19 +48,24 @@ VF = {'name':'VF','distribution':'loguniform', 'min':10, 'max':1000}
 V_parameters = [VA,VB,VC,VD,VE,VF]
 
 #[] at half activation parameters (K)
-Kda = {'name':'Kda','distribution':'loguniform', 'min':10, 'max':1000}
+Kbd = {'name':'Kbd','distribution':'loguniform', 'min':10, 'max':1000} #lit 430, exp 870
 Kab = {'name':'Kab','distribution':'loguniform', 'min':10, 'max':1000}
-Keb = {'name':'Keb','distribution':'loguniform', 'min':10, 'max':1000}
-Kbd = {'name':'Kbd','distribution':'loguniform', 'min':10, 'max':1000}
+Kda = {'name':'Kda','distribution':'loguniform', 'min':10, 'max':1000}
 Kfe = {'name':'Kfe','distribution':'loguniform', 'min':10, 'max':1000}
 Kee = {'name':'Kee','distribution':'loguniform', 'min':10, 'max':1000}
+Keb = {'name':'Keb','distribution':'loguniform', 'min':10, 'max':1000}
 Kce = {'name':'Kce','distribution':'loguniform', 'min':10, 'max':1000}
-K_parameters = [Kda, Kab, Keb, Kbd, Kfe, Kee, Kce]
+K_parameters = [Kbd,Kab,Kda,Kfe,Kee,Keb,Kce]
 
 #degradation parameters (mu)
 muLVA = {'name':'muLVA','distribution':'loguniform', 'min':0.001, 'max':50}
+muAAV = {'name':'muAAV','distribution':'loguniform', 'min':0.001, 'max':50}
 muASV = {'name':'muASV','distribution':'loguniform', 'min':0.001, 'max':50}
-mu_parameters = [muLVA,muASV]
+muUb = {'name':'muUb','distribution':'loguniform', 'min':0.001, 'max':50}
+muVb = {'name':'muVb','distribution':'loguniform', 'min':0.001, 'max':50}
+muU = {'name':'muU','distribution':'loguniform', 'min':0.0225, 'max':3}
+muV = {'name':'muV','distribution':'loguniform', 'min':0.0225, 'max':3}
+mu_parameters = [muLVA,muAAV,muASV,muUb,muVb,muU,muV]
 
 #cooperativity parameters (n)
 nbd = {'name':'nbd','distribution':'fixed', 'value':2}
@@ -73,7 +77,10 @@ neb = {'name':'neb','distribution':'fixed', 'value':4}
 nce = {'name':'nce','distribution':'fixed', 'value':1}
 n_parameters = [nbd,nab,nda,nfe,nee,neb,nce]
 
-
+# #kinetic rates parameters (k)
+k1 = {'name':'k1','distribution':'fixed', 'value':0.0183}
+k2 = {'name':'k2','distribution':'fixed', 'value':0.0183}
+k_parameters = [k1,k2]
 
 nsamples=int(sys.argv[1])
 plotDistributions=False
@@ -85,8 +92,7 @@ if plotDistributions == True:
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
 
-parameterDictList = D_parameters + b_parameters + V_parameters + K_parameters + mu_parameters + n_parameters
-# parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
+parameterDictList = D_parameters + b_parameters + V_parameters + K_parameters + mu_parameters + n_parameters + k_parameters
 stackedDistributions = preLhs(parameterDictList)
 lhsDist = lhs(stackedDistributions,nsamples)
 lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterDictList])
