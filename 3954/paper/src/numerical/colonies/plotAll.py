@@ -21,10 +21,12 @@ import numpy as np
 #############################
 
 circuit_n=2
-variant= 0
+variant= 0#'48257gaussian0.1nsr'
 n_species=6
 shape='ca'
-
+# folder = 'circuit2variant0_1M'
+folder = 'circuit2variant0_instabilities'
+# folder='circuit2variant48257gaussian0.1nsr'
 boundarycoeff = 1.7
 p_division=0.5;seed=1
 
@@ -34,13 +36,13 @@ T =125; dt = 0.05; N = int(T/dt)
 x_gridpoints=int(1/dx)
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
-data_path = modellingpath + '/3954/paper/out/numerical/colonies/simulation'
+data_path = modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/'%(folder)
 parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 
 start = 0
 stop = len(parID_list) 
 # stop=10
-plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,start=start, stop=stop, tqdm_disable=False, saveFig=True)
+plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,folder=folder,start=start, stop=stop, tqdm_disable=False, saveFig=True)
 
 
 # df = pickle.load( open( modellingpath + '/growth/out/patternAnalysis/%s/%s/%s/%s_df_%s.pkl'%(circuit_n,mechanism,metric,metric,filename('x')), 'rb'))

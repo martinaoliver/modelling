@@ -15,9 +15,9 @@ import pickle
 import pandas as pd
 
 # Specify name of circuit and variant investigated
-circuit_n='circuit2'
+circuit_n='circuit13'
 variant=0
-n_species=6
+n_species=8
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
 
@@ -43,14 +43,15 @@ if saveInstabilities ==True:
 # pickle.dump( instabilityComplex_df, open(modellingpath + '/growth/out/analytical/instabilityComplex/instabilityComplex_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 
 # #values that have turing
-turingStates = ['turing I','turing I oscillatory']  
-turing_df = df.loc[df['system_class'].isin(turingStates)]
-# turing_df = turing_df.xs(0, level=1)
-# turing_df.index  = turing_df.index.droplevel(-1)
-turing_df = turing_df.loc[turing_df['ss_n']==1]
-turing_df = turing_df.sort_values(by=['maxeig'],  ascending=False)
-
-# pickle.dump( turing_df, open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
+saveTuring = False
+if saveTuring == True:
+    turingStates = ['turing I','turing I oscillatory']  
+    turing_df = df.loc[df['system_class'].isin(turingStates)]
+    # turing_df = turing_df.xs(0, level=1)
+    # turing_df.index  = turing_df.index.droplevel(-1)
+    # turing_df = turing_df.loc[turing_df['ss_n']==1]
+    # turing_df = turing_df.sort_values(by=['maxeig'],  ascending=False)
+    pickle.dump( turing_df, open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 # #remove secondary index from turing_df
 
 
