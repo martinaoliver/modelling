@@ -41,4 +41,4 @@ output_df = big_turing_analysis_df(df_batch,circuit_n,n_species,print_parID=Fals
 
 print(output_df)
 print(output_df.columns)
-pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), 'wb'))
+pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), 'wb'))
