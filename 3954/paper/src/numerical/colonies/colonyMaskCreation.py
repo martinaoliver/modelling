@@ -17,7 +17,7 @@ import pickle
 import numba
 from numba import cuda, float32
 
-numba.jit(nopython=True)
+# numba.jit(nopython=True)
 def check_neighbours(cell_matrix,y_pos,x_pos): #returns grid with the neighbouring points
     top_array = [cell_matrix[y_pos-1, x_pos-1], cell_matrix[y_pos-1,x_pos], cell_matrix[y_pos-1,x_pos+1]]
     middle_array = [cell_matrix[y_pos, x_pos-1], np.nan, cell_matrix[y_pos,x_pos+1]]
