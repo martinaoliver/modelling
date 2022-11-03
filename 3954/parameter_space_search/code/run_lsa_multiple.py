@@ -18,16 +18,16 @@ import pickle
 
 circuit_n = 'circuit2' #ID of circuit we want to analyse
 #(parameter sets provided correspond to circuit2 which is the one currently being implemented experimentally)
-parID = 0 #takes the first parameter set of the dataframe... can choose any
+parID = 1 #takes the first parameter set of the dataframe... can choose any
 n_species=6 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
-variant=9
-# n_param_sets=1000000
-n_param_sets=10
+variant=1
+n_param_sets=1000000
+# n_param_sets=10
 # start_batch_index = int(sys.argv[1])
 start_batch_index = 0
 batch_size = 3
 #obtain a dictionary with some parameters to use in our analysis
-df= pickle.load( open(modellingpath + '/3954/parameter_space_search/parameterfiles/df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
+df= pickle.load( open(modellingpath + '/3954/parameter_space_search/lhs_parameterfiles/df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
 print(len(df))
 df = df.iloc[start_batch_index:start_batch_index+batch_size]
 print('df loaded')

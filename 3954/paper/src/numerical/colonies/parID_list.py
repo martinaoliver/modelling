@@ -1,7 +1,6 @@
 #############
 ###paths#####
 #############
-from fileinput import filename
 import sys
 import os
 
@@ -20,12 +19,12 @@ import pickle
 circuit_n=2
 shape='ca'
 variant=0
-variant='48257gaussian0.1nsr'
+# variant='48257gaussian0.21nsr'
 
 boundarycoeff = 1.7
 p_division=0.5;seed=1
 folder = 'circuit2variant0_1M'
-folder = 'circuit2variant48257gaussian0.1nsr'
+# folder = 'circuit2variant48257gaussian0.21nsr'
 L=8; dx =0.05; J = int(L/dx)
 T =125; dt = 0.05; N = int(T/dt)
 # T =1; dt = 0.05; N = int(T/dt)

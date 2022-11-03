@@ -18,7 +18,7 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=12
-variant=3
+variant=4
 #diffusion parameters
 # DU = {'name':'DU','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
 # DV= {'name':'DV','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
@@ -67,15 +67,15 @@ V_parameters = [VA,VB,VC,VD,VE,VF]
 # KaTc = {'name':'KaTc','distribution':'gaussian', 'mean':1.26*10**3, 'noisetosignal':0.05}
 # Kiptg = {'name':'Kiptg','distribution':'gaussian', 'mean':1.5*10**3, 'noisetosignal':0.05}
 
-Kbd = {'name':'Kbd','distribution':'loguniform', 'min':10, 'max':1000} #lit 430, exp 870
-Kab = {'name':'Kab','distribution':'loguniform', 'min':10, 'max':1000}
-Kda = {'name':'Kda','distribution':'loguniform', 'min':10, 'max':1000}
-Kfe = {'name':'Kfe','distribution':'loguniform', 'min':10, 'max':1000}
-Kee = {'name':'Kee','distribution':'loguniform', 'min':10, 'max':1000}
-Keb = {'name':'Keb','distribution':'loguniform', 'min':10, 'max':1000}
-Kce = {'name':'Kce','distribution':'loguniform', 'min':10, 'max':1000}
-KaTc = {'name':'KaTc','distribution':'loguniform', 'min':10, 'max':1000}
-Kiptg = {'name':'Kiptg','distribution':'loguniform', 'min':10, 'max':1000}
+Kbd = {'name':'Kbd','distribution':'loguniform', 'min':0.1, 'max':250} #lit 430, exp 870
+Kab = {'name':'Kab','distribution':'loguniform', 'min':0.1, 'max':250}
+Kda = {'name':'Kda','distribution':'loguniform', 'min':0.1, 'max':250}
+Kfe = {'name':'Kfe','distribution':'loguniform', 'min':0.1, 'max':250}
+Kee = {'name':'Kee','distribution':'loguniform', 'min':0.1, 'max':250}
+Keb = {'name':'Keb','distribution':'loguniform', 'min':0.1, 'max':250}
+Kce = {'name':'Kce','distribution':'loguniform', 'min':0.1, 'max':250}
+KaTc = {'name':'KaTc','distribution':'loguniform', 'min':0.1, 'max':250}
+Kiptg = {'name':'Kiptg','distribution':'loguniform', 'min':0.1, 'max':250}
 K_parameters = [Kbd,Kab,Kda,Kfe,Kee,Keb,Kce,KaTc,Kiptg]
 
 #degradation parameters (mu)
@@ -127,9 +127,9 @@ iptg= {'name':'iptg','distribution':'fixed', 'value':1000}
 
 
 
-nsamples=int(sys.argv[1])
 plotDistributions=False
 if plotDistributions == True:
+    nsamples=1000
     parameterTypeList = [D_parameters,b_parameters,V_parameters,K_parameters,mu_parameters,n_parameters,k_parameters]
     for parameterType in parameterTypeList:
         stackedDistributions = preLhs(parameterType)
@@ -137,11 +137,14 @@ if plotDistributions == True:
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
 
-parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
-stackedDistributions = preLhs(parameterDictList)
-lhsDist = lhs(stackedDistributions,nsamples)
-lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterDictList])
-# plotDist(parameterDictList,lhsDist_df)
-pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
+createParameterfiles=True
+if createParameterfiles == True:# 
+    nsamples=int(sys.argv[1])
+    parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
+    stackedDistributions = preLhs(parameterDictList)
+    lhsDist = lhs(stackedDistributions,nsamples)
+    lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterDictList])
+    # plotDist(parameterDictList,lhsDist_df)
+    pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
 
-print(lhsDist_df)
+    print(lhsDist_df)

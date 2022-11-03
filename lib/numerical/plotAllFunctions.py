@@ -76,7 +76,7 @@ def plotAllFunction1D(parIDdict, circuit_n, mechanism, filename, round=True,star
 
 
 
-def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,start=0, stop=10, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True):
+def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,start=0, stop=10,folder=None, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True, print_parID=False):
     len_fullDataset = len(parID_list)
     parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
     print(len(parID_list))
@@ -91,10 +91,11 @@ def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoin
     fig = plt.figure(figsize=(n_col/10+12, n_row/10+12))
 
     for count,parID in enumerate(tqdm(parID_list,disable=tqdm_disable)):
-        print(parID)
+        if print_parID == True:
+            print(parID)
 
         ax=plt.subplot(n_row,n_col, count+1)
-        U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/2Dfinal_%s.pkl'%(filename(parID)), 'rb'))
+        U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
         rgb = plot_redgreen_contrast(U_final,L,path = modellingpath,parID=parID,dimension='2D',scale_factor=x_gridpoints,save_figure='LargeImage')
         # def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
 
@@ -109,10 +110,10 @@ def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoin
         plt.show()
     if saveFig==True:
         if stop==len_fullDataset:
-            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/largeFig_%s.png'%(filename('x')),dpi=dpi)
+            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s.png'%(folder,filename('x')),dpi=dpi)
         
         else:
-            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/largeFig_%s_%s-%s.png'%(filename('x'),start,stop),dpi=dpi)
+            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s_%s-%s.png'%(folder,filename('x'),start,stop),dpi=dpi)
             print('not full')
             plt.close()
     # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)

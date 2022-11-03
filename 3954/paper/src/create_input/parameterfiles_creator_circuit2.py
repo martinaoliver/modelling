@@ -18,12 +18,13 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=2
-variant=0
+variant=1
 #diffusion parameters
 # DU = {'name':'DU','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
 # DV= {'name':'DV','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
 DA = {'name':'DA','distribution':'fixed', 'value':1}
-DB = {'name':'DB','distribution':'loguniform', 'min':0.001, 'max':10}
+# DB = {'name':'DB','distribution':'loguniform', 'min':0.001, 'max':10}
+DB = {'name':'DB','distribution':'fixed', 'value':0.001}
 
 D_parameters = [DA,DB]
 
@@ -49,13 +50,13 @@ VF = {'name':'VF','distribution':'loguniform', 'min':10, 'max':1000}
 V_parameters = [VA,VB,VC,VD,VE,VF]
 
 #[] at half activation parameters (K)
-Kda = {'name':'Kda','distribution':'loguniform', 'min':10, 'max':1000}
-Kab = {'name':'Kab','distribution':'loguniform', 'min':10, 'max':1000}
-Keb = {'name':'Keb','distribution':'loguniform', 'min':10, 'max':1000}
-Kbd = {'name':'Kbd','distribution':'loguniform', 'min':10, 'max':1000}
-Kfe = {'name':'Kfe','distribution':'loguniform', 'min':10, 'max':1000}
-Kee = {'name':'Kee','distribution':'loguniform', 'min':10, 'max':1000}
-Kce = {'name':'Kce','distribution':'loguniform', 'min':10, 'max':1000}
+Kda = {'name':'Kda','distribution':'loguniform', 'min':0.1, 'max':250}
+Kab = {'name':'Kab','distribution':'loguniform', 'min':0.1, 'max':250}
+Keb = {'name':'Keb','distribution':'loguniform', 'min':0.1, 'max':250}
+Kbd = {'name':'Kbd','distribution':'loguniform', 'min':0.1, 'max':250}
+Kfe = {'name':'Kfe','distribution':'loguniform', 'min':0.1, 'max':250}
+Kee = {'name':'Kee','distribution':'loguniform', 'min':0.1, 'max':250}
+Kce = {'name':'Kce','distribution':'loguniform', 'min':0.1, 'max':250}
 K_parameters = [Kda, Kab, Keb, Kbd, Kfe, Kee, Kce]
 
 #degradation parameters (mu)

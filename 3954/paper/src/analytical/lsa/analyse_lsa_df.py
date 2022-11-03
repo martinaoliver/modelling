@@ -10,14 +10,32 @@ modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1]
 sys.path.append(modellingpath + '/lib')
 #############
 
-
 import pickle
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def pieChart_lsa(valueCounts_dict,title,log=True):
+    colors=['grey','grey','grey','grey','peachpuff','coral','coral','coral','coral','coral','grey','coral','coral']
+    labels = []
+    sizes = []
+    
+    for x, y in valueCounts_dict.items():
+        labels.append(x)
+        sizes.append(y)
+    if log==True:
+        sizes = np.log(sizes)
+    plt.pie(sizes,colors=colors, labels=labels)
+    plt.axis('equal')
+    plt.title(title)
+    plt.show()
+
+
 
 # Specify name of circuit and variant investigated
-circuit_n='circuit13'
-variant=0
-n_species=8
+circuit_n='circuit2'
+variant=1
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
 
@@ -25,6 +43,10 @@ print(f'Circuit:{circuit_n}, Variant:{variant}')
 
 df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 print(df['system_class'].value_counts())
+valueCounts_dict = dict(df['system_class'].value_counts())
+title = f'{circuit_n} Variant {variant}'
+pieChart_lsa(valueCounts_dict,title)
+dfunstable = df[df['system_class']=='simple unstable']
 
 # #values for which complex dispersion = true
 # complex_df = df[df['complex_dispersion']==True]
