@@ -58,6 +58,8 @@ df[ss_list_variables] = pd.DataFrame(df.ss_list.tolist(), index= df.index)
 
 #plot distributions of steady states
 for ss_variable in ss_list_variables:
+    df = df[df[ss_variable]< np.percentile(df[ss_variable],99.9)]
+    df = df[df[ss_variable]> np.percentile(df[ss_variable],0.1)]
     sns.displot(df[ss_variable],bins=1000, log_scale=True)
     plt.show()
 
