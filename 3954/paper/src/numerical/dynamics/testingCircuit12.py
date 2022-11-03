@@ -33,8 +33,8 @@ fig,axs = plt.subplots(3,3,figsize=(15,15))
 #flatten axes
 axs = axs.flatten()
 for count, ss_variable in enumerate(ss_list_variables):
-    # df = df[df[ss_variable]< np.percentile(df[ss_variable],99.9)]
-    # df = df[df[ss_variable]> np.percentile(df[ss_variable],0.1)]
+    df = df[df[ss_variable]< np.percentile(df[ss_variable],99.9)]
+    df = df[df[ss_variable]> np.percentile(df[ss_variable],0.1)]
     sns.histplot(df[ss_variable],bins=1000, log_scale=True, ax = axs[count])
 plt.show()
 
@@ -56,6 +56,8 @@ df[ss_list_variables] = pd.DataFrame(df.ss_list.tolist(), index= df.index)
 
 #plot distributions of steady states
 for ss_variable in ss_list_variables:
+    df = df[df[ss_variable]< np.percentile(df[ss_variable],99.9)]
+    df = df[df[ss_variable]> np.percentile(df[ss_variable],0.1)]
     sns.displot(df[ss_variable],bins=1000, log_scale=True)
     plt.show()
 
