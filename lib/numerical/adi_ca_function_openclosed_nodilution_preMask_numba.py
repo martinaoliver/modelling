@@ -1,71 +1,64 @@
-import numpy
-# import matplotlib as mpl
-# mpl.use('tkagg')
+#############
+###paths#####
+#############
+import sys
+import os
 
-import matplotlib.pyplot as plt
+from importlib_metadata import distribution
+pwd = os.getcwd()
+modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+sys.path.append(modellingpath + '/lib')
+#############
+
+from equations.class_circuit_eq import *
 import numpy as np
 from scipy.sparse import spdiags, diags
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 import copy
-from scipy.sparse import linalg
 from scipy.linalg import solve_banded
-from equations.class_circuit_eq import *
-from scipy.ndimage import laplace
+import matplotlib.pyplot as plt
+import numba
+from numba import cuda, float32
 
 
-
-
-
-def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
-    #for dt/dx^2 <1 (stability criterion): t_gridpoints approx < xgridpoints^2
-    # parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'turinghill':turinghill}
-    # f = parent_list[circuit_n](par_dict, stochasticity=stochasticity)
-    def f(U,n_species=2):
-        dudt = [0]*n_species
-        dudt[0]= 5*U[0] - 6*U[1] + 1
-        dudt[1] = 6*U[0]- 7*U[1] 
-        return dudt
+def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=1,stochasticity=0, seed=1,growth='Slow', boundarycoeff=1.5):
+    
+    parent_list = [circuit1, circuit2,circuit3,circuit4,circuit5,circuit6,circuit7,circuit8,circuit9, circuit10, circuit11, circuit12]
+    f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
 
     #spatial variables
-    dx = float(L_x)/float(J-1); dy = float(L_y)/float(I-1)
-    x_grid = numpy.array([j*dx for j in range(J)]); y_grid = numpy.array([i*dy for i in range(I)])
+    L_x=L;L_y=L;dy=dx;I=J
+
+    #define diffussion species
     diffusing_species =np.nonzero(D)[0]
     nondiffusing_species = np.nonzero(D==0)[0]
 
-    #time variables
-    
-    dt = float(T)/float(N-1)
+    #alpha parameter required for ADI solver
+    alpha = [D[n]*dt/(2.*dx*dy) for n in range(n_species)]
 
-    t_grid = numpy.array([n*dt for n in range(N)])
 
-    alpha = [D[n]*dt/(2.*dx*dx) for n in range(n_species)]
-
-    
     #Define initial conditions and cell matrix
     U0 = []
     perturbation=0.001
-    np.random.seed(1)
+    steadystates=[0.1]*n_species
+    np.random.seed(seed)
 
-    if np.all(steadystates)==0:
-        steadystates=[0.1]*n_species
-    # cell_matrix = np.zeros(shape=(I,J))
-    # cell_matrix[int(I/2), int(J/2)] = 1
+    cell_matrix = cell_matrix_record[:,:,0]
     for index in range(n_species):
         U0.append(np.random.uniform(low=steadystates[index] - perturbation, high=steadystates[index] + perturbation, size=(I, J)))
-    # U0 = U0*cell_matrix
+    U0 = U0*cell_matrix
 
     #A matrix (right-hand side of Ax=b)
     def A(alphan):
         bottomdiag = [-alphan for j in range(J-1)]
-        centraldiag = [1.+alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+alphan]
+        centraldiag = [1.+boundarycoeff*alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+boundarycoeff*alphan]
         topdiag = [-alphan for j in range(J-1)]
         diagonals = [bottomdiag,centraldiag,topdiag]
         A = diags(diagonals, [ -1, 0,1]).toarray()
         return A
     def diagonal_form(a, upper = 1, lower= 1):
         """
-        a is a numpy square matrix
+        a is a np square matrix
         this function converts a square matrix to diagonal ordered form
         returned matrix in ab shape which can be used directly for scipy.linalg.solve_banded
         """
@@ -91,14 +84,13 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
 
         return ab
     ab_list = [diagonal_form(A(alphan)) for alphan in alpha]
-    A_list = [A(alphan) for alphan in alpha]
 
 
     #b vector (left-hand side of Ax=b)
     def b(axis,ij,alphan,Un):
-        b_t_stencil = np.array( [0] + [(1-alphan)] + [alphan])
+        b_t_stencil = np.array( [0] + [(1-boundarycoeff*alphan)] + [alphan])
         b_c_stencil = np.array( [alphan] + [(1-2*alphan)] + [alphan])
-        b_b_stencil = np.array( [alphan] + [(1-alphan)] + [0])
+        b_b_stencil = np.array( [alphan] + [(1-boundarycoeff*alphan)] + [0])
 
         b = np.zeros(J)
         if axis == 'y':
@@ -145,65 +137,46 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
         return b
 
 
-
-    U = copy.deepcopy(U0)
+    #create initial [] matrices and record arrays
+    U = U0.copy()
     U_record = []
     for species_index in range(n_species):
         U_record.append(np.zeros([J, I, T])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
 
-    A_inv = [np.linalg.inv(a) for a in A_list]
-    # unittime=0
-    for ti in tqdm(range(N), disable = tqdm_disable):
-        #First step: solve in y direction from n -> n+1/2
-        U_half = copy.deepcopy(U)
-        # f0 = f.dudt(U)
-        f0 = f(U)
+
+    #define parameters for divisio frequency
+    divisionTimeHours=1 #cells consider division every x hours
+    divisionTimeUnits=int(divisionTimeHours/dt) #cells consider division every x timeunits. If dt=0.1, x=10
+    
+    for ti in tqdm(range(0,N), disable = tqdm_disable):
+
+        #define current cell matrix for time ti
+        cell_matrix = cell_matrix_record[:,:,ti]
+
+        #First step: solve in y direction from n -> n+1/2        
+        U_half = U.copy()
+        f0 = f.dudt_growth(U,cell_matrix)
         for i in range(I):
             for n in diffusing_species:
-                # U_half[n][:,i] = solve_banded((1, 1), ab_list[n], b('y',i,alpha[n],U[n]) +  f0[n][:,i]*(dt/2)) #CN step in one dimension to get banded(tridiagonal) A matrix
-                U_half[n][:,i] = A_inv[n].dot(b('y',i,alpha[n],U[n])+  f0[n][:,i]*(dt/2)) # Dot product with inverse rather than solve system of equations
+                U_half[n][:,i] = solve_banded((1, 1), ab_list[n], b('y',i,alpha[n],U[n]) +  f0[n][:,i]*(dt/2)) #CN step in one dimension to get banded(tridiagonal) A matrix
             for n in nondiffusing_species: #Species with D=0, no CN included, basic euler
                 U_half[n][:,i] =  U[n][:,i] + f0[n][:,i]*(dt/2)
 
         #Second step: solve in x direction from n+1/2 -> n+1
-        U_new = copy.deepcopy(U_half)
-        # f1 = f.dudt(U_half)
-        f1 = f(U_half)
+        U_new = U_half.copy()
+        f1 = f.dudt_growth(U_half,cell_matrix)
         for j in range(J):
             for n in diffusing_species:
-                # U_new[n][j,:] = solve_banded((1, 1), ab_list[n], b('x',j,alpha[n],U_half[n]) + f1[n][j,:]*(dt/2))
-                U_new[n][j,:] = A_inv[n].dot(b('x',j,alpha[n],U_half[n])+  f1[n][j,:]*(dt/2)) # Dot product with inverse rather than solve system of equations
+                U_new[n][j,:] = solve_banded((1, 1), ab_list[n], b('x',j,alpha[n],U_half[n]) + f1[n][j,:]*(dt/2))
             for n in nondiffusing_species:
                 U_new[n][j,:] =  U_half[n][j,:] + f1[n][j,:]*(dt/2)
+       
+        #if at this time, division occurs: add mother [] to daughter cells
+        if (ti%divisionTimeUnits==0):
+            daughterToMotherDict = daughterToMotherDictList[ti-1]
+            for newCell,oldCell in daughterToMotherDict.items():
+                U_new[:,newCell[0],newCell[1]] = U_new[:,oldCell[0],oldCell[1]]
 
-        # hour = ti / (N / T)
-        # # print(np.amax(np.abs(D[0]*laplace(U[0]) + f.dudt(U)[0]))) 
-        # if hour % 10 == 0:  #only consider division at unit time (hour)
-        #     #append results into top_array for records
-        #     for species_index in range(n_species):
-        #         U_record[species_index][:, :, int(hour)] = U_new[species_index] #issue in this line
-        # if hour % 50 == 0:   
-        #     uprime_list=[np.amax(np.abs(U_new[n]-U[n])) for n in range(n_species)]
-        #     # print(np.amax(uprime_list))
+        U = U_new.copy()
 
-        #     if all(i <= 10e-4 for i in uprime_list):
-        #         if hour > 200:
-        #             # print('Error1')
-        #             # print(np.amax(np.abs(U_new[-2]-U[-2])))
-        #             # print('Error2')
-        #             # print([np.amax(np.abs(D[i]*laplace(U[i]) + f.dudt(U)[i])) for i in range(n_species)])
-        #             print('converged')
-        #             return U_record, U
-        #             break
-
-
-        U = copy.deepcopy(U_new)
-    
-
-
-    #check if solution is correct
-    # print(np.amax(D[-1]*laplace(U) + f.dudt(U)[-1]))
     return U_record, U
-
-
-

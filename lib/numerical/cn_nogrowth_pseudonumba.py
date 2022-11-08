@@ -5,8 +5,8 @@ from tqdm import tqdm
 import copy
 from scipy.linalg import solve_banded
 import matplotlib.pyplot as plt
-import numba
-from numba import cuda, float32
+# import numba
+# from numba import cuda, float32
 
 #############
 ###paths#####
@@ -95,7 +95,7 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
         A_inv = tuple(A_inv)
         B_list = tuple(B_list)
 
-        @numba.jit(nopython=True)
+        # @numba.jit(nopython=True)
         def matrix_solving(Un, A_invn, B_listn, f0n, dt):
             U_newn = A_invn.dot(B_listn.dot(Un) +  f0n*(dt/2)) 
             return U_newn
@@ -103,7 +103,7 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
 
         U_new = copy.deepcopy(U)
         #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
-        print('entering numba for loop')
+        print('entering pseudonumba for loop')
         for ti in range(N): 
             
             # U_new = copy.deepcopy(U)
