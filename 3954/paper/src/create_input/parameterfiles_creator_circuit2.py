@@ -18,13 +18,26 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=2
-variant=1
+variant=3
 #diffusion parameters
 # DU = {'name':'DU','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
 # DV= {'name':'DV','distribution':'gaussian', 'mean':1, 'noisetosignal':0.05}
-DA = {'name':'DA','distribution':'fixed', 'value':1}
-# DB = {'name':'DB','distribution':'loguniform', 'min':0.001, 'max':10}
-DB = {'name':'DB','distribution':'fixed', 'value':0.001}
+DB = {'name':'DB','distribution':'loguniform', 'min':0.1, 'max':10}
+DB = {'name':'DB','distribution':'loguniform', 'min':0.1, 'max':10}
+k1 = 0.0183
+k2 = 0.0183
+DU_low = 0.1
+DU_high = 10
+DV_low = 0.1
+DV_high = 10
+muU_low =0.0225
+muU_high = 3
+muV_low = 0.0225
+muV_high = 3
+print(f'min{k1*DU_low/muU_high}' ,f'max{k1*DU_high/muU_low}')
+print(f'min{k2*DV_low/muV_high}' ,f'max{k2*DV_high/muV_low}')
+DA = {'name':'DA','distribution':'loguniform', 'min':k1*DU_low/muU_high, 'max':k1*DU_high/muU_low}
+DB = {'name':'DB','distribution':'loguniform', 'min':k2*DV_low/muV_high, 'max':k2*DV_high/muV_low}
 
 D_parameters = [DA,DB]
 
@@ -57,6 +70,9 @@ Kbd = {'name':'Kbd','distribution':'loguniform', 'min':0.1, 'max':250}
 Kfe = {'name':'Kfe','distribution':'loguniform', 'min':0.1, 'max':250}
 Kee = {'name':'Kee','distribution':'loguniform', 'min':0.1, 'max':250}
 Kce = {'name':'Kce','distribution':'loguniform', 'min':0.1, 'max':250}
+
+Kab = {'name':'Kab','distribution':'loguniform', 'min':muU_low*DU_low/k1, 'max':muU_high*DU_high/k1}
+Kbd = {'name':'Kbd','distribution':'loguniform', 'min':muV_low*DV_low/k2, 'max':muV_high*DV_high/k2}
 K_parameters = [Kda, Kab, Keb, Kbd, Kfe, Kee, Kce]
 
 #degradation parameters (mu)
@@ -76,22 +92,27 @@ n_parameters = [nbd,nab,nda,nfe,nee,neb,nce]
 
 
 
-nsamples=int(sys.argv[1])
 plotDistributions=False
 if plotDistributions == True:
-    parameterTypeList = [D_parameters,b_parameters,V_parameters,K_parameters,mu_parameters,n_parameters,k_parameters]
+    nsamples=100
+    parameterTypeList = [ D_parameters , b_parameters , V_parameters , K_parameters , mu_parameters , n_parameters]
+
     for parameterType in parameterTypeList:
         stackedDistributions = preLhs(parameterType)
         lhsDist = lhs(stackedDistributions,nsamples)
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
 
-parameterDictList = D_parameters + b_parameters + V_parameters + K_parameters + mu_parameters + n_parameters
-# parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
-stackedDistributions = preLhs(parameterDictList)
-lhsDist = lhs(stackedDistributions,nsamples)
-lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterDictList])
-# plotDist(parameterDictList,lhsDist_df)
-pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
+createParams=True
+if createParams == True:
+    # nsamples=1000000
+    nsamples=int(sys.argv[1])
+    parameterDictList = D_parameters + b_parameters + V_parameters + K_parameters + mu_parameters + n_parameters
+    # parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
+    stackedDistributions = preLhs(parameterDictList)
+    lhsDist = lhs(stackedDistributions,nsamples)
+    lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterDictList])
+    # plotDist(parameterDictList,lhsDist_df)
+    pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
 
-print(lhsDist_df)
+    print(lhsDist_df)

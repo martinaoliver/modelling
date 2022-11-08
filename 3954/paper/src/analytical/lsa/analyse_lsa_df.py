@@ -53,7 +53,7 @@ dfunstable = df[df['system_class']=='simple unstable']
 # complex_df.index  = complex_df.index.droplevel(-1)
 
 # #values that have instabilities
-saveInstabilities = False
+saveInstabilities = True
 if saveInstabilities ==True:
     instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
     instabilities_df = df.loc[df['system_class'].isin(instabilities)]
@@ -65,15 +65,15 @@ if saveInstabilities ==True:
 # pickle.dump( instabilityComplex_df, open(modellingpath + '/growth/out/analytical/instabilityComplex/instabilityComplex_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 
 # #values that have turing
-saveTuring = False
+saveTuring = True
 if saveTuring == True:
     turingStates = ['turing I','turing I oscillatory']  
     turing_df = df.loc[df['system_class'].isin(turingStates)]
     # turing_df = turing_df.xs(0, level=1)
-    # turing_df.index  = turing_df.index.droplevel(-1)
+    turing_df.index  = turing_df.index.droplevel(-1)
     # turing_df = turing_df.loc[turing_df['ss_n']==1]
     # turing_df = turing_df.sort_values(by=['maxeig'],  ascending=False)
-    pickle.dump( turing_df, open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
+    pickle.dump( turing_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 # #remove secondary index from turing_df
 
 
