@@ -177,7 +177,7 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
     A_inv = [np.linalg.inv(a) for a in A_list]
     # unittime=0
 
-    numba.jit(nopython=True)
+    # @numba.jit(nopython=True)
     def adi_forloop(U,N,A_inv):
 
         # print('inside forloop')

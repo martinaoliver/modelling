@@ -17,12 +17,13 @@ import pickle
 import numba
 from numba import cuda, float32
 
-
+@numba.jit(nopython=True)
 def check_neighbours(cell_matrix,y_pos,x_pos): #returns grid with the neighbouring points
     top_array = [cell_matrix[y_pos-1, x_pos-1], cell_matrix[y_pos-1,x_pos], cell_matrix[y_pos-1,x_pos+1]]
     middle_array = [cell_matrix[y_pos, x_pos-1], np.nan, cell_matrix[y_pos,x_pos+1]]
     bottom_array = [cell_matrix[y_pos+1, x_pos-1], cell_matrix[y_pos+1,x_pos], cell_matrix[y_pos+1,x_pos+1]]
     neighbours_cellmatrix = np.array([top_array,middle_array,bottom_array])
+    return neighbours_cellmatrix
 
 def cell_automata_colony(cell_matrix, p_division):
     daughterToMotherDict = {}
@@ -34,6 +35,7 @@ def cell_automata_colony(cell_matrix, p_division):
             x_pos = int(x_pos)
             if cell_matrix[y_pos, x_pos]!=0:
                 neighbours_cellmatrix = check_neighbours(cell_matrix,y_pos,x_pos)
+
                 if 0 in neighbours_cellmatrix:
                     cell_division=np.random.choice([1,0],p=[p_division,1-p_division])
                     if cell_division==1:
@@ -49,7 +51,7 @@ def cell_automata_colony(cell_matrix, p_division):
                         daughterToMotherDict[(index_newcell_y+y_pos-1,index_newcell_x+x_pos-1)] = (y_pos,x_pos)
     return cell_matrix_new, daughterToMotherDict
     
-numba.jit(nopython=True)
+# numba.jit(nopython=True)
 def adi_ca(initial_condition,L,dx,J,T,dt,N,n_species,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
     L_x=L;L_y=L;dy=dx;I=J
 
@@ -119,9 +121,12 @@ n_species=6
 
 # L=5; x_gridpoints =5; J = L*x_gridpoints
 # T =10; t_gridpoints = 10; N = T*t_gridpoints
-L=8; dx =0.05; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
-T =125; dt = 0.04; N = int(T/dt)
+# L=8; dx =0.05; J = int(L/dx)
+# T =125; dt = 0.05; N = int(T/dt)
+# T =125; dt = 0.04; N = int(T/dt)
+
+L=8; dx =0.5; J = int(L/dx)
+T =125; dt = 0.5; N = int(T/dt)
 
 # L=int(sys.argv[1]); x_gridpoints =int(sys.argv[2]); J = L*x_gridpoints
 # T =int(sys.argv[3]); t_gridpoints = int(sys.argv[4]); N = T*t_gridpoints
@@ -129,7 +134,7 @@ L_x = L
 L_y = L
 I = J
 
-p_division=0.5;seed=1
+p_division=0.05;seed=1
 # p_division=float(sys.argv[5]);seed=1
 initial_condition = [1000]*n_species
 cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(initial_condition,L,dx,J,T,dt,N,n_species,tqdm_disable=False,p_division=p_division,seed=seed)
@@ -154,7 +159,7 @@ if plot1D == True:
     plt.show()
     plt.close()
 
-plotVideo=True
+plotVideo=False
 if plotVideo==True:
     def show_rgbvideo(timeseries_unstacked):
         time=0

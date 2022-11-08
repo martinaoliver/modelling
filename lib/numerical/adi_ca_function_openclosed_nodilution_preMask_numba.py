@@ -84,57 +84,62 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
 
         return ab
     ab_list = [diagonal_form(A(alphan)) for alphan in alpha]
+    A_list = [A(alphan) for alphan in alpha]
 
 
     #b vector (left-hand side of Ax=b)
+    @numba.jit(nopython=True)
     def b(axis,ij,alphan,Un):
         b_t_stencil = np.array( [0] + [(1-boundarycoeff*alphan)] + [alphan])
         b_c_stencil = np.array( [alphan] + [(1-2*alphan)] + [alphan])
         b_b_stencil = np.array( [alphan] + [(1-boundarycoeff*alphan)] + [0])
-
+        
         b = np.zeros(J)
         if axis == 'y':
             i = ij
             if i > 0 and i < I-1:
                 for j in range(0,J):
-                    ux_three = [Un[j,i-1], Un[j,i], Un[j,i+1]]
-                    sub_b = np.sum(ux_three*b_c_stencil)
+                    # ux_three = [Un[j,i-1], Un[j,i], Un[j,i+1]]
+                    ux_three = np.array( [Un[j,i-1]] +  [Un[j,i]]+  [Un[j,i+1]])
+                    sub_b = sum(ux_three*b_c_stencil)
                     b[j] = sub_b
-
 
             if i == 0:
                 for j in range(0,J):
-                    ux_three = [0 , Un[j,i], Un[j,i+1]]
-                    sub_b = np.sum(ux_three*b_t_stencil)
+                    ux_three = np.array([0] +[Un[j,i]]+[Un[j,i+1]])
+                    sub_b = sum(ux_three*b_t_stencil)
                     b[j] = sub_b
 
             if i == I-1:
                 for j in range(0,J):
-                    ux_three = [Un[j,i-1], Un[j,i] , 0]
-                    sub_b = np.sum(ux_three*b_b_stencil)
+                    ux_three = np.array([Un[j,i-1]] + [Un[j,i]] + [0])
+                    sub_b = sum(ux_three*b_b_stencil)
                     b[j] = sub_b
+
 
         if axis == 'x':
             j = ij
             if j > 0 and  j < J-1:
                 for i in range(0,I):
-                    uy_three = [Un[j-1,i], Un[j,i], Un[j+1,i]]
-                    sub_b = np.sum(uy_three*b_c_stencil)
+                    uy_three = np.array([Un[j-1,i]]+ [Un[j,i]] + [Un[j+1,i]])
+                    sub_b = sum(uy_three*b_c_stencil)
                     b[i] = sub_b
 
             if j == 0:
                 for i in range(0,I):
-                    uy_three = [0, Un[j,i], Un[j+1,i]]
-                    sub_b = np.sum(uy_three*b_t_stencil)
+                    uy_three = np.array([0] +[Un[j,i]] +  [Un[j+1,i]])
+                    sub_b = sum(uy_three*b_t_stencil)
                     b[i] = sub_b
 
             if j == J-1:
                 for i in range(0,I):
-                    uy_three = [Un[j-1,i], Un[j,i], 0]
-                    sub_b = np.sum(uy_three*b_b_stencil)
+                    uy_three = np.array([Un[j-1,i]] + [Un[j,i]] + [0])
+                    sub_b = sum(uy_three*b_b_stencil)
                     b[i] = sub_b
 
         return b
+
+
 
 
     #create initial [] matrices and record arrays
@@ -147,7 +152,8 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
     #define parameters for divisio frequency
     divisionTimeHours=1 #cells consider division every x hours
     divisionTimeUnits=int(divisionTimeHours/dt) #cells consider division every x timeunits. If dt=0.1, x=10
-    
+    A_inv = [np.linalg.inv(a) for a in A_list]
+
     for ti in tqdm(range(0,N), disable = tqdm_disable):
 
         #define current cell matrix for time ti
@@ -158,7 +164,8 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
         f0 = f.dudt_growth(U,cell_matrix)
         for i in range(I):
             for n in diffusing_species:
-                U_half[n][:,i] = solve_banded((1, 1), ab_list[n], b('y',i,alpha[n],U[n]) +  f0[n][:,i]*(dt/2)) #CN step in one dimension to get banded(tridiagonal) A matrix
+                U_half[n][:,i] = A_inv[n].dot(b('y',i,alpha[n],U[n])+  f0[n][:,i]*(dt/2)) # Dot product with inverse rather than solve system of equations
+                # U_half[n][:,i] = solve_banded((1, 1), ab_list[n], b('y',i,alpha[n],U[n]) +  f0[n][:,i]*(dt/2)) #CN step in one dimension to get banded(tridiagonal) A matrix
             for n in nondiffusing_species: #Species with D=0, no CN included, basic euler
                 U_half[n][:,i] =  U[n][:,i] + f0[n][:,i]*(dt/2)
 
@@ -167,7 +174,9 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
         f1 = f.dudt_growth(U_half,cell_matrix)
         for j in range(J):
             for n in diffusing_species:
-                U_new[n][j,:] = solve_banded((1, 1), ab_list[n], b('x',j,alpha[n],U_half[n]) + f1[n][j,:]*(dt/2))
+                U_new[n][j,:] = A_inv[n].dot(b('x',j,alpha[n],U_half[n])+  f1[n][j,:]*(dt/2)) # Dot product with inverse rather than solve system of equations
+
+                # U_new[n][j,:] = solve_banded((1, 1), ab_list[n], b('x',j,alpha[n],U_half[n]) + f1[n][j,:]*(dt/2))
             for n in nondiffusing_species:
                 U_new[n][j,:] =  U_half[n][j,:] + f1[n][j,:]*(dt/2)
        
