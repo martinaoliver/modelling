@@ -51,11 +51,12 @@ date = date.today().strftime('%m_%d_%Y')
 
 
 
-def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder=folder, test=False, nsamples=nsamples, date=date):
-    L=8; dx =0.05; J = int(L/dx)
+def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder=folder, test=True, nsamples=nsamples, date=date):
+    L=8; dx =0.02; J = int(L/dx)
     T =125; dt = 0.05; N = int(T/dt)
     boundarycoeff = 1.7
-    p_division=0.5;seed=1
+    p_division=0.7;seed=1
+    divisionTimeHours = 0.5
     df_index = np.unique(df.index.get_level_values(0))
 
     cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
@@ -81,7 +82,7 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder
         savefigpath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s/'%(folder)
 
         try:
-            U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=True, p_division=p_division,stochasticity=0, seed=seed,growth='Slow', boundarycoeff=boundarycoeff)
+            U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=True,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
             pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) )
             pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), 'wb'))
             # print(np.shape(U_record))

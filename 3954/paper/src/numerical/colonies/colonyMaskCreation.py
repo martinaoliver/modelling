@@ -28,7 +28,6 @@ def check_neighbours(cell_matrix,y_pos,x_pos): #returns grid with the neighbouri
 def cell_automata_colony(cell_matrix, p_division):
     daughterToMotherDict = {}
     cell_matrix_new = copy.deepcopy(cell_matrix)
-    memory_matrix_new =  np.zeros((len(cell_matrix),len(cell_matrix)),dtype='i,i')
     for y_pos in np.linspace(1,len(cell_matrix)-2,len(cell_matrix)-2):
         for x_pos in np.linspace(1,len(cell_matrix)-2,len(cell_matrix)-2):
             y_pos = int(y_pos)
@@ -52,8 +51,8 @@ def cell_automata_colony(cell_matrix, p_division):
     return cell_matrix_new, daughterToMotherDict
     
 # numba.jit(nopython=True)
-def adi_ca(initial_condition,L,dx,J,T,dt,N,n_species,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
-    L_x=L;L_y=L;dy=dx;I=J
+def adi_ca(L,dx,J,T,dt,N,n_species,division_TimeHours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
+    I=J
 
     print(f'dt{dt}')
 
@@ -72,8 +71,7 @@ def adi_ca(initial_condition,L,dx,J,T,dt,N,n_species,tqdm_disable=False, p_divis
 
     # U = copy.deepcopy(U0)
 
-    divisionTimeHours=1
-    divisionTimeUnits=int(divisionTimeHours/dt)
+    divisionTimeUnits=divisionTimeHours/dt
     print(f'divisionTimeUnits{divisionTimeHours}')
     # cell_matrix_record = np.zeros([J, I, int(T/divisionTimeHours)])
     cell_matrix_record = np.zeros([J, I, N])
@@ -121,12 +119,9 @@ n_species=6
 
 # L=5; x_gridpoints =5; J = L*x_gridpoints
 # T =10; t_gridpoints = 10; N = T*t_gridpoints
-# L=8; dx =0.05; J = int(L/dx)
-# T =125; dt = 0.05; N = int(T/dt)
-# T =125; dt = 0.04; N = int(T/dt)
+L=8; dx =0.02; J = int(L/dx)
+T =125; dt = 0.05; N = int(T/dt)
 
-L=8; dx =0.5; J = int(L/dx)
-T =125; dt = 0.5; N = int(T/dt)
 
 # L=int(sys.argv[1]); x_gridpoints =int(sys.argv[2]); J = L*x_gridpoints
 # T =int(sys.argv[3]); t_gridpoints = int(sys.argv[4]); N = T*t_gridpoints
@@ -134,10 +129,11 @@ L_x = L
 L_y = L
 I = J
 
-p_division=0.05;seed=1
+divisionTimeHours=0.5
+p_division=0.7;seed=1
 # p_division=float(sys.argv[5]);seed=1
-initial_condition = [1000]*n_species
-cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(initial_condition,L,dx,J,T,dt,N,n_species,tqdm_disable=False,p_division=p_division,seed=seed)
+
+cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
 pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
 pickle.dump( memory_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
 pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
@@ -172,7 +168,7 @@ if plotVideo==True:
             im.set_data(rgb_timeseries[:,:,time].astype('uint8'))
             
             plt.xlabel(time)
-            plt.pause(0.0001)
+            plt.pause(0.000001)
         plt.show()
 
     show_rgbvideo(cell_matrix_record)

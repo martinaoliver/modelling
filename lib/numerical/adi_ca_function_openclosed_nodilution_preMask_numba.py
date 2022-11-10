@@ -21,7 +21,7 @@ import numba
 from numba import cuda, float32
 
 
-def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=1,stochasticity=0, seed=1,growth='Slow', boundarycoeff=1.5):
+def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False,divisionTimeHours=1,stochasticity=0, seed=1, boundarycoeff=1.5):
     
     parent_list = [circuit1, circuit2,circuit3,circuit4,circuit5,circuit6,circuit7,circuit8,circuit9, circuit10, circuit11, circuit12]
     f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
