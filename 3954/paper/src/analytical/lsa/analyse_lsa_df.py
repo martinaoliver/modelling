@@ -32,10 +32,9 @@ def pieChart_lsa(valueCounts_dict,title,log=True):
     plt.show()
 
 
-
 # Specify name of circuit and variant investigated
 circuit_n='circuit2'
-variant=1
+variant=3
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
 
@@ -53,7 +52,7 @@ dfunstable = df[df['system_class']=='simple unstable']
 # complex_df.index  = complex_df.index.droplevel(-1)
 
 # #values that have instabilities
-saveInstabilities = True
+saveInstabilities = False
 if saveInstabilities ==True:
     instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
     instabilities_df = df.loc[df['system_class'].isin(instabilities)]
@@ -65,7 +64,7 @@ if saveInstabilities ==True:
 # pickle.dump( instabilityComplex_df, open(modellingpath + '/growth/out/analytical/instabilityComplex/instabilityComplex_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 
 # #values that have turing
-saveTuring = True
+saveTuring = False
 if saveTuring == True:
     turingStates = ['turing I','turing I oscillatory']  
     turing_df = df.loc[df['system_class'].isin(turingStates)]
@@ -74,23 +73,19 @@ if saveTuring == True:
     # turing_df = turing_df.loc[turing_df['ss_n']==1]
     # turing_df = turing_df.sort_values(by=['maxeig'],  ascending=False)
     pickle.dump( turing_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
-# #remove secondary index from turing_df
+
+compare_two_dfs=False
+if compare_two_dfs == True:
+    df0= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,0,n_param_sets), "rb"))
+    df2= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,2,n_param_sets), "rb"))
 
 
-# # select_turing=True
-# # if select_turing == True:    
-# #     states = ['turing I, turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf']  
-# #     turing_df = df.loc[df['system_class'].isin(states)]
-# #     turing_df = turing_df.xs(0, level=1)
-# #     pickle.dump( turing_df, open(modellingpath + '/growth/out/analytical/turing_dataframes/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
+    graph_df = df0['system_class'].value_counts().rename('Original parameters (cir2var0)').to_frame()\
+                .join(df2['system_class'].value_counts().rename('Converted parameters (cir2var2)').to_frame())
+    graph_df.plot(kind='bar',figsize=(8, 4), color=['darkcyan','lightcoral'], log=True)
 
-# # select_turingI=True
-# # if select_turingI == True:
-# #     states = ['turing I', 'turing I oscillatory']
-# #     turingI_df = df.loc[df['system_class'].isin(states)]
-# #     print(turingI_df)
-# #     if len(turingI_df) > 0:
-# #         turingI_df = turingI_df.xs(0, level=1)
-# #         pickle.dump( turingI_df, open(modellingpath + '/growth/out/analytical/turing_dataframes/turingI_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
-# # crop_to = 100000
-# # cropped_df = df.iloc[:crop_to]
+    plt.legend()
+    plt.title('Robustness of original params vs converted params')
+    plt.ylabel('Number of Occurrences (log)', fontsize=12)
+    plt.xlabel('System class', fontsize=12)
+    plt.show()

@@ -21,11 +21,12 @@ import numpy as np
 #############################
 
 circuit_n=2
-variant= 0#'48257gaussian0.1nsr'
+variant= 3#'48257gaussian0.1nsr'
 # variant= '48257gaussian0.21nsr'
 n_species=6
 shape='ca'
-folder = 'circuit2variant0_1M'
+# folder = 'circuit2variant0_1M'
+folder = 'circuit2variant3_turing'
 # folder = 'circuit2variant0_instabilities'
 # folder='circuit2variant48257gaussian0.21nsr'
 boundarycoeff = 1.7

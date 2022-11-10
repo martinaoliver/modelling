@@ -37,9 +37,9 @@ print('Number of Threads set to ', Number_of_Threads)
 # Specify name of circuit and variant investigated
 circuit_n=2
 # variant= '48257gaussian0.21nsr'
-variant=1
+variant=3
 n_species=6
-folder = 'circuit2variant1_turing'
+folder = 'circuit2variant3_turing'
 # folder = 'circuit2variant48257gaussian0.21nsr'
 # Specifiy number of parameter sets in parameterset file to be loaded
 # nsamples = 2000
