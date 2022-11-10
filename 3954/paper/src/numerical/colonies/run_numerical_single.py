@@ -1,27 +1,33 @@
 #############
 ###paths#####
 #############
-import sys
 import os
+import sys
 
 from importlib_metadata import distribution
+
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
 sys.path.append(modellingpath + '/lib')
 
+import pickle
+import time
+
+import matplotlib.pyplot as plt
+import numpy as np
 #############
 ###Imports#####
 #############
-from numerical.adi_ca_function_openclosed_nodilution import adi_ca_openclosed_nodilution
-from numerical.adi_ca_function_openclosed_nodilution_preMask import adi_ca_openclosed_nodilution_preMask
-from numerical.adi_ca_function_openclosed_nodilution_preMask_numba import adi_ca_openclosed_nodilution_preMask as adi_ca_openclosed_nodilution_preMask_numba
-from numerical.plotting_numerical import *
+from numerical.adi_ca_function_openclosed_nodilution import \
+    adi_ca_openclosed_nodilution
+from numerical.adi_ca_function_openclosed_nodilution_preMask import \
+    adi_ca_openclosed_nodilution_preMask
+from numerical.adi_ca_function_openclosed_nodilution_preMask_numba import \
+    adi_ca_openclosed_nodilution_preMask as \
+    adi_ca_openclosed_nodilution_preMask_numba
 from numerical.adi_square_function import adi
+from numerical.plotting_numerical import *
 
-import numpy as np
-import pickle
-import matplotlib.pyplot as plt
-import time
 # %matplotlib inline
 #############
 ###execution parameters#####
@@ -57,7 +63,7 @@ T =125; dt = 0.05; N = int(T/dt)
 
 cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
-T =1; dt = 0.05; N = int(T/dt)
+T =50; dt = 0.1; N = int(T/dt)
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 
@@ -77,7 +83,8 @@ st = time.time()
 U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=boundarycoeff)
 elapsed_time = time.time() - st
 print('Execution time numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-
+plt.imshow(U_final[0])
+plt.show()
 print(U_final[0,12,12])
 
 st = time.time()
@@ -89,6 +96,8 @@ print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_
 
 
 print(U_final[0,12,12])
+plt.imshow(U_final[0])
+plt.show()
 
 # plt.imshow(U_final[0])
 # plt.show()
