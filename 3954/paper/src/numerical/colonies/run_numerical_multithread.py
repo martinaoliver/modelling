@@ -10,7 +10,7 @@ modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1]
 sys.path.append(modellingpath + '/lib')
 #############
 
-from numerical.adi_ca_function_openclosed_nodilution_preMask import adi_ca_openclosed_nodilution_preMask
+from numerical.adi_ca_function_openclosed_nodilution_preMask_numba import adi_ca_openclosed_nodilution_preMask as adi_ca_openclosed_nodilution_preMask_numba
 from numerical.cn_plot import plot1D, surfpattern
 
 
@@ -81,9 +81,9 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder
         savefigpath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s/'%(folder)
 
         try:
-            U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=True, p_division=p_division,stochasticity=0, seed=seed,growth='Slow', boundarycoeff=boundarycoeff)
+            U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=True, p_division=p_division,stochasticity=0, seed=seed,growth='Slow', boundarycoeff=boundarycoeff)
             pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) )
-            # pickle.dump(U_record, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename), 'wb'))
+            pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), 'wb'))
             # print(np.shape(U_record))
             if savefig==True:
                 plot1D(U_final, savefig=True,filename=filename, savefigpath=savefigpath)

@@ -77,7 +77,7 @@ def matrix_rgb_normalisation(matrix):
         row_n += 1
     return NewMatrix, OldMin, OldMax
 
-def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
+def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, parID=0, scale_factor=10, save_figure=False):
     green = final_concentration[-1]
     red = final_concentration[-2]
     x_grid = np.linspace(0, mm, len(green))
@@ -105,8 +105,10 @@ def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, par
         plt.tight_layout()
 
         if save_figure == True:
-            plt.savefig(path + '/%s_%s_rg.jpeg' % (dimension, filename),dpi=2000)
+            plt.savefig(path + '/2Dfinal_%s_rg.jpeg' %filename,dpi=2000)
+            plt.show()
             plt.close()
+            print(f'Saved figure in {path}')
         else:
             plt.show()
 

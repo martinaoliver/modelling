@@ -35,13 +35,13 @@ from numerical.plotting_numerical import *
 # %matplotlib inline
 shape = 'ca'
 # parID = int(sys.argv[1])
-parID = 1
+parID = 383859
 circuit_n=2
-variant= 0
+variant= 3
 n_species=6
 
 
-nsamples =  10
+nsamples =  1000000
 save_figure = False
 tqdm_disable = False #disable tqdm
 # boundarycoeff = float(sys.argv[6])
@@ -63,7 +63,7 @@ T =125; dt = 0.05; N = int(T/dt)
 
 cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
-T =50; dt = 0.1; N = int(T/dt)
+# T =50; dt = 0.1; N = int(T/dt)
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 
