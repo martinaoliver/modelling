@@ -191,3 +191,70 @@ def show_rgbvideo(timeseries_unstacked,parID):
         plt.xlabel(time)
         plt.pause(0.01)
     plt.show()
+
+
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import matplotlib.animation as animation
+
+
+def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=25):
+    fig = plt.figure()
+    ims = []
+    rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+    im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+
+    for i in range(len(rgb_timeseries)):
+        im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
+        ims.append([im])
+    ani = animation.ArtistAnimation(fig, ims, interval=interval)
+    
+    ani.save(saveVideoPath + '/%s.mp4' %filename)
+    print('Video saved')
+    # plt.imshow(rgb_timeseries[-1].astype('uint8'), origin= 'lower')
+    # plt.show()
+# from celluloid import Camera
+
+# def save_rgbvideo(timeseries_unstacked):
+#     fig = plt.figure()
+#     camera = Camera(fig)
+
+#     rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+#     # im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+
+#     for i in range(len(rgb_timeseries)):
+#         plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+#         camera.snap()
+#     animation = camera.animate()
+#     print('afdagdasghtrs')
+
+#     animation.save('dynamic_images.mp4')
+
+#     print('save')
+
+
+
+# fig = plt.figure()
+# camera = Camera(fig)
+# for i in range(10):
+#     plt.plot([i] * 10)
+#     camera.snap()
+# animation = camera.animate()
+# animation.save('output.gif')
+
+
+
+    # plt.show()
+
+
+
+# img = [] # some array of images
+# frames = [] # for storing the generated images
+# fig = plt.figure()
+# for i in xrange(6):
+#     frames.append([plt.imshow(img[i], cmap=cm.Greys_r,animated=True)])
+
+# ani = animation.ArtistAnimation(fig, frames, interval=50, blit=True,
+#                                 repeat_delay=1000)
+# # ani.save('movie.mp4')
+# plt.show()

@@ -49,7 +49,7 @@ print(par_dict)
 L=8; dx =0.05; J = int(L/dx)
 T =125; dt = 0.05; N = int(T/dt)
 
-# T =1; dt = 0.05; N = int(T/dt)
+T =50; dt = 0.05; N = int(T/dt)
 
 
 
@@ -62,12 +62,12 @@ filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circ
 #load image
 U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
 U_record = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
-plt.imshow(U_final[-1])
-plt.colorbar()
-plt.show()
-plt.imshow(U_final[-2])
-plt.colorbar()
-plt.show()
+# plt.imshow(U_final[-1])
+# plt.colorbar()
+# plt.show()
+# plt.imshow(U_final[-2])
+# plt.colorbar()
+# plt.show()
 
 # savefig_path = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s'%(folder)
 # rgb = plot_redgreen_contrast(U_final,L,path = savefig_path,filename=filename(parID),parID=parID,scale_factor=int(1/dx),save_figure=True)
@@ -75,7 +75,9 @@ plt.show()
 
 
 rgb_timeseries = redgreen_contrast_timeseries(U_record)
-show_rgbvideo(rgb_timeseries,parID)
+# show_rgbvideo(rgb_timeseries,parID)
+saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s'%folder
+save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 
 
 
