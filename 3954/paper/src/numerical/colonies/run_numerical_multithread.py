@@ -52,11 +52,11 @@ date = date.today().strftime('%m_%d_%Y')
 
 
 def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder=folder, test=False, nsamples=nsamples, date=date):
-    L=8; dx =0.02; J = int(L/dx)
+    L=8; dx =0.05; J = int(L/dx)
     T =125; dt = 0.05; N = int(T/dt)
     boundarycoeff = 1.7
-    p_division=0.7;seed=1
-    divisionTimeHours = 0.5
+    p_division=0.5;seed=1
+    divisionTimeHours = 1
     df_index = np.unique(df.index.get_level_values(0))
 
     cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
