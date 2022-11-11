@@ -51,7 +51,7 @@ date = date.today().strftime('%m_%d_%Y')
 
 
 
-def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder=folder, test=True, nsamples=nsamples, date=date):
+def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder=folder, test=False, nsamples=nsamples, date=date):
     L=8; dx =0.02; J = int(L/dx)
     T =125; dt = 0.05; N = int(T/dt)
     boundarycoeff = 1.7

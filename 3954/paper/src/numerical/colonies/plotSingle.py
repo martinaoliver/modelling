@@ -27,7 +27,7 @@ from numerical.plotting_numerical import *
 shape = 'ca'
 
 parID = 383859
-parID = 13974
+# parID = 13974
 circuit_n=2
 variant= 3
 n_species=6
@@ -49,7 +49,7 @@ print(par_dict)
 L=8; dx =0.05; J = int(L/dx)
 T =125; dt = 0.05; N = int(T/dt)
 
-T =1; dt = 0.05; N = int(T/dt)
+# T =1; dt = 0.05; N = int(T/dt)
 
 
 
@@ -73,6 +73,9 @@ plt.show()
 # rgb = plot_redgreen_contrast(U_final,L,path = savefig_path,filename=filename(parID),parID=parID,scale_factor=int(1/dx),save_figure=True)
 
 
+
+rgb_timeseries = redgreen_contrast_timeseries(U_record)
+show_rgbvideo(rgb_timeseries,parID)
 
 
 

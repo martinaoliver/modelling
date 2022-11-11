@@ -186,6 +186,13 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
             for newCell,oldCell in daughterToMotherDict.items():
                 U_new[:,newCell[0],newCell[1]] = U_new[:,oldCell[0],oldCell[1]]
 
+        hour = ti / (N / T)
+
+        if hour % 1 == 0:  #only consider recording at unit time (hour)
+            #append results into top_array for records
+            for species_index in range(n_species):
+                U_record[species_index][:, :, int(hour)] = U_new[species_index] #issue in this line
+
         U = U_new.copy()
 
     return U_record, U
