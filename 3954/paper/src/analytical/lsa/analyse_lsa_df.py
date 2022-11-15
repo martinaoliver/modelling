@@ -34,7 +34,7 @@ def pieChart_lsa(valueCounts_dict,title,log=True):
 
 # Specify name of circuit and variant investigated
 circuit_n='circuit2'
-variant=3
+variant=0
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
 
@@ -74,7 +74,7 @@ if saveTuring == True:
     # turing_df = turing_df.sort_values(by=['maxeig'],  ascending=False)
     pickle.dump( turing_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 
-compare_two_dfs=False
+compare_two_dfs=True
 if compare_two_dfs == True:
     df0= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,0,n_param_sets), "rb"))
     df2= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,2,n_param_sets), "rb"))

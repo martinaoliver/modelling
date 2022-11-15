@@ -40,27 +40,37 @@ circuit_n=2
 variant=3
 n_species=6
 folder = 'circuit2variant3_turing'
-# folder = 'circuit2variant48257gaussian0.21nsr'
+modelArgs = [circuit_n,variant,n_species,folder]
 # Specifiy number of parameter sets in parameterset file to be loaded
 # nsamples = 2000
 nsamples = 1000000
 
+L=8; dx =0.02; J = int(L/dx)
+T =125; dt = 0.05; N = int(T/dt)
+boundarycoeff = 1.7
+p_division=0.7;seed=1
+divisionTimeHours = 0.5
+systemArgs = [L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours]
+
+
+
 
 # Specify date today
 date = date.today().strftime('%m_%d_%Y')
+cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 
-
-
-def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder=folder, test=False, nsamples=nsamples, date=date):
-    L=8; dx =0.05; J = int(L/dx)
-    T =125; dt = 0.05; N = int(T/dt)
-    boundarycoeff = 1.7
-    p_division=0.5;seed=1
-    divisionTimeHours = 1
+def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder, test=True):
+    # L=8; dx =0.02; J = int(L/dx)
+    # T =125; dt = 0.05; N = int(T/dt)
+    # boundarycoeff = 1.7
+    # p_division=0.7;seed=1
+    # divisionTimeHours = 0.5
+    circuit_n, variant, n_species, folder = modelArgs
+    L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours = systemArgs
     df_index = np.unique(df.index.get_level_values(0))
 
-    cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
-    daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+
     if test==True:
         T =1; dt = 0.05; N = int(T/dt)
     D = np.zeros(n_species)
@@ -85,6 +95,8 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, folder
             U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=True,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
             pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) )
             pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), 'wb'))
+            del U_record
+            del U_final
             # print(np.shape(U_record))
             if savefig==True:
                 plot1D(U_final, savefig=True,filename=filename, savefigpath=savefigpath)
