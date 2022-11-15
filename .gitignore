@@ -12,7 +12,9 @@
 **/**.pdf
 **/**hdf5
 **/**gif
+**/**mp4
 .DS_Store
 **/**pycache**
+
 
 

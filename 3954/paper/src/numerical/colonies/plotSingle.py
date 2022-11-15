@@ -26,8 +26,9 @@ from numerical.plotting_numerical import *
 # %matplotlib inline
 shape = 'ca'
 
-parID = 383859
+# parID = 383859
 # parID = 13974
+parID =362298
 circuit_n=2
 variant= 3
 n_species=6
@@ -49,7 +50,7 @@ print(par_dict)
 L=8; dx =0.05; J = int(L/dx)
 T =125; dt = 0.05; N = int(T/dt)
 
-T =50; dt = 0.05; N = int(T/dt)
+# T =50; dt = 0.05; N = int(T/dt)
 
 
 
@@ -60,7 +61,7 @@ filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circ
 
 
 #load image
-U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
+# U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
 U_record = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
 # plt.imshow(U_final[-1])
 # plt.colorbar()
