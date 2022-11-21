@@ -28,13 +28,18 @@ shape = 'ca'
 
 # parID = 383859
 # parID = 13974
-parID =362298
+# parID =524126
+# parID = 546780
+# parID = 546780
+parID = 964698
+# parID = 824507
+
 circuit_n=2
-variant= 3
+variant= 1
 n_species=6
 boundarycoeff = 1.7
 p_division=0.5;seed=1
-folder = 'circuit2variant3_turing'
+folder = 'circuit2variant1_turing'
 
 save_figure = False
 nsamples=1000000
@@ -42,9 +47,9 @@ nsamples=1000000
 
 # open parameter dictionaries
 # df= pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-par_dict = df.loc[parID].to_dict()
-print(par_dict)
+# df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+# par_dict = df.loc[parID].to_dict()
+# print(par_dict)
 
 #solver parameters
 L=8; dx =0.05; J = int(L/dx)

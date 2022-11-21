@@ -68,14 +68,14 @@ def numerical_check(df,x_gridpoints, t_gridpoints,T,L,circuit_n=circuit_n, varia
         N = T * t_gridpoints
         steadystates=par_dict['ss_list']
 
-        filename = '%s_variant%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
+        filename= lambda mechanism, parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,parID,L,J,T,N)
         savefig=False
         savefigpath = modellingpath + '/growth/out/numerical/%s/%s/fig/'%(circuit_n,mechanism)
 
         try:
             U_final,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, tqdm_disable=True)            
-            pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename), 'wb'))
-            pickle.dump(U_record, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename), 'wb'))
+            pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parID)), 'wb'))
+            pickle.dump(U_record, open(modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parID)), 'wb'))
             # print(np.shape(U_record))
             if savefig==True:
                 plot1D(U_final, savefig=True,filename=filename, savefigpath=savefigpath)
