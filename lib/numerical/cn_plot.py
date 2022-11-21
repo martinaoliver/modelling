@@ -6,7 +6,7 @@ cmap=cm.coolwarm
 from sklearn import preprocessing
 
 
-def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, peaks=False):
+def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False):
     if round==True:
         U = np.round(U,decimals=3)
     if morphogen == 0:
@@ -26,8 +26,7 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
         ax2.legend(loc=1) #upper right
 
         ax.ticklabel_format(useOffset=False)
-        if np.any(peaks)!=False:
-            print(peaks)
+        if plotPeaks==True:
             ax.plot(peaks[0],U[0][peaks[0]], 'o', color='blue')
             ax2.plot(peaks[1],U[1][peaks[1]], 'o', color='red')
 
@@ -65,3 +64,46 @@ def surfpattern(results,grids,growth='linear', rate=0, morphogen = 0,savefig=Fal
     if savefig==True:
         plt.savefig('%s_overtime.png'%filename)
     # plt.show()
+    
+def surfpattern1(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
+    fig,ax = plt.subplots(1,len(morphogen))
+    for count,n in enumerate(morphogen):
+        if normalize == True:
+            results = [preprocessing.normalize(array, norm="l1") for array in results]
+        results = results[n]
+        x_grid = grids[0] 
+        t_grid = grids[1]
+        values = results.reshape(len(x_grid),len(t_grid))
+        x, t = np.meshgrid(x_grid, t_grid)
+
+        # t,x = np.meshgrid(t_grid, x_grid)
+        # plt.contourf(t,x,results, cmap=cmap)
+        ax[count].contourf(x,t,results, cmap=cmap)
+        if logResults==True:
+            plt.colorbar(label='Concentration (logscale)')
+        else:
+            plt.colorbar()
+
+
+        plt.ylabel('Time')
+        plt.xlabel('Space')
+        if savefig==True:
+            plt.savefig('%s_overtime.png'%filename)
+        # plt.show()
+
+def surfpattern2(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
+    fig,ax = plt.subplots(1,len(morphogen))
+    x_grid = grids[0] 
+    t_grid = grids[1]
+    x, t = np.meshgrid(x_grid, t_grid)
+
+
+    for count,n in enumerate(morphogen):
+        values = results[n]
+        ax[count].contourf(x,t,values, cmap=cmap)
+
+
+
+    ax[0].set_ylabel('Time')
+    ax[0].set_xlabel('Space')
+    plt.show()

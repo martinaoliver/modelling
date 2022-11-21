@@ -21,7 +21,7 @@ sys.path.append(modellingpath + '/lib')
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
-def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
+def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False, record_every_x_hours = 10):
     #spatial variables
     dx = float(L)/float(J-1)
     x_grid = np.array([j*dx for j in range(J)])
@@ -76,7 +76,7 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
         #copydeepcopy is useful to make sure the original U0 concentration is not modified and we can retrieve it later on if needed. 
         #we will work with U and U_new from here onwards (U_new is the updated U after calculation).
     U_record=[]
-    record_every_x_hours = 10
+    
     for species_index in range(n_species):
         U_record.append(np.zeros([ int(T/record_every_x_hours), J])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
 
@@ -89,7 +89,6 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
 
 
     #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
-    print('entering forloop not numba')
     for ti in tqdm(range(N), disable = tqdm_disable): 
         U_new = copy.deepcopy(U)
         f0 = f.dudt(U_new)

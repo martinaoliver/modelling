@@ -19,8 +19,8 @@ sys.path.append(modellingpath + '/lib')
 
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
-
-def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2, perturbation=0.01, boundaryCoeff=1, tqdm_disable=False):
+#in edegrowth 2 we have a fixed field and we grow the tissue with a mask. there is diffusion outside the tissue
+def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2, perturbation=0.01,  boundaryCoeff=1, record_every_x_hours = 10,tqdm_disable=False):
     #spatial variables
     dx = float(L)/float(J)
     x_grid = np.array([j*dx for j in range(J)])
@@ -43,8 +43,9 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
 
 
     steadystate = par_dict['ss_list']
-
+    
     #create cell matrix
+    
     def cellMatrixFunction(currentJ,J=J):
         len_half_pad = int((J - currentJ) / 2)
         if (len_half_pad*2+currentJ)==J:
@@ -58,7 +59,6 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
     cellMatrix=cellMatrixFunction(initialJ)
 
     U0 = []
-    print(steadystate[0])
     for index in range(n_species):
         U0X=np.random.uniform(low=steadystate[index] - perturbation, high=steadystate[index] + perturbation, size=J)
         U0.append(U0X)   
@@ -88,14 +88,12 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
 
 
     #storage variables
-    record_every_x_hours = 10
     reduced_t_grid = np.arange(0,T,record_every_x_hours)     
 
     U = copy.deepcopy(U0) 
         #copydeepcopy is useful to make sure the original U0 concentration is not modified and we can retrieve it later on if needed. 
         #we will work with U and U_new from here onwards (U_new is the updated U after calculation).
     U_record=[]
-    record_every_x_hours = 10
     for species_index in range(n_species):
         U_record.append(np.zeros([ int(T/record_every_x_hours), J])) #DO NOT SIMPLIFY TO U_record = [np.zeros([J, I, T])]*n_species
 

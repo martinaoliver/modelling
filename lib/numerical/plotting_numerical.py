@@ -198,7 +198,7 @@ import matplotlib.cm as cm
 import matplotlib.animation as animation
 
 
-def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=25):
+def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=100):
     fig = plt.figure()
     ims = []
     rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows

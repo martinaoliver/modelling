@@ -19,7 +19,7 @@ sys.path.append(modellingpath + '/lib')
 
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
-
+#in edgegrowth1 we tissue the field by growing J. At every timestep we make the field bigger. 
 def cn_edgegrowth1(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2, tqdm_disable=False):
     #spatial variables
     dx = float(L)/float(J)
