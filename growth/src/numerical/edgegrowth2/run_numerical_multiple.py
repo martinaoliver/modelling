@@ -33,12 +33,23 @@ df.index.names = ['parID','ss']
 # df = multiple_df.xs(0, level=1)
 #solver parameters
 
-L=250; x_gridpoints=1; J=L*x_gridpoints;I=J 
-T=15000; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
-boundaryCoeff=2;rate=0.01
+# L=250; x_gridpoints=1; J=L*x_gridpoints;I=J 
+# T=15000; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
+# boundaryCoeff=2;rate=0.01
 
-L=500; x_gridpoints=2; J=L*x_gridpoints;I=J 
-T=3000; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
+# L=500; x_gridpoints=2; J=L*x_gridpoints;I=J 
+# T=3000; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
+# boundaryCoeff=2;rate=0.1
+
+
+
+# L=500; x_gridpoints=1; J=L*x_gridpoints;I=J 
+# T=3000; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
+# boundaryCoeff=2;rate=0.1
+
+
+L=500; dx =1; J = int(L/dx)
+T =3000; dt = 0.2; N = int(T/dt)
 boundaryCoeff=2;rate=0.1
 
 
