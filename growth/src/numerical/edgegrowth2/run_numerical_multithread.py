@@ -12,7 +12,9 @@ sys.path.append(modellingpath + '/lib')
 #############
 '/rds/general/ephemeral/user/mo2016/ephemeral'
 '/rds/general/user/mo2016/home'
-from numerical.edgegrowth2 import cn_edgegrowth2
+from numerical.cn_edgegrowth2_numba import cn_edgegrowth2 as cn_edgegrowth2_numba
+from numerical.cn_nogrowth import cn_nogrowth
+
 from numerical.cn_plot import plot1D, surfpattern
 
 
@@ -50,21 +52,20 @@ n_param_sets = 2000000
 date = date.today().strftime('%m_%d_%Y')
 # Specify size of batches in which to complete computations
 # Does not need to be a factor of number of parameter sets
-total_params=10
 
 
 
-def numerical_check(df,circuit_n=circuit_n, variant = variant, n_species=n_species):
+def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
     L=500; dx =1; J = int(L/dx)
     T =3000; dt = 0.2; N = int(T/dt)
     boundaryCoeff=2;rate=0.1
     filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
+    # T =10; dt = 0.2; N = int(T/dt)
 
     # df_index = np.unique(df.index.get_level_values(0))
-    for parID,ss df.index:
+    for parID,ss in df.index:
         parIDss = f'{parID}.{ss}'
         print('parID = ' + str(parIDss))
-        mechanism = 'edgegrowth2'
 
 
         par_dict = df.loc[(parID,ss)].to_dict()
@@ -73,16 +74,28 @@ def numerical_check(df,circuit_n=circuit_n, variant = variant, n_species=n_speci
 
         steadystates=par_dict['ss_list']
 
-        savefig=False
-        savefigpath = modellingpath + '/growth/out/numerical/%s/%s/fig/'%(circuit_n,mechanism)
-
+ 
         try:
+            mechanism = 'edgegrowth2'
             U_final,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=True)
-            pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
-            pickle.dump(U_record, open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
-            if savefig==True:
-                plot1D(U_final, savefig=True,filename=filename, savefigpath=savefigpath)
-                plt.close()
+
+            with open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
+                pickle.dump(U_final, f)
+            
+            with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
+                pickle.dump(U_record, f)
+            
+            mechanism = 'nogrowth'
+            U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=True)
+            with open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
+                pickle.dump(U_final, f)
+
+            with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
+                pickle.dump(U_record, f)
+                
+            # pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
+            # pickle.dump(U_record, open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
+
         except ValueError:
             print('!!!!!!!!!!!!!')
             print('ValueError --> unstable solution')
@@ -103,9 +116,14 @@ start_time = time.perf_counter()
 # multiple_df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # df = multiple_df.xs(0, level=1)
-df= pickle.load( open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+# df= pickle.load( open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+df = None
+with open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
+    df = pickle.load(f)
+# df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 df.index.names = ['parID','ss']
 total_params=len(df)
+total_params=200000
 print(total_params)
 print('loaded')
 batch_size = int(total_params/Number_of_Threads) + 1
@@ -118,10 +136,9 @@ pool = multiprocessing.Pool(Number_of_Threads)
 # Run lsa_check function in parallel across different threads
 pool_output = []
 for start_batch_index in batch_indices:
-
     print('main' + str(start_batch_index))
     df_batch = df.iloc[start_batch_index:start_batch_index+batch_size]
-    pool_output.append(pool.apply_async(numerical_check, args=(df_batch)))
+    pool_output.append(pool.apply_async(numerical_check, args=(df_batch, circuit_n)))
 
 # Close the parallel processing job
 pool.close()

@@ -6,6 +6,7 @@ import os
 
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/modelling'
 sys.path.append(modellingpath + '/lib')
 #############
 
@@ -22,22 +23,22 @@ from tqdm import tqdm
 from math import log10 , floor
 from scipy.signal import find_peaks
 
-
 circuit_n='turinghill'
 variant= 0
 n_species=2
 mechanism='nogrowth'
-L=50; x_gridpoints=5; J=L*x_gridpoints;I=J 
-T=5000; t_gridpoints = 30; N=T*t_gridpoints #Number of timepoints
-filename= lambda parID: '%s_variant%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,mechanism,parID,L,J,T,N)
+L=500; dx =1; J = int(L/dx)
+T =3000; dt = 0.2; N = int(T/dt)
+boundaryCoeff=2;rate=0.1
+filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
 n_param_sets=2000000
 lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-single_lsa_df =  lsa_df.xs(0, level=1)
+# single_lsa_df =  lsa_df.xs(0, level=1)
+print('done')
 
-
-def parID_display(parID, L,J,T,round=False,crop=100,ss_n=0,single_lsa_df = single_lsa_df):
+def parID_display(parID, L,J,T,round=False,crop=100,ss_n=0,single_lsa_df = lsa_df):
     #data
-    U = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'rb'))
+    U = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parID)), 'rb'))
     #plot
     plot1D(U,round=round)
 
@@ -53,8 +54,8 @@ def parID_display(parID, L,J,T,round=False,crop=100,ss_n=0,single_lsa_df = singl
     plt.tight_layout()
     plt.show()
 def parID_surfpattern(parID,L,J,T,record_every_x_hours = 10):
-    #data 
-    U_record = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'rb'))
+    #simulation 
+    U_record = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parID)), 'rb'))
     
     #grids
     dx = float(L)/float(J-1)
@@ -71,19 +72,19 @@ def parID_dispersion(parID,crop, ss_n):
 
 
 
-parID_list = pickle.load(open( modellingpath + '/growth/out/numerical/%s/%s/data/parID_list_%s.pkl'%(circuit_n,mechanism,filename('x')), "rb" ) )
+parID_list = pickle.load(open( modellingpath + '/growth/out/numerical/%s/%s/simulation/parID_list_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), "rb" ) )
 start=0
 stop=len(parID_list)
-parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
-parID_list.sort() #sort from lower to higher values
+parID_list = [i for i in parID_list[start:stop]] #turn string list into integer list
+# parID_list.sort() #sort from lower to higher values
 patternDict = {}
 # parID_list=[41018,30997,2, 4]
 test=False
-for count,parID in enumerate(tqdm(parID_list, disable=False)):
+for count,parIDss in enumerate(tqdm(parID_list, disable=False)):
     # print(parID)
     #load records 
-    U_final = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/data/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'rb'))
-    U_record = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/data/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(parID)), 'rb'))
+    U_final = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))
+    U_record = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))
 
 
     # parID_display(parID,L,J,T, crop=100)
@@ -109,12 +110,14 @@ for count,parID in enumerate(tqdm(parID_list, disable=False)):
     if flat==True and converged==False:
         pattern='Temporal Oscillator'
     if flat==False and converged==True:
-        pattern = 'Stationary periodic wave'
+        # pattern = 'Stationary periodic wave'
+        pattern = 'Stationary spatial wave'
     if flat==False and converged==False:
         pattern = 'Non-Stationary heterogeneity'
 
-    patternDict[parID] = pattern
-
+    # patternDict[parIDss] = pattern
+    parID,ss = parIDss.split('.')
+    patternDict[(parID,ss)]=pattern
 #     if count%10000==0:
 #         pickle.dump(parIDPsEntropy, open( modellingpath + '/growth/out/patternAnalysis/%s/%s/psEntropy/parIDpsEntropyDict_%s_batch%r.pkl'%(circuit_n,mechanism,filename('x'), count), 'wb'))
 
@@ -127,17 +130,22 @@ for count,parID in enumerate(tqdm(parID_list, disable=False)):
 if test==False:
     n_param_sets = 2000000
     lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-    lsa_df = lsa_df.xs(0, level=1)
-    for parID in lsa_df.index:
-        if parID not in patternDict.keys():
-            patternDict[parID]= np.nan
+    lsa_df['pattern'] = np.nan
+    for parID_ss,pattern in patternDict.items():
+        lsa_df.loc[(int(parID_ss[0]),int(parID_ss[1])), 'pattern']=pattern
 
-    lsa_df['pattern'] = lsa_df.index.to_series().map(patternDict)
-    print(lsa_df)
-    pickle.dump(lsa_df , open( modellingpath + '/growth/out/patternAnalysis/%s/%s/pattern/pattern_df_%s.pkl'%(circuit_n,mechanism,filename('x')), 'wb'))
+    # lsa_df['pattern'] = lsa_df.index #you get the index as tuple
+    # # lsa_df['pattern'] = np.nan
+    # lsa_df['pattern'] = lsa_df['pattern'].map(patternDict)
+    # lsa_df = lsa_df.set_index('pattern', append=True)
+
+
+    # lsa_df['pattern'] = lsa_df.index.to_series().map(patternDict)
+    # print(lsa_df)
+    pickle.dump(lsa_df , open( modellingpath + '/growth/out/patternAnalysis/%s/%s/pattern/pattern_df_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), 'wb'))
 #     # #add column to lsa_df with Hps and save it to file
 #     # lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 #     # lsa_df_single = lsa_df.xs(0, level=1)
 #     print(lsa_df.head())
-
+    # print(lsa_df)
     print(lsa_df['pattern'].value_counts())
