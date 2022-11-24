@@ -75,6 +75,7 @@ def parID_dispersion(parID,crop, ss_n):
 parID_list = pickle.load(open( modellingpath + '/growth/out/numerical/%s/%s/simulation/parID_list_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), "rb" ) )
 start=0
 stop=len(parID_list)
+# stop=10
 parID_list = [i for i in parID_list[start:stop]] #turn string list into integer list
 # parID_list.sort() #sort from lower to higher values
 patternDict = {}
@@ -131,7 +132,7 @@ if test==False:
     n_param_sets = 2000000
     lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
     lsa_df['pattern'] = np.nan
-    for parID_ss,pattern in patternDict.items():
+    for parID_ss,pattern in tqdm(patternDict.items()):
         lsa_df.loc[(int(parID_ss[0]),int(parID_ss[1])), 'pattern']=pattern
 
     # lsa_df['pattern'] = lsa_df.index #you get the index as tuple
