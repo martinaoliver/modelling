@@ -96,7 +96,8 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False, re
         #iterate over every chemical specie when calculating concentrations. 
         for n in range(n_species):
             U_new[n] = A_inv[n].dot(B_list[n].dot(U[n]) +  f0[n]*(dt/2)) # Dot product with inverse rather than solve system of equations
-
+            if any(x<0 for x in U_new[n]):
+                print('negative')
         
         #storing results
         hour = ti / (N / T)
