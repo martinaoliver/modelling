@@ -17,11 +17,11 @@ import pickle
 
 
 circuit_n='turinghill'
-mechanism='nogrowth'
+mechanism='edgegrowth2'
 variant=0
 
 L=500; dx =1; J = int(L/dx)
-T =3000; dt = 0.2; N = int(T/dt)
+T =3000; dt = 0.05; N = int(T/dt)
 boundaryCoeff=2;rate=0.1
 
 filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)

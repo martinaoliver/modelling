@@ -45,11 +45,11 @@ modelArgs = [circuit_n,variant,n_species,folder]
 # nsamples = 2000
 nsamples = 1000000
 
-L=8; dx =0.02; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
+L=4; dx =0.05; J = int(L/dx)
+T =65; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1.7
-p_division=0.7;seed=1
-divisionTimeHours = 0.5
+p_division=0.5;seed=1
+divisionTimeHours = 1
 systemArgs = [L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours]
 
 
@@ -60,7 +60,7 @@ date = date.today().strftime('%m_%d_%Y')
 cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 
-def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder, test=True):
+def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder, test=False):
     # L=8; dx =0.02; J = int(L/dx)
     # T =125; dt = 0.05; N = int(T/dt)
     # boundarycoeff = 1.7
