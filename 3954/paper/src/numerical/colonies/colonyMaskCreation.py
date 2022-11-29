@@ -128,7 +128,7 @@ L_x = L
 L_y = L
 I = J
 
-divisionTimeHours=0.5
+divisionTimeHours=1
 p_division=0.5;seed=1
 # p_division=float(sys.argv[5]);seed=1
 

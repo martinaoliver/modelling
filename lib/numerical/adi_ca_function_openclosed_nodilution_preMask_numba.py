@@ -192,6 +192,10 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
             #append results into top_array for records
             for species_index in range(n_species):
                 U_record[species_index][:, :, int(hour)] = U_new[species_index] #issue in this line
+        
+        for n in range (n_species):
+            if any(x<0 for x in U_new[n].flatten()):
+                print('negative')
 
         U = U_new.copy()
 

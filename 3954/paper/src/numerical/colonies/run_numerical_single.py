@@ -59,12 +59,17 @@ df= pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_c
 #solver parameters
 L=8; dx =0.05; J = int(L/dx)
 T =125; dt = 0.05; N = int(T/dt)
+
 divisionTimeHours=1
-# L=8; dx =0.05; J = int(L/dx)
-# T =125; dt = 0.05; N = int(T/dt)
+
 boundarycoeff = 1.7
 p_division=0.5;seed=1
 
+L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
+T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
+
+divisionTimeHours=0.5
+p_division=0.5;seed=1
 cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 # T =1; dt = 0.05; N = int(T/dt)
