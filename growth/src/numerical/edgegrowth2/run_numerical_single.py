@@ -32,7 +32,7 @@ df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%
 
 L=500; x_gridpoints=2; J=L*x_gridpoints;I=J 
 T=3000; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
-T=10; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
+# T=10; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
 dx = float(L)/float(J)
 x_grid = np.array([j*dx for j in range(J)])
 
