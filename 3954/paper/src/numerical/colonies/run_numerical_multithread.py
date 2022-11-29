@@ -37,19 +37,23 @@ print('Number of Threads set to ', Number_of_Threads)
 # Specify name of circuit and variant investigated
 circuit_n=2
 # variant= '48257gaussian0.21nsr'
-variant=3
+variant=1
 n_species=6
-folder = 'circuit2variant3_turing'
+folder = 'circuit2variant1_turing'
 modelArgs = [circuit_n,variant,n_species,folder]
 # Specifiy number of parameter sets in parameterset file to be loaded
 # nsamples = 2000
 nsamples = 1000000
 
-L=4; dx =0.05; J = int(L/dx)
-T =65; dt = 0.05; N = int(T/dt)
+L=4; dx =0.025; J = int(L/dx)
+T =65; dt = 0.005; N = int(T/dt)
 boundarycoeff = 1.7
+# p_division=0.5;seed=1
+# divisionTimeHours = 1
+
+divisionTimeHours=0.5
 p_division=0.5;seed=1
-divisionTimeHours = 1
+
 systemArgs = [L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours]
 
 
@@ -74,7 +78,7 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
     if test==True:
         T =1; dt = 0.05; N = int(T/dt)
     D = np.zeros(n_species)
-
+    print(systemArgs)
 
     for parID in df_index:
         print('parID = ' + str(parID))
@@ -93,8 +97,16 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
 
         try:
             U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=True,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
-            pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) )
-            pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), 'wb'))
+            # pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) )
+            # pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), 'wb'))
+ 
+            
+                        
+            with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) as f:
+                pickle.dump(U_final, f)
+            with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
+                pickle.dump(U_record, f)
+            
             del U_record
             del U_final
             # print(np.shape(U_record))
