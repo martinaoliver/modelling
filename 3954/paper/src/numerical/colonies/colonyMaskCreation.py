@@ -122,13 +122,14 @@ n_species=6
 L=4; dx =0.025; J = int(L/dx)
 T =65; dt = 0.005; N = int(T/dt)
 
-# L=int(sys.argv[1]); x_gridpoints =int(sys.argv[2]); J = L*x_gridpoints
-# T =int(sys.argv[3]); t_gridpoints = int(sys.argv[4]); N = T*t_gridpoints
+L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
+T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
+
 L_x = L
 L_y = L
 I = J
 
-divisionTimeHours=1
+divisionTimeHours=0.5
 p_division=0.5;seed=1
 # p_division=float(sys.argv[5]);seed=1
 
