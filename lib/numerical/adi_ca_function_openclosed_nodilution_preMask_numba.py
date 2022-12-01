@@ -40,7 +40,7 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
     #Define initial conditions and cell matrix
     U0 = []
     perturbation=0.001
-    steadystates=[0.1]*n_species
+    steadystates=[1]*n_species
     np.random.seed(seed)
 
     cell_matrix = cell_matrix_record[:,:,0]

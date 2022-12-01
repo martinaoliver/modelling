@@ -18,7 +18,7 @@ import numpy as np
 ###Imports#####
 #############
 from numerical.plotting_numerical import *
-
+from numerical.cn_plot import *
 #############
 ###execution parameters#####
 #############
@@ -30,9 +30,14 @@ shape = 'ca'
 # parID =524126
 # parID = 546780
 # parID = 546780
-parID = 964698
-# parID = 824507
-
+parID = 80874
+# parID = 923723
+parID = 270325
+parID = 617919
+parID = 622957
+parID = 370114
+parID = 764667
+parID = 764470
 circuit_n=2
 variant= 1
 n_species=6
@@ -51,8 +56,13 @@ nsamples=1000000
 # print(par_dict)
 
 #solver parameters
+<<<<<<< HEAD
 L=4; dx =0.025; J = int(L/dx)
 T =65; dt = 0.005; N = int(T/dt)
+=======
+L=4; dx =0.05; J = int(L/dx)
+T =65; dt = 0.05; N = int(T/dt)
+>>>>>>> b08341731a56bdce6bdd8831e5d8f1213b3ba16a
 
 # T =50; dt = 0.05; N = int(T/dt)
 
@@ -87,12 +97,13 @@ save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 
 
 
+# U_record[-1][:,:,-1].shape
+# plt.plot(U_record[-2][:,40,-1],C='r')
+# plt.plot(U_record[-1][:,40,-1],C='g')
 
 
 
-
-
-
+plot1D([U_record[-2][:,40,-1], U_record[-1][:,40,-1]])
 
 
 
