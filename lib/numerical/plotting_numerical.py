@@ -206,6 +206,8 @@ def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=100):
 
     for i in range(len(rgb_timeseries)):
         im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
+        plt.title(str(filename) + str(i))
+        plt.xlabel(f'Time: {i}h')
         ims.append([im])
     ani = animation.ArtistAnimation(fig, ims, interval=interval)
     

@@ -79,7 +79,7 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
 
 
 
-        steadystates=par_dict['ss_list']
+        # steadystates=par_dict['ss_list']
 
  
         try:
