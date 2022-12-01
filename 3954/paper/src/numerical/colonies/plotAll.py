@@ -30,11 +30,13 @@ folder = 'circuit2variant1_turing'
 # folder = 'circuit2variant0_instabilities'
 # folder='circuit2variant48257gaussian0.21nsr'
 
-L=4; dx =0.05; J = int(L/dx)
-T =65; dt = 0.05; N = int(T/dt)
+L=4; dx =0.025; J = int(L/dx)
+T =65; dt = 0.005; N = int(T/dt)
 boundarycoeff = 1.7
+divisionTimeHours=0.5
 p_division=0.5;seed=1
-divisionTimeHours = 1
+
+
 x_gridpoints=int(1/dx)
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)

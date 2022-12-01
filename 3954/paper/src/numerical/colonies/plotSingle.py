@@ -4,7 +4,6 @@
 import os
 import sys
 
-from importlib_metadata import distribution
 
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
@@ -52,8 +51,8 @@ nsamples=1000000
 # print(par_dict)
 
 #solver parameters
-L=8; dx =0.05; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
+L=4; dx =0.025; J = int(L/dx)
+T =65; dt = 0.005; N = int(T/dt)
 
 # T =50; dt = 0.05; N = int(T/dt)
 

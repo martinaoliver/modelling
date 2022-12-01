@@ -4,9 +4,9 @@
 import sys
 import os
 
-from importlib_metadata import distribution
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/modelling'
 sys.path.append(modellingpath + '/lib')
 #############
 
@@ -46,7 +46,7 @@ modelArgs = [circuit_n,variant,n_species,folder]
 nsamples = 1000000
 
 L=4; dx =0.025; J = int(L/dx)
-T =65; dt = 0.005; N = int(T/dt)
+T =65; dt = 0.0025; N = int(T/dt)
 boundarycoeff = 1.7
 # p_division=0.5;seed=1
 # divisionTimeHours = 1
@@ -61,8 +61,13 @@ systemArgs = [L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeH
 
 # Specify date today
 date = date.today().strftime('%m_%d_%Y')
-cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
-daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+# cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+# daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+with open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) as f:
+    cell_matrix_record = pickle.load(f)
+with open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) as f:
+    daughterToMotherDictList = pickle.load(f)
+
 
 def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder, test=False):
     # L=8; dx =0.02; J = int(L/dx)
@@ -76,17 +81,16 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
 
 
     if test==True:
-        T =1; dt = 0.05; N = int(T/dt)
-    D = np.zeros(n_species)
+        T =1; dt = 0.005; N = int(T/dt)
     print(systemArgs)
+    shape = 'ca'
 
     for parID in df_index:
+        
         print('parID = ' + str(parID))
-        shape = 'ca'
-
-
         par_dict = df.loc[parID].to_dict()
-        print(par_dict)
+        # print(par_dict)
+        D = np.zeros(n_species)
         D[:2] = [par_dict['DA'],par_dict['DB'] ]
 
         # steadystates=par_dict['ss_list']
@@ -104,7 +108,7 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
                         
             with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) as f:
                 pickle.dump(U_final, f)
-            with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
+            with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
                 pickle.dump(U_record, f)
             
             del U_record
@@ -135,8 +139,10 @@ start_time = time.perf_counter()
 # df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # df= pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-turing_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-df = turing_df
+with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+    df = pickle.load(f)
+    
+# turing_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 total_params=len(df)
 # total_params=10
 print(total_params)

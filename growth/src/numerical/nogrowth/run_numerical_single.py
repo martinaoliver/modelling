@@ -4,7 +4,6 @@
 import sys
 import os
 
-from importlib_metadata import distribution
 import matplotlib
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 

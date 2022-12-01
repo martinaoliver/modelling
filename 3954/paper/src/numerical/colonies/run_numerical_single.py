@@ -4,7 +4,6 @@
 import os
 import sys
 
-from importlib_metadata import distribution
 
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 

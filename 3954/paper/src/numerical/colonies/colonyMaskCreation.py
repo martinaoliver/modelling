@@ -4,7 +4,6 @@
 import sys
 import os
 
-from importlib_metadata import distribution
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
 sys.path.append(modellingpath + '/lib')
@@ -120,10 +119,10 @@ n_species=6
 # L=5; x_gridpoints =5; J = L*x_gridpoints
 # T =10; t_gridpoints = 10; N = T*t_gridpoints
 L=4; dx =0.025; J = int(L/dx)
-T =65; dt = 0.005; N = int(T/dt)
+T =65; dt = 0.0025; N = int(T/dt)
 
-L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
-T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
+# L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
+# T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
 
 L_x = L
 L_y = L
