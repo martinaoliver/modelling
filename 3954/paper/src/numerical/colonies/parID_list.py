@@ -36,7 +36,7 @@ divisionTimeHours = 1
 # T =1; dt = 0.05; N = int(T/dt)
 #------
 L=4; dx =0.025; J = int(L/dx)
-T =65; dt = 0.005; N = int(T/dt)
+T =65; dt = 0.0025; N = int(T/dt)
 boundarycoeff = 1.7
 divisionTimeHours=0.5
 p_division=0.5;seed=1
