@@ -97,7 +97,7 @@ kU = {'name':'kU','distribution':'gaussian', 'mean':0.0183, 'noisetosignal':0.05
 kV = {'name':'kV','distribution':'loguniform', 'mean':0.0183, 'noisetosignal':0.05}
 kdiff_parameters = [kU,kV]
 
-plotDistributions=True
+plotDistributions=False
 if plotDistributions == True:
     nsamples=10
     parameterTypeList = [ D_parameters , b_parameters , V_parameters , K_parameters , mu_parameters , n_parameters]
@@ -108,10 +108,11 @@ if plotDistributions == True:
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
 
-createParams=False
+createParams=True
 if createParams == True:
     # nsamples=1000000
-    nsamples=int(sys.argv[1])
+    # nsamples=int(sys.argv[1])
+    nsamples=10
     parameterDictList = D_parameters + b_parameters + V_parameters + K_parameters + mu_parameters + n_parameters
     # parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
     stackedDistributions = preLhs(parameterDictList)
@@ -123,4 +124,8 @@ if createParams == True:
     print(lhsDist_df)
 
 #non dimensionalize
+V = V/b
+mu = mu/muA
+Dr = k2*Dv*muu/(k1*Du*muv)
 
+V_star_parameters = [VA_star,VB_star,VC_star,VD_star,VE_star,VF_star]
