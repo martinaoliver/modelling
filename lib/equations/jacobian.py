@@ -17,7 +17,7 @@ from equations.class_circuit_eq import *
 par_ID = 0
 par_dict = {}
 symbol_par_dict = {}
-circuit_n=13
+circuit_n=14
 variant=0
 nsamples = 10
 general_df = pickle.load(open(modellingpath +  '/3954/paper/input/parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb"))
