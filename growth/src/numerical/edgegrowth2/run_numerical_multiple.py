@@ -52,9 +52,9 @@ L=500; dx =1; J = int(L/dx)
 T =100; dt = 0.05; N = int(T/dt)
 boundaryCoeff=2;rate=0.1
 
-# L=50; dx =1; J = int(L/dx)
-# T =3000; dt = 0.05; N = int(T/dt)
-# boundaryCoeff=2;rate=0.01
+L=50; dx =1; J = int(L/dx)
+T =500; dt = 0.005; N = int(T/dt)
+boundaryCoeff=2;rate=0.1
 
 
 print(len(df))
@@ -70,7 +70,7 @@ for parID,ss in tqdm(df.index[:1], disable=False):
     par_dict = df.loc[(parID,ss)].to_dict()
     # print(par_dict)
     # print(mechanism)
-    U_final,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=True)
+    U_final,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=False)
     # plt.scatter(x_grid,cellMatrix)
     # plt.show()
     surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
@@ -82,7 +82,7 @@ for parID,ss in tqdm(df.index[:1], disable=False):
     mechanism = 'nogrowth'
     # print(mechanism)
 
-    U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=True)
+    U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=False)
     # pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
     # pickle.dump(U_record, open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
     surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
