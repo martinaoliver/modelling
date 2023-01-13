@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import cm
 cmap = cm.Spectral_r
 cmap=cm.coolwarm
-from sklearn import preprocessing
+# from sklearn import preprocessing
 
 def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False):
     if round==True:
@@ -42,7 +42,7 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
 
 def surfpattern(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
     if normalize == True:
-        results = [preprocessing.normalize(array, norm="l1") for array in results]
+        print('NEEDS NORMALIZATION')
     results = results[morphogen]
     x_grid = grids[0] 
     t_grid = grids[1]
@@ -68,7 +68,9 @@ def surfpattern1(results,grids,growth='linear', rate=0, morphogen = 0,savefig=Fa
     fig,ax = plt.subplots(1,len(morphogen))
     for count,n in enumerate(morphogen):
         if normalize == True:
-            results = [preprocessing.normalize(array, norm="l1") for array in results]
+            # results = [preprocessing.normalize(array, norm="l1") for array in results]
+            print('NEEDS NORMALIZATION')
+
         results = results[n]
         x_grid = grids[0] 
         t_grid = grids[1]
