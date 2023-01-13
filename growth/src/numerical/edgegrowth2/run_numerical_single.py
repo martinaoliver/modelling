@@ -4,7 +4,6 @@
 import sys
 import os
 
-from importlib_metadata import distribution
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
 sys.path.append(modellingpath + '/lib')
@@ -29,24 +28,22 @@ n_param_sets = 2000000
 df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # df = multiple_df.xs(0, level=1)
 #solver parameters
-
-L=500; x_gridpoints=2; J=L*x_gridpoints;I=J 
-T=3000; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
-# T=10; t_gridpoints = 5; N=T*t_gridpoints #Number of timepoints <below 3 is bad if x_gridpoints=1
-dx = float(L)/float(J)
-x_grid = np.array([j*dx for j in range(J)])
+L=100; dx =1; J = int(L/dx)
+T =1000; dt = 0.005; N = int(T/dt)
+boundaryCoeff=2;rate=0.1
 
 
 
 
 
 
-parID= 1869288 #parameter set to use
+parID= (1869288,0) #parameter set to use
 par_dict = df.loc[parID].to_dict()
+U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=False)
 
 #run
 
-no_numba = True
+no_numba = False
 if no_numba == True:
     st = time.time()
     U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, rate=0.1, boundaryCoeff=2)
@@ -65,7 +62,7 @@ if no_numba == True:
     plt.show()
 
 
-numba=True
+numba=False
 if numba == True: 
     st = time.time()
     U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=0.1, boundaryCoeff=2)

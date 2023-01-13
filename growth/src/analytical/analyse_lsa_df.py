@@ -40,6 +40,13 @@ n_param_sets = 2000000
 df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 print(df['system_class'].value_counts())
 
+#cut df
+cutDf = True
+if cutDf == True:
+    cropValue = 200000
+    cuttedDf = df.iloc[:cropValue]
+    pickle.dump( cuttedDf, open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,cropValue), "wb" ) )
+
 #plot pieChart
 valueCounts_dict = dict(df['system_class'].value_counts())
 title = f'{circuit_n} Variant {variant}'

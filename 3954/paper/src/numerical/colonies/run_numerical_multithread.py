@@ -37,7 +37,7 @@ print('Number of Threads set to ', Number_of_Threads)
 # Specify name of circuit and variant investigated
 circuit_n=2
 # variant= '48257gaussian0.21nsr'
-variant=1
+variant=3
 n_species=6
 folder = 'circuit2variant1_turing'
 modelArgs = [circuit_n,variant,n_species,folder]
@@ -45,14 +45,20 @@ modelArgs = [circuit_n,variant,n_species,folder]
 # nsamples = 2000
 nsamples = 1000000
 
-L=4; dx =0.025; J = int(L/dx)
-T =65; dt = 0.0025; N = int(T/dt)
-boundarycoeff = 1.7
-# p_division=0.5;seed=1
-# divisionTimeHours = 1
+# L=4; dx =0.025; J = int(L/dx)
+# T =65; dt = 0.0025; N = int(T/dt)
+# boundarycoeff = 1.7
 
-divisionTimeHours=0.5
+L=8; dx =0.05; J = int(L/dx)
+T =125; dt = 0.05; N = int(T/dt)
+boundarycoeff = 1
+
+
 p_division=0.5;seed=1
+divisionTimeHours = 1
+
+# divisionTimeHours=0.5
+# p_division=0.5;seed=1
 
 systemArgs = [L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours]
 
@@ -69,7 +75,7 @@ with open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivi
     daughterToMotherDictList = pickle.load(f)
 
 
-def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder, test=False):
+def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder, test=True):
     # L=8; dx =0.02; J = int(L/dx)
     # T =125; dt = 0.05; N = int(T/dt)
     # boundarycoeff = 1.7
@@ -81,7 +87,7 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
 
 
     if test==True:
-        T =1; dt = 0.005; N = int(T/dt)
+        T =1; dt = 0.05; N = int(T/dt)
     print(systemArgs)
     shape = 'ca'
 
