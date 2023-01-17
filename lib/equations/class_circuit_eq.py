@@ -1036,11 +1036,4 @@ class circuit14(hill_functions):
         #         self.Vf * self.n * (B / self.kbd) ** self.n * (B / self.kbd) ** (self.n - 1)) / (
         #                   self.kbd * ((B / self.kbd) ** self.n + 1) ** 2), 0, 0, 0, -self.mulva]
 
-
-        JA = [-self.DA*wvn**2 - self.muASV, 0, 0, -self.VA*self.nda*(D/self.Kda)**self.nda/(D*((D/self.Kda)**self.nda + 1)**2), 0, 0]
-        JB = [-self.VB*self.nab*(A/self.Kab)**(2*self.nab)/(A*((A/self.Kab)**self.nab + 1)**2*((E/self.Keb)**self.neb + 1)) + self.VB*self.nab*(A/self.Kab)**self.nab/(A*((A/self.Kab)**self.nab + 1)*((E/self.Keb)**self.neb + 1)), -self.DB*wvn**2 - self.muASV, 0, 0, -self.VB*self.neb*(A/self.Kab)**self.nab*(E/self.Keb)**self.neb/(E*((A/self.Kab)**self.nab + 1)*((E/self.Keb)**self.neb + 1)**2), 0]
-        JC = [0, 0, -self.muLVA, -self.VC*self.nda*(D/self.Kda)**self.nda/(D*((D/self.Kda)**self.nda + 1)**2), 0, 0]
-        JD = [0, -self.VD*self.nbd*(B/self.Kbd)**(2*self.nbd)/(B*((B/self.Kbd)**self.nbd + 1)**2) + self.VD*self.nbd*(B/self.Kbd)**self.nbd/(B*((B/self.Kbd)**self.nbd + 1)), 0, -self.muLVA, 0, 0]
-        JE = [0, 0, -self.VE*self.nce*(C/self.Kce)**self.nce*(E/self.Kee)**self.nee/(C*((C/self.Kce)**self.nce + 1)**2*((E/self.Kee)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)), 0, -self.muLVA - self.VE*self.nee*(E/self.Kee)**(2*self.nee)/(E*((C/self.Kce)**self.nce + 1)*((E/self.Kee)**self.nee + 1)**2*((F/self.Kfe)**self.nfe + 1)) + self.VE*self.nee*(E/self.Kee)**self.nee/(E*((C/self.Kce)**self.nce + 1)*((E/self.Kee)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)), -self.VE*self.nfe*(E/self.Kee)**self.nee*(F/self.Kfe)**self.nfe/(F*((C/self.Kce)**self.nce + 1)*((E/self.Kee)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)**2)]
-        JF = [0, -self.VF*self.nbd*(B/self.Kbd)**(2*self.nbd)/(B*((B/self.Kbd)**self.nbd + 1)**2) + self.VF*self.nbd*(B/self.Kbd)**self.nbd/(B*((B/self.Kbd)**self.nbd + 1)), 0, 0, 0, -self.muLVA]
         return np.array([JA, JB, JC, JD, JE, JF])

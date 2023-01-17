@@ -11,6 +11,7 @@ from matplotlib import pyplot as plt
 np.random.seed(1)
 
 def lhs(data, nsample):
+    print('hellooooo')
     m, nvar = data.shape
     ran = np.random.uniform(size=(nsample, nvar))
     s = np.zeros((nsample, nvar))
@@ -19,7 +20,7 @@ def lhs(data, nsample):
         P = ((idx - ran[:, j]) / nsample) * 100
         s[:, j] = np.percentile(data[:, j], P)
 
-    if np.any(s<0):
+    if np.any(s<=0):
         print('WARNING: negative values in lhs')
         s[s<0] = 0.001
         

@@ -115,7 +115,8 @@ def parameterfile_creator_function(numbercombinations):
 
 # number_of_dataframes=64
 
-n_param_sets = int(sys.argv[1]) # this number needs to be a multiple of 64
+# n_param_sets = int(sys.argv[1]) # this number needs to be a multiple of 64
+n_param_sets = 10# this number needs to be a multiple of 64
 # n_param_sets = int(numbercombinations / number_of_dataframes)
 # count = 0
 # n_batches= 64
