@@ -26,6 +26,24 @@ class hill_functions():
         return inh
 
 
+class subcircuitB(hill_functions):
+#from circuit14
+
+    def __init__(self,par_dict,stochasticity=0):
+        for key,value in par_dict.items():
+            setattr(self,key,value)
+        setattr(self, 'stochasticity', stochasticity)
+
+
+
+    def ddt(self,species_list, A,wvn=0):
+        B,D = species_list
+        dbdt= self.mub*(1 + self.Vb*self.noncompetitivediffact(A,self.Kub,self.nub, self.ku, self.muu) - B ) -  B*self.Dr*wvn**2
+        dddt= self.mud*(1 + self.Vd*self.self.noncompetitivediffact(B,self.Kvd,self.nvd, self.kv, self.muv) - D ) 
+
+        return dbdt,dddt
+
+
 
 class subcircuitAC_1(hill_functions):
 

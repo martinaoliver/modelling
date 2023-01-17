@@ -127,7 +127,7 @@ iptg= {'name':'iptg','distribution':'fixed', 'value':1000}
 
 
 
-plotDistributions=False
+plotDistributions=True
 if plotDistributions == True:
     nsamples=1000
     parameterTypeList = [D_parameters,b_parameters,V_parameters,K_parameters,mu_parameters,n_parameters,k_parameters]
@@ -137,7 +137,7 @@ if plotDistributions == True:
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
 
-createParameterfiles=True
+createParameterfiles=False
 if createParameterfiles == True:# 
     nsamples=int(sys.argv[1])
     parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
