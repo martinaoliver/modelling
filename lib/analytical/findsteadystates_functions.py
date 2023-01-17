@@ -54,8 +54,8 @@ class newtonraphson_equations(hill_functions):
         setattr(self, 'circuit_n', circuit_n)
         setattr(self, 'stochasticity', 1)
 
-        self.parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'circuit12':circuit12, 'circuit13':circuit13, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
-        
+        self.parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'circuit12':circuit12, 'circuit13':circuit13, 'circuit14':circuit14, 'schnakenberg':schnakenberg, 'turinghill':turinghill}
+    
     def diff_equations(self, x):
         n=0
         # circuit = self.parent_list[self.circuit_n-1]

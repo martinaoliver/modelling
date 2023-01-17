@@ -44,6 +44,11 @@ class hill_functions():
             return ((U / km) ** (n)) / (1 + (U / km) ** (n))
         if interaction == 0:
             return 1
+    
+    def noncompetitivediffact(self, X, km,n, kdiff,mudiff):
+        act = (1 / (1 + ((mudiff*km) / (kdiff*X)) ** (n)))
+        return act
+ 
 
 class turinghill(hill_functions):
 

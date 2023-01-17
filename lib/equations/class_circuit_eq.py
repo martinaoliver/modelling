@@ -24,16 +24,18 @@ class hill_functions():
         act = (1 / (1 + (km / X) ** (n)))
         return act
 
-
-    def noncompetitivediffact(self, X, km, n, kdiff, mudiff):
-        act = (1 / (1 + ((mudiff*km) / (kdiff*X)) ** (n)))
-        return act
-
-
-
     def noncompetitiveinh(self, X, km,n):
         inh = 1 / (1 + (X / km) ** (n))
         return inh
+
+
+    def noncompetitivediffact(self, X, km,n, kdiff,mudiff):
+        act = (1 / (1 + ((mudiff*km) / (kdiff*X)) ** (n)))
+        return act
+ 
+
+
+
 
 
     #
@@ -947,7 +949,7 @@ class circuit14(hill_functions):
 
     def dAdt_f(self,species_list, wvn=0):
         A,B,C,D,E,F = species_list
-        dadt= 1 + self.Va*self.noncompetitiveinh(D,self.Kda,self.nda) -A - A*wvn**2
+        dadt= 1 + self.VA*self.noncompetitiveinh(D,self.Kda,self.nda) -A - A*wvn**2
         if self.stochasticity ==1:
             dadt+=dadt*normal(0,0.05,1)
         return dadt
@@ -955,7 +957,8 @@ class circuit14(hill_functions):
 
     def dBdt_f(self,species_list, wvn=0):
         A,B,C,D,E,F = species_list
-        dbdt= self.mub*(1 + self.Vb*self.noncompetitivediffact(A,self.Kub,self.nub, self.ku, self.muu)*self.noncompetitiveinh(E,self.Keb, self.neb) - B ) -  B*self.Dr*wvn**2
+        # dbdt= self.muLVA*(1 + self.VB*self.noncompetitivediffact(A,self.Kub,self.nub, self.ku, self.muu)*self.noncompetitiveinh(E,self.Keb, self.neb) - B ) -  B*self.Dr*wvn**2
+        dbdt= self.muLVA*(1 + self.VB*self.noncompetitiveact(A,self.Kab, self.nab)*self.noncompetitiveinh(E,self.Keb, self.neb) - B ) -  B*self.Dr*wvn**2
         if self.stochasticity ==1:
             dbdt+=dbdt*normal(0,0.05,1)
         return dbdt
@@ -963,28 +966,28 @@ class circuit14(hill_functions):
 
     def dCdt_f(self,species_list):
         A,B,C,D,E,F = species_list
-        dcdt= self.muc*(1 + self.Vc*self.noncompetitiveinh(D,self.Kda,self.nda) - C ) 
+        dcdt= self.muLVA*(1 + self.VC*self.noncompetitiveinh(D,self.Kda,self.nda) - C ) 
         if self.stochasticity ==1:
             dcdt+=dcdt*normal(0,0.05,1)
         return dcdt
 
     def dDdt_f(self,species_list):
         A,B,C,D,E,F = species_list
-        dddt= self.mud*(1 + self.Vd*self.self.noncompetitivediffact(B,self.Kvd,self.nvd, self.kv, self.muv) - D ) 
+        dddt= self.muLVA*(1 + self.VD*self.noncompetitiveact(B,self.Kbd,self.nbd) - D ) 
         if self.stochasticity ==1:
             dddt+=dddt*normal(0,0.05,1)
         return dddt
 
     def dEdt_f(self,species_list):
         A,B,C,D,E,F = species_list
-        dedt= self.mue*(1 + self.Ve*self.noncompetitiveinh(C,self.Kce,self.nce)*self.noncompetitiveinh(F,self.Kfe,self.nfe)*self.noncompetitiveact(E,self.Kee,self.ee) - E ) 
+        dedt= self.muLVA*(1 + self.VE*self.noncompetitiveinh(C,self.Kce,self.nce)*self.noncompetitiveinh(F,self.Kfe,self.nfe)*self.noncompetitiveact(E,self.Kee,self.nee) - E ) 
         if self.stochasticity ==1:
             dedt+=dedt*normal(0,0.05,1)
         return dedt
         
     def dFdt_f(self,species_list):
         A,B,C,D,E,F = species_list
-        dfdt= self.muf*(1 + self.Vf*self.self.noncompetitivediffact(B,self.Kvf,self.nvf, self.kv, self.muv) - F ) 
+        dfdt= self.muLVA*(1 + self.VF*self.noncompetitiveact(B,self.Kbd,self.nbd) - F ) 
         if self.stochasticity ==1:
             dfdt+=dfdt*normal(0,0.05,1)
         return dfdt
@@ -1005,35 +1008,10 @@ class circuit14(hill_functions):
 
         A,B,C,D,E,F = x
 
-        # JA = [- self.d_A * wvn ** 2 - self.mua, 0, 0, -(self.Va * self.n * (D / self.kda) ** (self.n - 1)) / (self.kda * ((D / self.kda) ** self.n + 1) ** 2), 0,
-        #       0]
-        # JB = [(self.Vb * self.n * (A / self.kaa) ** (self.n - 1)) / (
-        #             self.kaa * ((A / self.kaa) ** self.n + 1) * ((E / self.keb) ** self.n + 1)) - (
-        #               self.Vb * self.n * (A / self.kaa) ** self.n * (A / self.kaa) ** (self.n - 1)) / (
-        #               self.kaa * ((A / self.kaa) ** self.n + 1) ** 2 * ((E / self.keb) ** self.n + 1)),
-        #       - self.d_B * wvn ** 2 - self.mua, 0, 0,
-        #       -(self.Vb * self.n * (A / self.kaa) ** self.n * (E / self.keb) ** (self.n - 1)) / (
-        #                   self.keb * ((A / self.kaa) ** self.n + 1) * ((E / self.keb) ** self.n + 1) ** 2), 0]
-        # JC = [0, 0, -self.mulva,
-        #       -(self.Vc * self.n * (D / self.kda) ** (self.n - 1)) / (self.kda * ((D / self.kda) ** self.n + 1) ** 2), 0,
-        #       0]
-        # JD = [0, (self.Vd * self.n * (B / self.kbd) ** (self.n - 1)) / (self.kbd * ((B / self.kbd) ** self.n + 1)) - (
-        #         self.Vd * self.n * (B / self.kbd) ** self.n * (B / self.kbd) ** (self.n - 1)) / (
-        #                   self.kbd * ((B / self.kbd) ** self.n + 1) ** 2), 0, -self.mulva, 0, 0]
-        # JE = [0, 0, -(self.Ve * self.n * (C / self.kce) ** (self.n - 1) * (E / self.kee) ** self.n) / (
-        #         self.kce * ((C / self.kce) ** self.n + 1) ** 2 * ((E / self.kee) ** self.n + 1) * (
-        #             (F / self.kfe) ** self.n + 1)), 0,
-        #       (self.Ve * self.n * (E / self.kee) ** (self.n - 1)) / (
-        #               self.kee * ((C / self.kce) ** self.n + 1) * ((E / self.kee) ** self.n + 1) * (
-        #                   (F / self.kfe) ** self.n + 1)) - self.mulva - (
-        #               self.Ve * self.n * (E / self.kee) ** self.n * (E / self.kee) ** (self.n - 1)) / (
-        #               self.kee * ((C / self.kce) ** self.n + 1) * ((E / self.kee) ** self.n + 1) ** 2 * (
-        #                   (F / self.kfe) ** self.n + 1)),
-        #       -(self.Ve * self.n * (E / self.kee) ** self.n * (F / self.kfe) ** (self.n - 1)) / (
-        #               self.kfe * ((C / self.kce) ** self.n + 1) * ((E / self.kee) ** self.n + 1) * (
-        #                   (F / self.kfe) ** self.n + 1) ** 2)]
-        # JF = [0, (self.Vf * self.n * (B / self.kbd) ** (self.n - 1)) / (self.kbd * ((B / self.kbd) ** self.n + 1)) - (
-        #         self.Vf * self.n * (B / self.kbd) ** self.n * (B / self.kbd) ** (self.n - 1)) / (
-        #                   self.kbd * ((B / self.kbd) ** self.n + 1) ** 2), 0, 0, 0, -self.mulva]
-
+        JA = [-wvn**2 - 1, 0, 0, -self.VA*self.nda*(D/self.Kda)**self.nda/(D*((D/self.Kda)**self.nda + 1)**2), 0, 0]
+        JB = [self.VB*self.muLVA*self.nab*(self.Kab/A)**self.nab/(A*((self.Kab/A)**self.nab + 1)**2*((E/self.Keb)**self.neb + 1)), -self.Dr*wvn**2 - self.muLVA, 0, 0, -self.VB*self.muLVA*self.neb*(E/self.Keb)**self.neb/(E*((self.Kab/A)**self.nab + 1)*((E/self.Keb)**self.neb + 1)**2), 0]
+        JC = [0, 0, -self.muLVA, -self.VC*self.muLVA*self.nda*(D/self.Kda)**self.nda/(D*((D/self.Kda)**self.nda + 1)**2), 0, 0]
+        JD = [0, self.VD*self.muLVA*self.nbd*(self.Kbd/B)**self.nbd/(B*((self.Kbd/B)**self.nbd + 1)**2), 0, -self.muLVA, 0, 0]
+        JE = [0, 0, -self.VE*self.muLVA*self.nce*(C/self.Kce)**self.nce/(C*((C/self.Kce)**self.nce + 1)**2*((self.Kee/E)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)), 0, self.muLVA*(-1 + self.VE*self.nee*(self.Kee/E)**self.nee/(E*((C/self.Kce)**self.nce + 1)*((self.Kee/E)**self.nee + 1)**2*((F/self.Kfe)**self.nfe + 1))), -self.VE*self.muLVA*self.nfe*(F/self.Kfe)**self.nfe/(F*((C/self.Kce)**self.nce + 1)*((self.Kee/E)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)**2)]
+        JF = [0, self.VF*self.muLVA*self.nbd*(self.Kbd/B)**self.nbd/(B*((self.Kbd/B)**self.nbd + 1)**2), 0, 0, 0, -self.muLVA]
         return np.array([JA, JB, JC, JD, JE, JF])
