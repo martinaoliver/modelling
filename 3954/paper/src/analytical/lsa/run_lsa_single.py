@@ -37,7 +37,7 @@ par_dict = df.loc[parID].to_dict()
 #Run analysis on 1M parameter sets
 # output_df = big_turing_analysis_df(df_batch,circuit_n,n_species,print_parID=False, tqdm_disable=False)
 out = detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5000,calculate_unstable=False,steadystate=False)
-plot_all_dispersion(out[4][2],n_species, crop=30)
+plot_all_dispersion(out[4][1],n_species, crop=30)
 
 print(out[3])
 
