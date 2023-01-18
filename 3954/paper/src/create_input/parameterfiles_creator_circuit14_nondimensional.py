@@ -103,11 +103,12 @@ if plotDistributions == True:
         lhsDist = lhs(stackedDistributions,nsamples)
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
+
 createParams=True
 if createParams == True:
     # nsamples=1000000
-    # nsamples=int(sys.argv[1])
-    nsamples=1000000
+    nsamples=int(sys.argv[1])
+    # nsamples=1000000
     parameterDictList = D_parameters  + V_parameters + K_parameters + mu_parameters + n_parameters
     # parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
     stackedDistributions = preLhs(parameterDictList)
