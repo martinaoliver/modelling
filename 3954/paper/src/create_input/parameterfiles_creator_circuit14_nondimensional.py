@@ -103,6 +103,7 @@ if plotDistributions == True:
         lhsDist = lhs(stackedDistributions,nsamples)
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
+
 createParams=True
 if createParams == True:
     # nsamples=1000000
