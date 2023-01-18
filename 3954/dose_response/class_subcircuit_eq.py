@@ -17,16 +17,21 @@ class hill_functions():
         for key, value in par_dict.items():
             setattr(self, key, value)
 
-    def noncompetitiveact(self, U, km,n=2):
-        act = ((U / km) ** (n)) / (1 + (U / km) ** (n))
+    def noncompetitiveact(self, X, km,n):
+        act = ((X / km) ** (n)) / (1 + (X / km) ** (n))
+        act = (1 / (1 + (km / X) ** (n)))
         return act
 
-    def noncompetitiveinh(self, U, km,n=2):
-        inh = 1 / (1 + (U / km) ** (n))
+    def noncompetitiveinh(self, X, km,n):
+        inh = 1 / (1 + (X / km) ** (n))
         return inh
 
 
-class subcircuitB(hill_functions):
+    def noncompetitivediffact(self, X, km,n, kdiff,mudiff):
+        act = (1 / (1 + ((mudiff*km) / (kdiff*X)) ** (n)))
+        return act
+
+class subcircuitAB_circuit14(hill_functions):
 #from circuit14
 
     def __init__(self,par_dict,stochasticity=0):
@@ -38,8 +43,8 @@ class subcircuitB(hill_functions):
 
     def ddt(self,species_list, A,wvn=0):
         B,D = species_list
-        dbdt= self.mub*(1 + self.Vb*self.noncompetitivediffact(A,self.Kub,self.nub, self.ku, self.muu) - B ) -  B*self.Dr*wvn**2
-        dddt= self.mud*(1 + self.Vd*self.self.noncompetitivediffact(B,self.Kvd,self.nvd, self.kv, self.muv) - D ) 
+        dbdt= self.muLVA*(1 + self.VB*self.noncompetitiveact(A,self.Kab, self.nab)*self.noncompetitiveinh(E,self.Keb, self.neb) - B ) -  B*self.Dr*wvn**2
+        dddt= self.muLVA*(1 + self.VD*self.noncompetitiveact(B,self.Kbd,self.nbd) - D ) 
 
         return dbdt,dddt
 
@@ -60,21 +65,6 @@ class subcircuitAC_1(hill_functions):
         return dedt
 
 
-
-
-class subcircuitAC_1(hill_functions):
-
-    def __init__(self,par_dict):
-        for key,value in par_dict.items():
-            setattr(self,key,value)
-
-
-    def ddt(self,species_list,t):
-        E= species_list
-        C=10
-        # dcdt= self.bc-self.mulva*C
-        dedt= self.be+self.Ve*self.noncompetitiveinh(C,self.kce)*self.noncompetitiveact(E,self.kee)-self.mulva*E
-        return dedt
 
 
 

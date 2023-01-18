@@ -13,7 +13,7 @@ sys.path.append(modellingpath + '/lib')
 
 from analytical.linear_stability_analysis import big_turing_analysis_df, detailed_turing_analysis_dict
 
-from randomfunctions import plot_all_dispersion
+from randomfunctions import *
 
 import pickle
 
@@ -23,7 +23,7 @@ import pickle
 
 
 circuit_n='circuit14'
-variant='0nd'
+variant='1nd'
 
 parID = 7 #takes the first parameter set of the dataframe... can choose any
 n_species=6 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
@@ -37,7 +37,8 @@ par_dict = df.loc[parID].to_dict()
 #Run analysis on 1M parameter sets
 # output_df = big_turing_analysis_df(df_batch,circuit_n,n_species,print_parID=False, tqdm_disable=False)
 out = detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5000,calculate_unstable=False,steadystate=False)
-plot_all_dispersion(out[4][1],n_species, crop=30)
+plot_all_dispersion(out[4][0],n_species, crop=30)
+plot_highest_dispersion(out[4][0], crop=10000)
 
 print(out[3])
 
