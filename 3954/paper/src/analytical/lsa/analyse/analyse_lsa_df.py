@@ -17,7 +17,7 @@ import numpy as np
 
 def pieChart_lsa(valueCounts_dict,title,log=True):
     colors=['grey','grey','grey','grey','peachpuff','coral','coral','coral','coral','coral','grey','coral','coral']
-    colors=['grey','grey','grey','peachpuff','peachpuff','peachpuff','coral','grey','coral','coral']
+    colors=['grey','grey','grey','grey','peachpuff','peachpuff','peachpuff','coral','coral','coral']
     labels = []
     sizes = []
     
