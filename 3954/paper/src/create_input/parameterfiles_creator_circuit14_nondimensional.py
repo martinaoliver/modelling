@@ -8,7 +8,7 @@
 
 
 # pwd = os.getcwd()
-# modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+# modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1]
 # sys.path.append(modellingpath + '/lib')
 # #############
 # from equations.parameterCreation_functions import *
@@ -133,7 +133,7 @@ import os
 
 
 pwd = os.getcwd()
-modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1]
 sys.path.append(modellingpath + '/lib')
 #############
 from equations.parameterCreation_functions import *
@@ -151,7 +151,7 @@ variant='0nd'
 # V* = V/b
 # V = 10-1000
 # b=0.1-1
-minV = 10;maxV=1000;minb=0.1;maxb=10 
+minV = 10;maxV=1000;minb=0.1;maxb=10
 VA = {'name':'VA','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
 VB = {'name':'VB','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
 VC = {'name':'VC','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
@@ -234,8 +234,8 @@ if plotDistributions == True:
 createParams=True
 if createParams == True:
     # nsamples=1000000
-    # nsamples=int(sys.argv[1])
-    nsamples=14
+    nsamples=int(sys.argv[1])
+    # nsamples=14
     parameterDictList = D_parameters  + V_parameters + K_parameters + mu_parameters + n_parameters
     # parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
     stackedDistributions = preLhs(parameterDictList)
