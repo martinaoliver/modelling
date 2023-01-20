@@ -43,7 +43,7 @@ variant= 0
 n_species=2
 
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 200000
+n_param_sets = 2000000
 
 
 
@@ -67,13 +67,15 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test =
 
     # smaller time and smaller dt 
     L=100; dx =1; J = int(L/dx)
-    T =1000; dt = 0.005; N = int(T/dt)
+    T =5000; dt = 0.05; N = int(T/dt)
     boundaryCoeff=2;rate=0.1
 
     filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
     if test == True:
         T =100; dt = 0.1; N = int(T/dt)
-
+        tqdm_disable = False
+    else:
+        tqdm_disable = True
     # df_index = np.unique(df.index.get_level_values(0))
     for parID,ss in df.index:
         parIDss = f'{parID}.{ss}'
@@ -90,7 +92,7 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test =
         try:
             if simulateGrowth == True:
                 mechanism = 'edgegrowth2'
-                U_final,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=True)
+                U_final,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=tqdm_disable)
 
                 with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
                     pickle.dump(U_final, f)
@@ -99,7 +101,7 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test =
                     pickle.dump(U_record, f)
                 
             mechanism = 'nogrowth'
-            U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=True)
+            U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=tqdm_disable)
             with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
                 pickle.dump(U_final, f)
 
@@ -132,8 +134,8 @@ start_time = time.perf_counter()
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 df = None
-with open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
-# with open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
+# with open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
+with open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
     df = pickle.load(f)
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 df.index.names = ['parID','ss']

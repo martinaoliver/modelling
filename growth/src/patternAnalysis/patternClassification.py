@@ -23,44 +23,18 @@ from tqdm import tqdm
 from math import log10 , floor
 from scipy.signal import find_peaks
 
-circuit_n='turinghill'
-variant= 0
-n_species=2
-mechanism='nogrowth'
-# L=50; dx =1; J = int(L/dx)
-# T =3000; dt = 0.05; N = int(T/dt)
-# boundaryCoeff=2;rate=0.01
+def NormalizeData(data):
+    return (data - np.min(data)) / (np.max(data) - np.min(data)+1e-8)
 
+def countPeaks(U, showPlot1D=True):
+    peaks = [0,0]
+    peaks[0], _ = find_peaks(U[0], prominence=0.1)
+    peaks[1], _ = find_peaks(U[1], prominence=0.1)
+    if showPlot1D == True:
+        plot1D(U,plotPeaks=True, peaks=peaks)
 
-L=50; dx =1; J = int(L/dx)
-T =500; dt = 0.005; N = int(T/dt)
-boundaryCoeff=2;rate=0.1
-
-pattern_df = pickle.load(open( modellingpath + '/growth/out/patternAnalysis/%s/%s/pattern/pattern_df_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), 'rb'))
-
-filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
-n_param_sets=2000000
-lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-# single_lsa_df =  lsa_df.xs(0, level=1)
-print('done')
-
-def parID_display(parIDss, L,J,T,round=False,crop=100,ss_n=0,df = pattern_df):
-    #data
-    U_final = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))
-    plot1D(U_final,round=round)
-
-    plt.subplots(figsize=(10,4))
-
-    #dispersion
-    plt.subplot(121)
-    parID_dispersion(parIDss,crop)
-    #convergence
-    plt.subplot(122)
-
-    parID_surfpattern(parIDss,L,J,T)
-    plt.tight_layout()
-    plt.show()
-def parID_surfpattern(parIDss,L,J,T,record_every_x_hours = 10):
+    return peaks
+def parID_surfpattern(parIDss,L,J,T,morphogen=0,record_every_x_hours = 10):
     #data 
     U_record = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))    
     #grids
@@ -69,80 +43,116 @@ def parID_surfpattern(parIDss,L,J,T,record_every_x_hours = 10):
     reduced_t_grid = np.arange(0,T,record_every_x_hours) 
 
     #plot
-    surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-
-
-def parID_dispersion(parIDss,crop, df = pattern_df):
-    #dispersion
-    parID,ss = [int(x) for x in parIDss.split('.')]
-
-    par_dict = df.loc[(parID,ss)].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
-    out = detailed_turing_analysis_dict(par_dict, circuit_n, n_species)
-    plot_highest_dispersion(out[-3][ss-1],crop=crop)
-
-
-parID_list = pickle.load(open( modellingpath + '/growth/out/numerical/%s/%s/simulation/parID_list_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), "rb" ) )
-parID_list=['26.0', '182.0']
-start=0
-stop=len(parID_list)
-# stop=10
-parID_list = [i for i in parID_list[start:stop]] #turn string list into integer list
-# parID_list.sort() #sort from lower to higher values
-patternDict = {}
-# parID_list=[41018,30997,2, 4]
-test=True
-
-for count,parIDss in enumerate(tqdm(parID_list, disable=False)):
-    # print(parID)
-    #load records 
-    U_final = pickle.load( open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))
-    U_record = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))
-    
-
-    # parID_display(parID,L,J,T, crop=100)
-
-    #check if flat with diff function
-    diffUfinal = np.round(np.diff(U_final),decimals=3)
-    if np.all(diffUfinal==0)==True:
+    surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=morphogen, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+# %%
+def patternClassification(U_final, U_record, normalize=True):
+    #check if flat
+    relRangeFlat = [(np.amax(U) - np.amin(U))/(np.amax(U)+1e-8) for U in U_final]
+    if any(i<0.001 for i in relRangeFlat):
         flat=True
     else:
         flat=False
 
-    #check if convergence with diff function
-    diffUrecord = np.round(np.diff(U_record[1][-10:], axis=0),decimals=6)
-    
-    if np.all(diffUrecord==0) ==True:
-        converged=True
-    else:
+    #check if converged
+    relRangeConverged=[0,0]
+    for count,Ux_record in enumerate(U_record):
+        relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[-10:])]
+    if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
         converged=False
+    else:
+        converged=True
+
+    #check if regular
+    U_final_norm = [NormalizeData(U) for U in U_final]
+    peaks = countPeaks(U_final_norm, showPlot1D=False)
+
+    #calculate distance between peaks in peak0
+    std=[0,0]
+    for count,singleUpeak in enumerate(peaks):
+        if len(singleUpeak)>2:
+            peak_dist = [np.linalg.norm(singleUpeak[i]-singleUpeak[i+1]) for i in range(len(singleUpeak)-1)]
+            peak_dist = peak_dist/np.sum(peak_dist)
+            std[count] = np.std(peak_dist)
+        else:
+            std[count] = 1
+    if std[0]<0.01 and std[1]<0.01:
+        regular=True
+    else:
+        regular=False
+        
 
 
     if flat==True and converged==True:
         pattern='Homogeneous'
     if flat==True and converged==False:
         pattern='Temporal Oscillator'
-    if flat==False and converged==True:
-        # pattern = 'Stationary periodic wave'
-        pattern = 'Stationary spatial wave'
-    if flat==False and converged==False:
-        pattern = 'Non-Stationary heterogeneity'
+    if flat==False and converged==True and regular==True:
+        pattern = 'Stationary regular pattern'
+    if flat==False and converged==True and regular==False:
+        pattern = 'Stationary irregular pattern'
 
-    # patternDict[parIDss] = pattern
+    if flat==False and converged==False and regular==True:
+        pattern = 'Non-Stationary regular pattern'
+    if flat==False and converged==False and regular==False:
+        pattern = 'Non-Stationary irregular pattern'
+    # if var[0]>0.1 and var[1]>0.1:
+
+
+
+
+
+    return pattern, converged, flat, regular
+
+
+
+
+circuit_n='turinghill'
+variant= 0
+n_species=2
+mechanism='nogrowth'
+
+
+L=100; dx =1; J = int(L/dx)
+T =5000; dt = 0.05; N = int(T/dt)
+boundaryCoeff=2;rate=0.1
+
+# pattern_df = pickle.load(open( modellingpath + '/growth/out/patternAnalysis/%s/%s/pattern/pattern_df_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), 'rb'))
+
+filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
+n_param_sets=2000000
+lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+parID_list = pickle.load(open( modellingephemeral + '/growth/out/numerical/%s/%s/simulation/parID_list_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), "rb" ) )
+# parID_list=['1009985.2', '1009876.3']
+
+start=0;stop=len(parID_list)
+parID_list = [i for i in parID_list[start:stop]] #turn string list into integer list
+
+# parID_list.sort() #sort from lower to higher values
+patternDict = {}
+# parID_list=[41018,30997,2, 4]
+test=False
+
+for count,parIDss in enumerate(tqdm(parID_list, disable=False)):
+    # print(parID)
+    #load records 
+    U_final = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))
+    U_final = np.round(U_final,decimals=4)
+    U_record = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))    
+    
+    pattern, converged, flat, regular = patternClassification(U_final, U_record)
+
     parID,ss = parIDss.split('.')
     patternDict[(parID,ss)]=pattern
-#     if count%10000==0:
-#         pickle.dump(parIDPsEntropy, open( modellingpath + '/growth/out/patternAnalysis/%s/%s/psEntropy/parIDpsEntropyDict_%s_batch%r.pkl'%(circuit_n,mechanism,filename('x'), count), 'wb'))
 
-# if test==False:
-#     pickle.dump(parIDPsEntropy, open( modellingpath + '/growth/out/patternAnalysis/%s/%s/psEntropy/parIDpsEntropyDict_%s.pkl'%(circuit_n,mechanism,filename('x')), 'wb'))
-#     print('saved')
-test=True
-# parIDPsEntropy = pickle.load(open( modellingpath + '/growth/out/patternAnalysis/%s/%s/psEntropy/parIDpsEntropyDict_%s.pkl'%(circuit_n,mechanism,filename('x')), 'rb'))
-# #add column to lsa_df with Hps and save it to file
-if test==True:
-    for count,parIDss in enumerate(tqdm(parID_list, disable=False)):
-        parID_display(parIDss,pattern_df, L,J,T, crop=100)
-
+    if test==True:
+        parID_surfpattern(parIDss,L,J,T,morphogen=1)
+        plt.show()
+        parID_surfpattern(parIDss,L,J,T,morphogen=0)
+        plot1D(U_final)
+        print(f'Pattern = {pattern}')
+        print(f'Converged = {converged}, Flat = {flat}, Regular = {regular}')
+        print('-----------------------------------')
+# %%
 if test==False:
     n_param_sets = 2000000
     lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
@@ -150,18 +160,7 @@ if test==False:
     for parID_ss,pattern in tqdm(patternDict.items()):
         lsa_df.loc[(int(parID_ss[0]),int(parID_ss[1])), 'pattern']=pattern
 
-    # lsa_df['pattern'] = lsa_df.index #you get the index as tuple
-    # # lsa_df['pattern'] = np.nan
-    # lsa_df['pattern'] = lsa_df['pattern'].map(patternDict)
-    # lsa_df = lsa_df.set_index('pattern', append=True)
-
-
-    # lsa_df['pattern'] = lsa_df.index.to_series().map(patternDict)
-    # print(lsa_df)
     pickle.dump(lsa_df , open( modellingpath + '/growth/out/patternAnalysis/%s/%s/pattern/pattern_df_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), 'wb'))
-#     # #add column to lsa_df with Hps and save it to file
-#     # lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-#     # lsa_df_single = lsa_df.xs(0, level=1)
-#     print(lsa_df.head())
-    # print(lsa_df)
     print(lsa_df['pattern'].value_counts())
+
+# %%
