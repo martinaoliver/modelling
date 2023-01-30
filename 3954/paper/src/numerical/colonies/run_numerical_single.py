@@ -64,8 +64,8 @@ divisionTimeHours=1
 boundarycoeff = 1.7
 p_division=0.5;seed=1
 
-L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
-T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
+# L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
+# T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
 
 divisionTimeHours=0.5
 p_division=0.5;seed=1
