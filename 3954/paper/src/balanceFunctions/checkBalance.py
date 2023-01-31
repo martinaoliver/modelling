@@ -47,22 +47,30 @@ circuit_n='circuit14'
 variant='1nd'
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 5000000
+n_param_sets = 5000
 
 print(f'Circuit:{circuit_n}, Variant:{variant}')
 
+df_full= pkl.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 df_full= pkl.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 
 
 
 
-
-Km_list = ['Kda', 'Kab', 'Keb', 'Kbd', 'Kfe', 'Kee', 'Kce' ]
-KtoV = {'Kda': 'VD', 'Kab': 'VA', 'Keb': 'VE', 'Kbd': 'VB', 'Kfe': 'VF', 'Kee': 'VE', 'Kce': 'VC' }
+#remove kee from balancing
+Km_list = ['Kda', 'Kab', 'Keb', 'Kbd', 'Kfe',  'Kce' ]
+KtoV = {'Kda': 'VD', 'Kab': 'VA', 'Keb': 'VE', 'Kbd': 'VB', 'Kfe': 'VF','Kce': 'VC' }
 balanceList = []    
 for parID in tqdm(df_full.index):
     par_dict = df_full.loc[parID].to_dict()
     balanceList.append(checkBalance(par_dict))
 df_full['balance'] = balanceList
+
+
+# for parID in tqdm(df_full.index):
+#     par_dict = df_full.loc[parID].to_dict()
+#     balance = checkBalance(par_dict)
+#     df_full['balance'] = balanceList
 
 
 
