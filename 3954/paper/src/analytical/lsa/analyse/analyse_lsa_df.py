@@ -40,12 +40,15 @@ n_param_sets = 5000000
 
 print(f'Circuit:{circuit_n}, Variant:{variant}')
 
-df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 print(df['system_class'].value_counts())
 valueCounts_dict = dict(df['system_class'].value_counts())
 title = f'{circuit_n} Variant {variant}'
 pieChart_lsa(valueCounts_dict,title)
 dfunstable = df[df['system_class']=='simple unstable']
+
+if balanced == True:
+    
 
 # #values for which complex dispersion = true
 # complex_df = df[df['complex_dispersion']==True]

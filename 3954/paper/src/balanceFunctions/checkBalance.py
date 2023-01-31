@@ -47,13 +47,14 @@ circuit_n='circuit14'
 variant='1nd'
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 5000000
-n_param_sets = 5000
+# n_param_sets = 5000
 
 print(f'Circuit:{circuit_n}, Variant:{variant}')
 
-df_full= pkl.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
-df_full= pkl.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+# df_full= pkl.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+# df_full= pkl.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 
+df_full= pkl.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 
 
 
@@ -61,11 +62,17 @@ df_full= pkl.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df
 Km_list = ['Kda', 'Kab', 'Keb', 'Kbd', 'Kfe',  'Kce' ]
 KtoV = {'Kda': 'VD', 'Kab': 'VA', 'Keb': 'VE', 'Kbd': 'VB', 'Kfe': 'VF','Kce': 'VC' }
 balanceList = []    
+# for parID in tqdm(df_full.index):
+#     par_dict = df_full.loc[parID].to_dict()
+#     balanceList.append(checkBalance(par_dict))
+# df_full['balance'] = balanceList
+print(df_full['balance'].value_counts())
+
 for parID in tqdm(df_full.index):
     par_dict = df_full.loc[parID].to_dict()
-    balanceList.append(checkBalance(par_dict))
-df_full['balance'] = balanceList
+    df_full.at[parID,'balance']=checkBalance(par_dict)
 
+print(df_full['balance'].value_counts())
 
 # for parID in tqdm(df_full.index):
 #     par_dict = df_full.loc[parID].to_dict()
@@ -76,4 +83,5 @@ df_full['balance'] = balanceList
 
 print(df_full['balance'].value_counts())
 # df_full[df_full['balance'] == 'Balanced']
-# pkl.dump(df_full, open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_%s_variant%s_%rparametersets_balanced.pkl"%(circuit_n,variant,n_param_sets), "wb"))
+pkl.dump(df_full, open(modellingpath + "/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balanced.pkl"%(circuit_n,variant,n_param_sets), "wb"))
+# df_full= pkl.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
