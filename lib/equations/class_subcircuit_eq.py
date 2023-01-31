@@ -19,7 +19,7 @@ class hill_functions():
             setattr(self, key, value)
 
     def noncompetitiveact(self, X, km,n):
-        act = ((X / km) ** (n)) / (1 + (X / km) ** (n))
+        # act = ((X / km) ** (n)) / (1 + (X / km) ** (n))
         act = (1 / (1 + (km / (X+1e-08)) ** (n)))
         return act
 
