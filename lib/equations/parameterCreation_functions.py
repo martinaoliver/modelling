@@ -10,12 +10,12 @@ from matplotlib import pyplot as plt
 
 np.random.seed(1)
 
-def lhs(data, nsample):
-    print('hellooooo')
+def lhs(data, nsample,seed=1, tqdm_disable=False):
+    np.random.seed(seed)
     m, nvar = data.shape
     ran = np.random.uniform(size=(nsample, nvar))
     s = np.zeros((nsample, nvar))
-    for j in tqdm(range(0, nvar)):
+    for j in tqdm(range(0, nvar), disable=tqdm_disable):
         idx = np.random.permutation(nsample) + 1
         P = ((idx - ran[:, j]) / nsample) * 100
         s[:, j] = np.percentile(data[:, j], P)

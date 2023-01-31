@@ -107,10 +107,9 @@ if plotDistributions == True:
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
 
-createParams=True
+createParams=False
 if createParams == True:
-    nsamples=5000000
-    nsamples=5000
+    nsamples=50000000
     # nsamples=int(sys.argv[1])
     # nsamples=14
     parameterDictList = D_parameters  + V_parameters + K_parameters + mu_parameters + n_parameters
@@ -122,3 +121,76 @@ if createParams == True:
     pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
 
     print(lhsDist_df)
+
+
+Km_list = ['Kda', 'Kab', 'Keb', 'Kbd', 'Kfe',  'Kce' ]
+KtoV = {'Kda': 'VD', 'Kab': 'VA', 'Keb': 'VE', 'Kbd': 'VB', 'Kfe': 'VF','Kce': 'VC' }
+
+def checkBalance(par_dict):
+    balanceDict = {}
+    for Km in Km_list:
+        # print(Km)
+        Vx =par_dict[KtoV[Km]]
+        Kxy = par_dict[Km]
+        if Kxy >= 1 and Kxy <= Vx:
+            balanceDict[Km] = 'Balanced'
+        elif Kxy > 0.1 and Kxy < Vx*10:
+            balanceDict[Km] ='Semi balanced'
+        elif Kxy <= 0.1 or Kxy >= Vx*10:
+            balanceDict[Km] ='Not balanced'
+        else:
+            print('ERROR!!!!!!!!!')
+
+    if 'Not balanced' in balanceDict.values():
+        return 'Not balanced'
+    elif 'Semi balanced'  in balanceDict.values():
+        return 'Semi balanced'
+    elif all(x == 'Balanced' for x in balanceDict.values()):
+        return 'Balanced'
+    
+
+createBalancedParams=True
+if createBalancedParams == True:
+    seed=0
+    nsamples=1000000
+    parameterDictList = D_parameters  + V_parameters + K_parameters + mu_parameters + n_parameters
+    # parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
+    stackedDistributions = preLhs(parameterDictList)
+    balancedDf = pd.DataFrame()
+    semiBalancedDf = pd.DataFrame()
+    notBalancedDf = pd.DataFrame()
+    while len(balancedDf)<nsamples:
+        lhsDist = lhs(stackedDistributions,nsamples, seed = seed, tqdm_disable = True)
+        lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterDictList])
+        #check balance
+
+        balanceList = []    
+        for parID in lhsDist_df.index:
+            par_dict = lhsDist_df.loc[parID].to_dict()
+            balanceList.append(checkBalance(par_dict))
+        lhsDist_df['balance'] = balanceList
+        
+        #separate 3df
+        balancedDfPre = lhsDist_df[lhsDist_df['balance']=='Balanced']
+        semiBalancedDfPre = lhsDist_df[lhsDist_df['balance']=='Semi balanced']
+        notBalancedDfPre = lhsDist_df[lhsDist_df['balance']=='Not balanced']
+        
+        #concat to df
+        if len(balancedDf)<nsamples:
+            balancedDf = pd.concat([balancedDf, balancedDfPre], ignore_index=True)
+        if len(semiBalancedDf)<nsamples:
+            semiBalancedDf = pd.concat([semiBalancedDf, semiBalancedDfPre], ignore_index=True)
+        if len(notBalancedDf)<nsamples:
+            notBalancedDf = pd.concat([notBalancedDf, notBalancedDfPre], ignore_index=True)
+
+        seed+=1
+        print(seed, len(balancedDf))
+    
+        pkl.dump(balancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
+        pkl.dump(semiBalancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_semiBalanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
+        pkl.dump(notBalancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_notBalanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
+        # pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
+
+
+
+
