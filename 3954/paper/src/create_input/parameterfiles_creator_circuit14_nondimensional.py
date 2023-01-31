@@ -18,7 +18,7 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=14
-variant='0nd'
+variant='1nd'
 #diffusion parameters
 
 
@@ -64,7 +64,8 @@ minK=0.1;maxK=250
 Kda = {'name':'Kda','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb,minK), 'max':Kstar(muLVA_estimate,minb,maxK)}
 Keb = {'name':'Keb','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb,minK), 'max':Kstar(muLVA_estimate,minb,maxK)}
 Kfe = {'name':'Kfe','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb,minK), 'max':Kstar(muLVA_estimate,minb,maxK)}
-Kee = {'name':'Kee','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb,minK), 'max':Kstar(muLVA_estimate,minb,maxK)}
+# Kee = {'name':'Kee','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb,minK), 'max':Kstar(muLVA_estimate,minb,maxK)}
+Kee = {'name':'Kee','distribution':'fixed','value':0.01}
 Kce = {'name':'Kce','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb,minK), 'max':Kstar(muLVA_estimate,minb,maxK)}
 Kbd = {'name':'Kbd','distribution':'loguniform', 'min':Kdiffstar(muV,KdiffpromMin,K1), 'max':Kdiffstar(muV,KdiffpromMax,K1)}
 Kab = {'name':'Kab','distribution':'loguniform', 'min':Kdiffstar(muU,KdiffpromMin,K2), 'max':Kdiffstar(muU,KdiffpromMax,K2)}
@@ -108,8 +109,9 @@ if plotDistributions == True:
 
 createParams=True
 if createParams == True:
-    # nsamples=1000000
-    nsamples=int(sys.argv[1])
+    nsamples=5000000
+    nsamples=5000
+    # nsamples=int(sys.argv[1])
     # nsamples=14
     parameterDictList = D_parameters  + V_parameters + K_parameters + mu_parameters + n_parameters
     # parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]

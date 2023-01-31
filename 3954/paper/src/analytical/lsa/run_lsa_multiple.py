@@ -5,7 +5,6 @@
 import sys
 import os
 
-from importlib_metadata import distribution
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
 sys.path.append(modellingpath + '/lib')
@@ -22,18 +21,18 @@ import pickle
 
 
 circuit_n='circuit14'
-variant='0nd'
+variant='1nd'
 
 parID = 7 #takes the first parameter set of the dataframe... can choose any
 n_species=6 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
 
-df_lenght = 1000000
-n_param_sets = 1000000
+df_lenght = 5000000
+n_param_sets = 5000000
 
 start_batch_index = 0
 batch_size = 10
 # obtain a dictionary with some parameters to use in our analysis
-df= pickle.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_%s_variant%s_%rparametersets_balanced.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 df_batch = df.iloc[start_batch_index:start_batch_index+batch_size]
 parID
 #Run analysis on 1M parameter sets

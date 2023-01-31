@@ -37,10 +37,10 @@ print('Number of Threads set to ', Number_of_Threads)
 # Specify name of circuit and variant investigated
 
 circuit_n='circuit14'
-variant='0nd'
+variant='1nd'
 n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 1000000
+n_param_sets = 5000000
 # n_param_sets = 10
 
 # df_lenght = 10
@@ -56,6 +56,7 @@ date = date.today().strftime('%m_%d_%Y')
 # batch_size = 2
 # batch_size = 208
 batch_size =int(n_param_sets/Number_of_Threads)
+# batch_size=3
 print(f'batch_size: {batch_size}')
 
 
@@ -63,7 +64,6 @@ print(f'batch_size: {batch_size}')
 def lsa_check(start_batch_index,n_param_sets,df,circuit_n=circuit_n, variant=variant, n_species=n_species):
     print('pool' + str(start_batch_index))
     output_df = big_turing_analysis_df(df,circuit_n,n_species,print_parID=False)
-
     print('calculated')
     pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_batch%r.pkl'%(circuit_n,variant,n_param_sets,start_batch_index), 'wb'))
     print('saved')
@@ -74,9 +74,10 @@ start_time = time.perf_counter()
 start_parameter = int(0)
 # Load dataframe of parameter sets
 # df= pickle.load( open('../lhs_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
-df= pickle.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_%s_variant%s_%rparametersets_balanced.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+# df = df.iloc[:3]
 print('df_loaded')
-print('df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets))
+print('df_%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,n_param_sets))
 # df= pickle.load( open("../lhs_parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
 df_lenght = len(df)
 # df_lenght=10
