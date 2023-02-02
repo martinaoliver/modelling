@@ -83,12 +83,12 @@ class subcircuit3_circuit14(hill_functions): #node A and C
 
 
     def ddt(self,species_list,t, B, B1, wvn=0):
-        C,D,E = species_list
+        E,D,C = species_list
         dcdt= self.muLVA*(1 + self.VC*self.noncompetitiveinh(D,self.Kda,self.nda) - C ) 
         dddt= self.muLVA*(1 + self.VD*self.noncompetitiveact(B,self.Kbd,self.nbd) - D ) 
         dedt= self.muLVA*(1 + self.VE*self.noncompetitiveinh(C,self.Kce,self.nce)*self.noncompetitiveact(E,self.Kee,self.nee) - E ) 
 
-        return dcdt,dddt, dedt
+        return dedt, dddt, dcdt
     
 
 class subcircuit4_circuit14(hill_functions): #node B and C
