@@ -1,3 +1,4 @@
+#%%
 #############
 ###paths#####
 #############
@@ -118,8 +119,14 @@ n_species=6
 
 # L=5; x_gridpoints =5; J = L*x_gridpoints
 # T =10; t_gridpoints = 10; N = T*t_gridpoints
-L=4; dx =0.025; J = int(L/dx)
-T =65; dt = 0.0025; N = int(T/dt)
+# L=4; dx =0.025; J = int(L/dx)
+# T =65; dt = 0.0025; N = int(T/dt)
+L=4; dx =0.05; J = int(L/dx)
+T =125; dt = 0.05; N = int(T/dt)
+boundarycoeff = 1
+
+divisionTimeHours=1
+p_division=0.22;seed=1
 
 # L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
 # T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
@@ -128,8 +135,6 @@ L_x = L
 L_y = L
 I = J
 
-divisionTimeHours=0.5
-p_division=0.5;seed=1
 # p_division=float(sys.argv[5]);seed=1
 
 cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
@@ -153,8 +158,8 @@ if plot1D == True:
     plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
     plt.show()
     plt.close()
-
-plotVideo=False
+#%%
+plotVideo=True
 if plotVideo==True:
     def show_rgbvideo(timeseries_unstacked):
         time=0
@@ -167,12 +172,12 @@ if plotVideo==True:
             im.set_data(rgb_timeseries[:,:,time].astype('uint8'))
             
             plt.xlabel(time)
-            plt.pause(0.000001)
+            plt.pause(0.00000000000000001)
         plt.show()
 
     show_rgbvideo(cell_matrix_record)
 
-
+#%%
 plotScatter = True
 if plotScatter==True:
     print('Scatter')
@@ -191,3 +196,5 @@ if plotScatter==True:
     plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
     plt.show()
 
+
+# %%

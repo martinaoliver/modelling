@@ -20,12 +20,12 @@ class hill_functions():
             setattr(self, key, value)
 
     def noncompetitiveact(self, X, km,n):
-        act = ((X / km) ** (n)) / (1 + (X / km) ** (n))
-        act = (1 / (1 + (km / X) ** (n)))
+        # act = ((X / km) ** (n)) / (1 + (X / km) ** (n))
+        act = (1 / (1 + (km / (X + 1e-8)) ** (n)))
         return act
 
     def noncompetitiveinh(self, X, km,n):
-        inh = 1 / (1 + (X / km) ** (n))
+        inh = 1 / (1 + (X / (km + 1e-8) ) ** (n))
         return inh
 
 
@@ -994,12 +994,12 @@ class circuit14(hill_functions):
 
     function_list = [dAdt_f,dBdt_f,dCdt_f,dDdt_f,dEdt_f,dFdt_f]
     
-    @numba.jit(nopython=True)
+    # @numba.jit(nopython=True)
     def dudt_growth(self,U, cell_matrix):
         function_list = [self.dAdt_f(U),self.dBdt_f(U),self.dCdt_f(U), self.dDdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
         dudt = [eq*cell_matrix for eq in function_list]
         return dudt
-    @numba.jit(nopython=True)
+    # @numba.jit(nopython=True)
     def dudt(self,U):
         dudt = [self.dAdt_f(U),self.dBdt_f(U),self.dCdt_f(U), self.dDdt_f(U),self.dEdt_f(U),self.dFdt_f(U)]
         return dudt

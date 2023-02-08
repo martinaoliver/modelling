@@ -23,7 +23,7 @@ from numba import cuda, float32
 
 def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False,divisionTimeHours=1,stochasticity=0, seed=1, boundarycoeff=1.5):
     
-    parent_list = [circuit1, circuit2,circuit3,circuit4,circuit5,circuit6,circuit7,circuit8,circuit9, circuit10, circuit11, circuit12]
+    parent_list = [circuit1, circuit2,circuit3,circuit4,circuit5,circuit6,circuit7,circuit8,circuit9, circuit10, circuit11, circuit12, circuit13, circuit14]
     f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
 
     #spatial variables
@@ -40,7 +40,7 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
     #Define initial conditions and cell matrix
     U0 = []
     perturbation=0.001
-    steadystates=[1]*n_species
+    steadystates=[0.01]*n_species
     np.random.seed(seed)
 
     cell_matrix = cell_matrix_record[:,:,0]

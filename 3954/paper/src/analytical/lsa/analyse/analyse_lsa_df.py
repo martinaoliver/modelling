@@ -76,9 +76,9 @@ if balanced == True:
 # #values for which complex dispersion = true
 # complex_df = df[df['complex_dispersion']==True]
 # complex_df.index  = complex_df.index.droplevel(-1)
-
+#%%
 # #values that have instabilities
-saveInstabilities = False
+saveInstabilities = True
 if saveInstabilities ==True:
     instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
     instabilities_df = df.loc[df['system_class'].isin(instabilities)]
@@ -90,7 +90,7 @@ if saveInstabilities ==True:
 # pickle.dump( instabilityComplex_df, open(modellingpath + '/growth/out/analytical/instabilityComplex/instabilityComplex_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 
 # #values that have turing
-saveTuring = False
+saveTuring = True
 if saveTuring == True:
     turingStates = ['turing I','turing I oscillatory']  
     turing_df = df.loc[df['system_class'].isin(turingStates)]
@@ -99,7 +99,7 @@ if saveTuring == True:
     # turing_df = turing_df.loc[turing_df['ss_n']==1]
     # turing_df = turing_df.sort_values(by=['maxeig'],  ascending=False)
     pickle.dump( turing_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
-
+#%%
 compare_two_dfs=False
 if compare_two_dfs == True:
     df0= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,0,n_param_sets), "rb"))
@@ -115,3 +115,5 @@ if compare_two_dfs == True:
     plt.ylabel('Number of Occurrences (log)', fontsize=12)
     plt.xlabel('System class', fontsize=12)
     plt.show()
+
+# %%

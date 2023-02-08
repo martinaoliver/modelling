@@ -35,11 +35,14 @@ else:
 print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
-circuit_n=2
-# variant= '48257gaussian0.21nsr'
-variant=3
+circuit_n='14'
+variant='1nd'
 n_species=6
-folder = 'circuit2variant1_turing'
+# Specifiy number of parameter sets in parameterset file to be loaded
+n_param_sets = 1000000
+# n_param_sets = 10
+balance = 'balanced'
+folder = 'circuit14variant1nd_turing'
 modelArgs = [circuit_n,variant,n_species,folder]
 # Specifiy number of parameter sets in parameterset file to be loaded
 # nsamples = 2000
@@ -49,13 +52,12 @@ nsamples = 1000000
 # T =65; dt = 0.0025; N = int(T/dt)
 # boundarycoeff = 1.7
 
-L=8; dx =0.05; J = int(L/dx)
+L=4; dx =0.05; J = int(L/dx)
 T =125; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
 
-
-p_division=0.5;seed=1
-divisionTimeHours = 1
+divisionTimeHours=1
+p_division=0.22;seed=1
 
 # divisionTimeHours=0.5
 # p_division=0.5;seed=1
@@ -97,7 +99,7 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
         par_dict = df.loc[parID].to_dict()
         # print(par_dict)
         D = np.zeros(n_species)
-        D[:2] = [par_dict['DA'],par_dict['DB'] ]
+        D[:2] = [1,par_dict['Dr'] ]
 
         # steadystates=par_dict['ss_list']
 
@@ -114,7 +116,8 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
                         
             with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) as f:
                 pickle.dump(U_final, f)
-            with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
+            # with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
+            with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
                 pickle.dump(U_record, f)
             
             del U_record
@@ -145,7 +148,7 @@ start_time = time.perf_counter()
 # df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # df= pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
     df = pickle.load(f)
     
 # turing_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
