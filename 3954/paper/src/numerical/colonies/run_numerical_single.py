@@ -81,8 +81,6 @@ filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circ
 parID=19390
 # for parID in range(10):
 par_dict = df.loc[parID].to_dict()
-# par_dict = df.iloc[0].to_dict()
-
 D = np.zeros(n_species)
 D[:2] = [1,par_dict['Dr'] ]
 

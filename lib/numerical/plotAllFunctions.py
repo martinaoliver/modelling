@@ -6,6 +6,7 @@ import os
 
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/modelling'
 sys.path.append(modellingpath + '/lib')
 #############
 
@@ -94,13 +95,13 @@ def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoin
             print(parID)
 
         ax=plt.subplot(n_row,n_col, count+1)
-        U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
+        U_final = pickle.load( open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
         rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure='LargeImage')
         # def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
 
-
         ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
-        ax.imshow(rgb.astype('uint8'), origin= 'lower', norm=colors.LogNorm())
+        # ax.imshow(rgb.astype('uint8'), origin= 'lower', norm=colors.LogNorm())
+        ax.imshow(rgb.astype('uint8'), origin= 'lower')
         ax.set_ylabel(parID,size= 1,c='y', labelpad=0.35)
 
 

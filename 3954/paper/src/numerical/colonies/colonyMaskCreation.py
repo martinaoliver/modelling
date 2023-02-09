@@ -121,12 +121,19 @@ n_species=6
 # T =10; t_gridpoints = 10; N = T*t_gridpoints
 # L=4; dx =0.025; J = int(L/dx)
 # T =65; dt = 0.0025; N = int(T/dt)
-L=4; dx =0.05; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
+L=5; dx =0.05; J = int(L/dx)
+T =50; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
 
 divisionTimeHours=1
 p_division=0.22;seed=1
+
+# L=8; dx =0.05; J = int(L/dx)
+# T =50; dt = 0.05; N = int(T/dt)
+# boundarycoeff = 1
+
+# divisionTimeHours=1
+# p_division=0.22;seed=1
 
 # L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
 # T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
@@ -147,7 +154,7 @@ pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/num
     # print(np.shape(memory_matrix_record[:,:,ti]))
     # print(memory_matrix_record[:,:,ti])
 
-plot1D=True
+plot1D=False
 if plot1D == True:
     print('Final Mask')
     plt.imshow(cell_matrix_record[:,:,-1], cmap='Greys')# plot_2D_final_concentration(final_concentration,grids,filename,n_species=n_species)
@@ -159,7 +166,7 @@ if plot1D == True:
     plt.show()
     plt.close()
 #%%
-plotVideo=True
+plotVideo=False
 if plotVideo==True:
     def show_rgbvideo(timeseries_unstacked):
         time=0
@@ -178,7 +185,7 @@ if plotVideo==True:
     show_rgbvideo(cell_matrix_record)
 
 #%%
-plotScatter = True
+plotScatter = False
 if plotScatter==True:
     print('Scatter')
     lenght_list = []

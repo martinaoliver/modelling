@@ -6,6 +6,7 @@ import os
 
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/modelling'
 sys.path.append(modellingpath + '/lib')
 #############
 
@@ -19,28 +20,29 @@ import numpy as np
 
 
 #############################
+# Specify name of circuit and variant investigated
+circuit_n=14;variant='1nd';n_species=6
+# Specifiy number of parameter sets in parameterset file to be loaded
+n_param_sets = 1000000
+balance = 'balanced'
+folder = 'circuit14variant1nd_turing'
+modelArgs = [circuit_n,variant,n_species,folder]
 
-circuit_n=2
-variant= 1#'48257gaussian0.1nsr'
-# variant= '48257gaussian0.21nsr'
-n_species=6
-shape='ca'
-# folder = 'circuit2variant0_1M'
-folder = 'circuit2variant1_turing'
-# folder = 'circuit2variant0_instabilities'
-# folder='circuit2variant48257gaussian0.21nsr'
+# Specifiy number of parameter sets in parameterset file to be loaded
+nsamples = 1000000
 
-L=4; dx =0.025; J = int(L/dx)
-T =65; dt = 0.005; N = int(T/dt)
-boundarycoeff = 1.7
-divisionTimeHours=0.5
-p_division=0.5;seed=1
+# specify dimensions of system
+L=4; dx =0.05; J = int(L/dx)
+T =125; dt = 0.05; N = int(T/dt)
+boundarycoeff = 1
+shape = 'ca'
 
-
+divisionTimeHours=1
+p_division=0.22;seed=1
 x_gridpoints=int(1/dx)
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
-data_path = modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/'%(folder)
+data_path = modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s'%(folder)
 parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 
 start = 0

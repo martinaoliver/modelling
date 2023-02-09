@@ -10,7 +10,12 @@ modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/mod
 sys.path.append(modellingpath + '/lib')
 #############
 
-from numerical.adi_ca_function_openclosed_nodilution_preMask_numba import adi_ca_openclosed_nodilution_preMask as adi_ca_openclosed_nodilution_preMask_numba
+from numerical.adi_ca_function_openclosed_nodilution_preMask_numba import \
+    adi_ca_openclosed_nodilution_preMask as \
+    adi_ca_openclosed_nodilution_preMask_numba
+from numerical.adi_square_function import adi
+from numerical.plotting_numerical import *
+
 from numerical.cn_plot import plot1D, surfpattern
 
 
@@ -35,23 +40,17 @@ else:
 print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
-circuit_n='14'
-variant='1nd'
-n_species=6
+circuit_n=14;variant='1nd';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
-# n_param_sets = 10
 balance = 'balanced'
 folder = 'circuit14variant1nd_turing'
 modelArgs = [circuit_n,variant,n_species,folder]
+
 # Specifiy number of parameter sets in parameterset file to be loaded
-# nsamples = 2000
 nsamples = 1000000
 
-# L=4; dx =0.025; J = int(L/dx)
-# T =65; dt = 0.0025; N = int(T/dt)
-# boundarycoeff = 1.7
-
+# specify dimensions of system
 L=4; dx =0.05; J = int(L/dx)
 T =125; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
@@ -59,8 +58,15 @@ boundarycoeff = 1
 divisionTimeHours=1
 p_division=0.22;seed=1
 
-# divisionTimeHours=0.5
-# p_division=0.5;seed=1
+
+
+L=8; dx =0.05; J = int(L/dx)
+T =125; dt = 0.05; N = int(T/dt)
+boundarycoeff = 1
+
+divisionTimeHours=0.5
+p_division=0.22;seed=1
+
 
 systemArgs = [L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours]
 
@@ -90,6 +96,9 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
 
     if test==True:
         T =1; dt = 0.05; N = int(T/dt)
+        tqdm_disable = True
+    else:
+        tqdm_disable = True
     print(systemArgs)
     shape = 'ca'
 
@@ -97,29 +106,30 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
         
         print('parID = ' + str(parID))
         par_dict = df.loc[parID].to_dict()
-        # print(par_dict)
         D = np.zeros(n_species)
         D[:2] = [1,par_dict['Dr'] ]
-
         # steadystates=par_dict['ss_list']
 
-        filename = 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+        filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
         savefig=False
         savefigpath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s/'%(folder)
 
         try:
-            U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=True,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
+            U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
+
             # pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) )
             # pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), 'wb'))
- 
+
             
+            save = True
+            if save == True:
                         
-            with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) as f:
-                pickle.dump(U_final, f)
-            # with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
-            with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
-                pickle.dump(U_record, f)
-            
+                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
+                    pickle.dump(U_final, f)
+                # with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
+                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
+                    pickle.dump(U_record, f)
+                
             del U_record
             del U_final
             # print(np.shape(U_record))
@@ -128,7 +138,7 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
                 plt.close()
         except ValueError:
             print('!!!!!!!!!!!!!')
-            print('ValueError --> unstable solution')
+            print(f'ValueError --> unstable solution in {parID}')
             print('!!!!!!!!!!!!!')
             print()
 
@@ -158,6 +168,7 @@ print(total_params)
 print('loaded')
 batch_size = int(total_params/Number_of_Threads) + 1
 instabilities_df = df.iloc[0:total_params]
+# df = df.iloc[85:total_params]
 print(df.head())
 batch_indices = list(range(0, len(df), batch_size))
 # Create a pool of workers
