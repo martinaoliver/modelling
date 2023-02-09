@@ -116,17 +116,17 @@ def adi_ca(L,dx,J,T,dt,N,n_species,division_TimeHours,tqdm_disable=False, p_divi
 save_figure = False
 tqdm_disable = False #disable tqdm
 n_species=6
-
+#%%
 # L=5; x_gridpoints =5; J = L*x_gridpoints
 # T =10; t_gridpoints = 10; N = T*t_gridpoints
 # L=4; dx =0.025; J = int(L/dx)
 # T =65; dt = 0.0025; N = int(T/dt)
-L=5; dx =0.05; J = int(L/dx)
+L=6; dx =0.05; J = int(L/dx)
 T =50; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
 
-divisionTimeHours=1
-p_division=0.22;seed=1
+divisionTimeHours=0.5
+p_division=0.5;seed=1
 
 # L=8; dx =0.05; J = int(L/dx)
 # T =50; dt = 0.05; N = int(T/dt)
@@ -153,8 +153,8 @@ pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/num
 # for ti in range(N):
     # print(np.shape(memory_matrix_record[:,:,ti]))
     # print(memory_matrix_record[:,:,ti])
-
-plot1D=False
+#%%
+plot1D=True
 if plot1D == True:
     print('Final Mask')
     plt.imshow(cell_matrix_record[:,:,-1], cmap='Greys')# plot_2D_final_concentration(final_concentration,grids,filename,n_species=n_species)
@@ -185,7 +185,7 @@ if plotVideo==True:
     show_rgbvideo(cell_matrix_record)
 
 #%%
-plotScatter = False
+plotScatter = True
 if plotScatter==True:
     print('Scatter')
     lenght_list = []

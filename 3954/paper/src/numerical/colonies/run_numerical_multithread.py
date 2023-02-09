@@ -51,21 +51,12 @@ modelArgs = [circuit_n,variant,n_species,folder]
 nsamples = 1000000
 
 # specify dimensions of system
-L=4; dx =0.05; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
+L=6; dx =0.05; J = int(L/dx)
+T =50; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
-
-divisionTimeHours=1
-p_division=0.22;seed=1
-
-
-
-L=8; dx =0.05; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
-boundarycoeff = 1
-
 divisionTimeHours=0.5
-p_division=0.22;seed=1
+p_division=0.5;seed=1
+
 
 
 systemArgs = [L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours]
@@ -83,7 +74,7 @@ with open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivi
     daughterToMotherDictList = pickle.load(f)
 
 
-def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder, test=True):
+def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder, test=False):
     # L=8; dx =0.02; J = int(L/dx)
     # T =125; dt = 0.05; N = int(T/dt)
     # boundarycoeff = 1.7
@@ -96,7 +87,7 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
 
     if test==True:
         T =1; dt = 0.05; N = int(T/dt)
-        tqdm_disable = True
+        tqdm_disable = False
     else:
         tqdm_disable = True
     print(systemArgs)
