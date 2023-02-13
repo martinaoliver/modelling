@@ -51,11 +51,12 @@ modelArgs = [circuit_n,variant,n_species,folder]
 nsamples = 1000000
 
 # specify dimensions of system
-L=6; dx =0.05; J = int(L/dx)
+L=9; dx =0.05; J = int(L/dx)
 T =50; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
+
 divisionTimeHours=0.5
-p_division=0.5;seed=1
+p_division=1;seed=1
 
 
 
@@ -98,7 +99,8 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
         print('parID = ' + str(parID))
         par_dict = df.loc[parID].to_dict()
         D = np.zeros(n_species)
-        D[:2] = [1,par_dict['Dr'] ]
+        Dr = float(par_dict['Dr'])
+        D[:2] = [1,Dr ]
         # steadystates=par_dict['ss_list']
 
         filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)

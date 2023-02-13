@@ -28,12 +28,13 @@ modelArgs = [circuit_n,variant,n_species,folder]
 nsamples = 1000000
 
 # specify dimensions of system
-L=4; dx =0.05; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
+L=9; dx =0.05; J = int(L/dx)
+T =50; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
+divisionTimeHours=0.5
+p_division=1;seed=1
+
 shape = 'ca'
-divisionTimeHours=1
-p_division=0.22;seed=1
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 print(f'filename: {filename(1)}')
