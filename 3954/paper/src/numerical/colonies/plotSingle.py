@@ -37,13 +37,16 @@ modelArgs = [circuit_n,variant,n_species,folder]
 nsamples = 1000000
 
 # specify dimensions of system
-L=4; dx =0.05; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
+L=9; dx =0.05; J = int(L/dx)
+T =50; dt = 0.05; N = int(T/dt)
+# T =10; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
-shape = 'ca'
 
-divisionTimeHours=1
-p_division=0.22;seed=1
+divisionTimeHours=0.5
+p_division=1;seed=1
+
+
+shape = 'ca'
 x_gridpoints=int(1/dx)
 
 
@@ -52,39 +55,67 @@ save_figure = False
 nsamples=1000000
 
 
-parID = 990343
-
+parID=873739
+# parID = 651894
+parID_list = [89407, 706280]
+parID = parID_list[1]
+# parID = 62509
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 
 
 #%%
 
 #load image
-U_final = pickle.load( open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
-U_record = pickle.load( open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
-# plt.imshow(U_final[-1])
-# plt.colorbar()
-# plt.show()
-# plt.imshow(U_final[-2])
-# plt.colorbar()
-# plt.show()
+# U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
+U_record = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
+
+
+# pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) )
+# pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'wb'))
+
+
 savefig_path  = ''
-# savefig_path = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s'%(folder)
-# rgb = plot_redgreen_contrast(U_final,L,path = savefig_path,filename=filename(parID),parID=parID,scale_factor=int(1/dx),save_figure='Large ')
-rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure='LargeImage')
-# def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
+# rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure='LargeImage')
 
 
-# plt.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
-plt.imshow(rgb.astype('uint8'), origin= 'lower')
-# ax.set_ylabel(parID,size= 1,c='y', labelpad=0.35)
+# plt.imshow(rgb.astype('uint8'), origin= 'lower')
 
 
 #%%
-
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib import animation
+# plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
+plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
 rgb_timeseries = redgreen_contrast_timeseries(U_record)
 # show_rgbvideo(rgb_timeseries,parID)
-saveVideoPath = modellingephemeral + '/3954/paper/out/numerical/colonies/videos/%s'%folder
+saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s'%folder
+
+
+def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=100):
+    fig = plt.figure()
+    ims = []
+    rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+    im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+
+    for i in range(len(rgb_timeseries)):
+        im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
+        plt.title(str(filename) + str(i))
+        plt.xlabel(f'Time: {i}h')
+        ims.append([im])
+    ani = animation.ArtistAnimation(fig, ims, interval=interval)
+    
+    # ani.save(saveVideoPath + '/%s.mp4' %filename)
+    print('Video saved')
+    
+    #FOR GIF
+    writergif = animation.PillowWriter(fps=100)
+    ani.save('filename.gif',writer=writergif)
+
+    # FOR MP4
+    # mywriter = animation.FFMpegWriter()
+    # ani.save('mymovie.mp4',writer=mywriter)
+    
 save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 
 
@@ -96,7 +127,9 @@ save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 
 
 
-plot1D([U_record[-2][:,40,-1], U_record[-1][:,40,-1]])
+# plot1D([U_record[-2][:,40,-1], U_record[-1][:,40,-1]])
 
 
 
+
+# %%

@@ -132,6 +132,12 @@ class circuit2(hill_functions):
             setattr(self,key,value)
         setattr(self, 'stochasticity', stochasticity)
 
+        # dadt= self.bA+self.VA*self.noncompetitiveinh(D,self.Kda,self.nda)-self.muASV*A - A*self.DA*wvn**2
+        # dbdt= self.bB+self.VB*self.noncompetitiveact(A,self.Kab, self.nab)*self.noncompetitiveinh(E,self.Keb, self.neb)-self.muASV*B - B*self.DB*wvn**2
+        # dcdt= self.bC+self.VC*self.noncompetitiveinh(D,self.Kda, self.nda)-self.muLVA*C
+        # dddt= self.bD+self.VD*self.noncompetitiveact(B,self.Kbd, self.nbd)-self.muLVA*D
+        # dedt= self.bE+self.VE*self.noncompetitiveinh(C,self.Kce, self.nce)*self.noncompetitiveinh(F,self.Kfe, self.nfe)*self.noncompetitiveact(E,self.Kee, self.nee)-self.muLVA*E
+        # dfdt= self.bF+self.VF*self.noncompetitiveact(B,self.Kbd, self.nbd)-self.muLVA*F
 
     def dAdt_f(self,species_list, wvn=0):
         A,B,C,D,E,F = species_list

@@ -48,23 +48,17 @@ tqdm_disable = False #disable tqdm
 # open parameter dictionaries
 # df= pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-
+with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+    df = pickle.load(f)
 
 #solver parameters
-L=8; dx =0.05; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
-
-
-L=4; dx =0.05; J = int(L/dx)
-T =125; dt = 0.05; N = int(T/dt)
+# specify dimensions of system
+L=9; dx =0.05; J = int(L/dx)
+T =50; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
 
-divisionTimeHours=1
-p_division=0.22;seed=1
-
-
-boundarycoeff = 1.7
+divisionTimeHours=0.5
+p_division=1;seed=1
 
 # divisionTimeHours=0.5
 # p_division=0.22;seed=1
@@ -76,13 +70,15 @@ cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerica
 daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 # T =1; dt = 0.05; N = int(T/dt)
 # 0.5,0.02, 0.005
+T =10; dt = 0.05; N = int(T/dt)
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 #%%
 parID=19390
 # for parID in range(10):
 par_dict = df.loc[parID].to_dict()
 D = np.zeros(n_species)
-D[:2] = [1,par_dict['Dr'] ]
+Dr = float(par_dict['Dr'])
+D[:2] = [1,Dr ]
 
 print(par_dict)
 
