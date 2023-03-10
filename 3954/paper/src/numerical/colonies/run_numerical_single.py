@@ -34,22 +34,24 @@ from numerical.plotting_numerical import *
 #############
 # %matplotlib inline
 shape = 'ca'
-circuit_n=14
-variant= '1nd'
-n_species=6
-
+circuit_n=14;variant='1nd';n_species=6
+# Specifiy number of parameter sets in parameterset file to be loaded
+n_param_sets = 1000000
+balance = 'balanced'
 folder = 'circuit14variant1nd_turing'
-nsamples =  1000000
+nsamples =  10
 save_figure = False
 tqdm_disable = False #disable tqdm
 # boundarycoeff = float(sys.argv[6])
 
 
 # open parameter dictionaries
-# df= pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+
+
+df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
-    df = pickle.load(f)
+# with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+    # df = pickle.load(f)
 
 #solver parameters
 # specify dimensions of system
@@ -73,7 +75,7 @@ daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/nu
 T =10; dt = 0.05; N = int(T/dt)
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 #%%
-parID=19390
+parID=1
 # for parID in range(10):
 par_dict = df.loc[parID].to_dict()
 D = np.zeros(n_species)

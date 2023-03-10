@@ -56,7 +56,7 @@ date = date.today().strftime('%m_%d_%Y')
 # batch_size = 2
 # batch_size = 208
 batch_size =int(n_param_sets/Number_of_Threads)
-# batch_size=3
+# batch_size=10
 print(f'batch_size: {batch_size}')
 
 
@@ -83,7 +83,7 @@ print('df_loaded')
 print('df_%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,n_param_sets))
 # df= pickle.load( open("../lhs_parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
 df_lenght = len(df)
-# df_lenght=9
+# df_lenght=10
 batch_indices = list(range(0+start_parameter, df_lenght + start_parameter, batch_size))
 # batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))
 

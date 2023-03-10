@@ -18,7 +18,7 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=14
-variant='1nd'
+variant='2nd'
 #diffusion parameters
 
 
@@ -27,13 +27,13 @@ variant='1nd'
 # V = 10-1000
 # b=0.1-1
 minV = 10;maxV=1000;minb=0.1;maxb=1
-VA = {'name':'VA','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
-VB = {'name':'VB','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
-VC = {'name':'VC','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
-VD = {'name':'VD','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
-VE = {'name':'VE','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
-VF = {'name':'VF','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
-V_parameters = [VA,VB,VC,VD,VE,VF]
+Va = {'name':'Va','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
+Vb = {'name':'Vb','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
+Vc = {'name':'Vc','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
+Vd = {'name':'Vd','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
+Ve = {'name':'Ve','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
+Vf = {'name':'Vf','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
+V_parameters = [Va, Vb, Vc, Vd, Ve, Vf]
 
 
 
@@ -67,12 +67,12 @@ Kfe = {'name':'Kfe','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb
 # Kee = {'name':'Kee','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb,minK), 'max':Kstar(muLVA_estimate,minb,maxK)}
 Kee = {'name':'Kee','distribution':'fixed','value':0.01}
 Kce = {'name':'Kce','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb,minK), 'max':Kstar(muLVA_estimate,minb,maxK)}
-Kbd = {'name':'Kbd','distribution':'loguniform', 'min':Kdiffstar(muV,KdiffpromMin,K1), 'max':Kdiffstar(muV,KdiffpromMax,K1)}
-Kab = {'name':'Kab','distribution':'loguniform', 'min':Kdiffstar(muU,KdiffpromMin,K2), 'max':Kdiffstar(muU,KdiffpromMax,K2)}
+Kvd = {'name':'Kvd','distribution':'loguniform', 'min':Kdiffstar(muV,KdiffpromMin,K1), 'max':Kdiffstar(muV,KdiffpromMax,K1)}
+Kub = {'name':'Kub','distribution':'loguniform', 'min':Kdiffstar(muU,KdiffpromMin,K2), 'max':Kdiffstar(muU,KdiffpromMax,K2)}
 
 # Kab = {'name':'Kab','distribution':'loguniform', 'min':muU_low*DU_low/k1, 'max':muU_high*DU_high/k1}
 # Kbd = {'name':'Kbd','distribution':'loguniform', 'min':muV_low*DV_low/k2, 'max':muV_high*DV_high/k2}
-K_parameters = [Kda, Kab, Keb, Kbd, Kfe, Kee, Kce]
+K_parameters = [Kda, Kub, Keb, Kvd, Kfe, Kee, Kce]
 
 
 
@@ -84,14 +84,14 @@ mu_parameters = [muLVA,muASV]
 
 
 #cooperativity parameters (n)
-nbd = {'name':'nbd','distribution':'fixed', 'value':2}
-nab = {'name':'nab','distribution':'fixed', 'value':1}
-nda = {'name':'nda','distribution':'fixed', 'value':1}
-nfe = {'name':'nfe','distribution':'fixed', 'value':4}
+nvd = {'name':'nvd','distribution':'fixed', 'value':2}
+nub = {'name':'nub','distribution':'fixed', 'value':1}
+nda = {'name':'nda','distribution':'fixed', 'value':2}
+nfe = {'name':'nfe','distribution':'fixed', 'value':5}
 nee = {'name':'nee','distribution':'fixed', 'value':4}
 neb = {'name':'neb','distribution':'fixed', 'value':4}
-nce = {'name':'nce','distribution':'fixed', 'value':1}
-n_parameters = [nbd,nab,nda,nfe,nee,neb,nce]
+nce = {'name':'nce','distribution':'fixed', 'value':3}
+n_parameters = [nvd,nub,nda,nfe,nee,neb,nce]
 
 
 
@@ -123,8 +123,8 @@ if createParams == True:
     print(lhsDist_df)
 
 
-Km_list = ['Kda', 'Kab', 'Keb', 'Kbd', 'Kfe',  'Kce' ]
-KtoV = {'Kda': 'VD', 'Kab': 'VA', 'Keb': 'VE', 'Kbd': 'VB', 'Kfe': 'VF','Kce': 'VC' }
+Km_list = ['Kda', 'Kub', 'Keb', 'Kvd', 'Kfe',  'Kce' ]
+KtoV = {'Kda': 'Vd', 'Kub': 'Va', 'Keb': 'Ve', 'Kvd': 'Vb', 'Kfe': 'Vf','Kce': 'Vc' }
 
 def checkBalance(par_dict):
     balanceDict = {}
@@ -153,6 +153,7 @@ createBalancedParams=True
 if createBalancedParams == True:
     seed=0
     nsamples=1000000
+    # nsamples=10
     parameterDictList = D_parameters  + V_parameters + K_parameters + mu_parameters + n_parameters
     # parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
     stackedDistributions = preLhs(parameterDictList)
@@ -184,7 +185,7 @@ if createBalancedParams == True:
             notBalancedDf = pd.concat([notBalancedDf, notBalancedDfPre], ignore_index=True)
 
         seed+=1
-        print(seed, len(balancedDf))
+        # print(seed, len(balancedDf))
     
         pkl.dump(balancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
         pkl.dump(semiBalancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_semiBalanced.pkl'%(circuit_n,variant,nsamples), 'wb'))

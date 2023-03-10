@@ -34,8 +34,8 @@ variant='fitted0'
 parID = 7 #takes the first parameter set of the dataframe... can choose any
 n_species=6 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
 
-df_lenght = 10
-n_param_sets = 10
+df_lenght = 2000000
+n_param_sets = 2000000
 
 # obtain a dictionary with some parameters to use in our analysis
 # df= pickle.load( open(modellingpath + "/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
