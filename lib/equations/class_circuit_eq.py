@@ -955,7 +955,7 @@ class circuit14(hill_functions):
 
     def dAdt_f(self,species_list, wvn=0):
         A,B,C,D,E,F = species_list
-        dadt= 1 + self.VA*self.noncompetitiveinh(D,self.Kda,self.nda) -A - A*wvn**2
+        dadt= 1 + self.Va*self.noncompetitiveinh(D,self.Kda,self.nda) -A - A*wvn**2
         if self.stochasticity ==1:
             dadt+=dadt*normal(0,0.05,1)
         return dadt
@@ -964,7 +964,7 @@ class circuit14(hill_functions):
     def dBdt_f(self,species_list, wvn=0):
         A,B,C,D,E,F = species_list
         # dbdt= self.muLVA*(1 + self.VB*self.noncompetitivediffact(A,self.Kub,self.nub, self.ku, self.muu)*self.noncompetitiveinh(E,self.Keb, self.neb) - B ) -  B*self.Dr*wvn**2
-        dbdt= self.muLVA*(1 + self.VB*self.noncompetitiveact(A,self.Kab, self.nab)*self.noncompetitiveinh(E,self.Keb, self.neb) - B ) -  B*self.Dr*wvn**2
+        dbdt= self.muLVA*(1 + self.Vb*self.noncompetitiveact(A,self.Kub, self.nub)*self.noncompetitiveinh(E,self.Keb, self.neb) - B ) -  B*self.Dr*wvn**2
         if self.stochasticity ==1:
             dbdt+=dbdt*normal(0,0.05,1)
         return dbdt
@@ -972,28 +972,28 @@ class circuit14(hill_functions):
 
     def dCdt_f(self,species_list):
         A,B,C,D,E,F = species_list
-        dcdt= self.muLVA*(1 + self.VC*self.noncompetitiveinh(D,self.Kda,self.nda) - C ) 
+        dcdt= self.muLVA*(1 + self.Vc*self.noncompetitiveinh(D,self.Kda,self.nda) - C ) 
         if self.stochasticity ==1:
             dcdt+=dcdt*normal(0,0.05,1)
         return dcdt
 
     def dDdt_f(self,species_list):
         A,B,C,D,E,F = species_list
-        dddt= self.muLVA*(1 + self.VD*self.noncompetitiveact(B,self.Kbd,self.nbd) - D ) 
+        dddt= self.muLVA*(1 + self.Vd*self.noncompetitiveact(B,self.Kvd,self.nvd) - D ) 
         if self.stochasticity ==1:
             dddt+=dddt*normal(0,0.05,1)
         return dddt
 
     def dEdt_f(self,species_list):
         A,B,C,D,E,F = species_list
-        dedt= self.muLVA*(1 + self.VE*self.noncompetitiveinh(C,self.Kce,self.nce)*self.noncompetitiveinh(F,self.Kfe,self.nfe)*self.noncompetitiveact(E,self.Kee,self.nee) - E ) 
+        dedt= self.muLVA*(1 + self.Ve*self.noncompetitiveinh(C,self.Kce,self.nce)*self.noncompetitiveinh(F,self.Kfe,self.nfe)*self.noncompetitiveact(E,self.Kee,self.nee) - E ) 
         if self.stochasticity ==1:
             dedt+=dedt*normal(0,0.05,1)
         return dedt
         
     def dFdt_f(self,species_list):
         A,B,C,D,E,F = species_list
-        dfdt= self.muLVA*(1 + self.VF*self.noncompetitiveact(B,self.Kbd,self.nbd) - F ) 
+        dfdt= self.muLVA*(1 + self.Vf*self.noncompetitiveact(B,self.Kvd,self.nvd) - F ) 
         if self.stochasticity ==1:
             dfdt+=dfdt*normal(0,0.05,1)
         return dfdt
@@ -1014,10 +1014,10 @@ class circuit14(hill_functions):
 
         A,B,C,D,E,F = x
 
-        JA = [-wvn**2 - 1, 0, 0, -self.VA*self.nda*(D/self.Kda)**self.nda/(D*((D/self.Kda)**self.nda + 1)**2), 0, 0]
-        JB = [self.VB*self.muLVA*self.nab*(self.Kab/A)**self.nab/(A*((self.Kab/A)**self.nab + 1)**2*((E/self.Keb)**self.neb + 1)), -self.Dr*wvn**2 - self.muLVA, 0, 0, -self.VB*self.muLVA*self.neb*(E/self.Keb)**self.neb/(E*((self.Kab/A)**self.nab + 1)*((E/self.Keb)**self.neb + 1)**2), 0]
-        JC = [0, 0, -self.muLVA, -self.VC*self.muLVA*self.nda*(D/self.Kda)**self.nda/(D*((D/self.Kda)**self.nda + 1)**2), 0, 0]
-        JD = [0, self.VD*self.muLVA*self.nbd*(self.Kbd/B)**self.nbd/(B*((self.Kbd/B)**self.nbd + 1)**2), 0, -self.muLVA, 0, 0]
-        JE = [0, 0, -self.VE*self.muLVA*self.nce*(C/self.Kce)**self.nce/(C*((C/self.Kce)**self.nce + 1)**2*((self.Kee/E)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)), 0, self.muLVA*(-1 + self.VE*self.nee*(self.Kee/E)**self.nee/(E*((C/self.Kce)**self.nce + 1)*((self.Kee/E)**self.nee + 1)**2*((F/self.Kfe)**self.nfe + 1))), -self.VE*self.muLVA*self.nfe*(F/self.Kfe)**self.nfe/(F*((C/self.Kce)**self.nce + 1)*((self.Kee/E)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)**2)]
-        JF = [0, self.VF*self.muLVA*self.nbd*(self.Kbd/B)**self.nbd/(B*((self.Kbd/B)**self.nbd + 1)**2), 0, 0, 0, -self.muLVA]
+        JA = [-wvn**2 - 1, 0, 0, -self.Va*self.nda*(D/self.Kda)**self.nda/(D*((D/self.Kda)**self.nda + 1)**2), 0, 0]
+        JB = [self.Vb*self.muLVA*self.nub*(self.Kub/A)**self.nub/(A*((self.Kub/A)**self.nub + 1)**2*((E/self.Keb)**self.neb + 1)), -self.Dr*wvn**2 - self.muLVA, 0, 0, -self.Vb*self.muLVA*self.neb*(E/self.Keb)**self.neb/(E*((self.Kub/A)**self.nub + 1)*((E/self.Keb)**self.neb + 1)**2), 0]
+        JC = [0, 0, -self.muLVA, -self.Vc*self.muLVA*self.nda*(D/self.Kda)**self.nda/(D*((D/self.Kda)**self.nda + 1)**2), 0, 0]
+        JD = [0, self.Vd*self.muLVA*self.nvd*(self.Kvd/B)**self.nvd/(B*((self.Kvd/B)**self.nvd + 1)**2), 0, -self.muLVA, 0, 0]
+        JE = [0, 0, -self.Ve*self.muLVA*self.nce*(C/self.Kce)**self.nce/(C*((C/self.Kce)**self.nce + 1)**2*((self.Kee/E)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)), 0, self.muLVA*(-1 + self.Ve*self.nee*(self.Kee/E)**self.nee/(E*((C/self.Kce)**self.nce + 1)*((self.Kee/E)**self.nee + 1)**2*((F/self.Kfe)**self.nfe + 1))), -self.Ve*self.muLVA*self.nfe*(F/self.Kfe)**self.nfe/(F*((C/self.Kce)**self.nce + 1)*((self.Kee/E)**self.nee + 1)*((F/self.Kfe)**self.nfe + 1)**2)]
+        JF = [0, self.Vf*self.muLVA*self.nvd*(self.Kvd/B)**self.nvd/(B*((self.Kvd/B)**self.nvd + 1)**2), 0, 0, 0, -self.muLVA]
         return np.array([JA, JB, JC, JD, JE, JF])
