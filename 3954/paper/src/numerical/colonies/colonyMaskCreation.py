@@ -121,12 +121,15 @@ n_species=6
 # T =10; t_gridpoints = 10; N = T*t_gridpoints
 # L=4; dx =0.025; J = int(L/dx)
 # T =65; dt = 0.0025; N = int(T/dt)
-L=9; dx =0.05; J = int(L/dx)
-T =50; dt = 0.05; N = int(T/dt)
+L=10; dx =0.05; J = int(L/dx)
+T =150; dt = 0.05; N = int(T/dt)
+
+L=10; dx =0.05; J = int(L/dx)
+T =150; dt = 1; N = int(T/dt)
 boundarycoeff = 1
 
-divisionTimeHours=0.5
-p_division=1;seed=1
+divisionTimeHours=1
+p_division=0.5;seed=1
 
 # L=8; dx =0.05; J = int(L/dx)
 # T =50; dt = 0.05; N = int(T/dt)

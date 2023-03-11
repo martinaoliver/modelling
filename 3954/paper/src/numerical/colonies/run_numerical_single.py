@@ -34,11 +34,11 @@ from numerical.plotting_numerical import *
 #############
 # %matplotlib inline
 shape = 'ca'
-circuit_n=14;variant='1nd';n_species=6
+circuit_n=14;variant='fitted0';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 1000000
-balance = 'balanced'
-folder = 'circuit14variant1nd_turing'
+n_param_sets = 10
+# balance = 'balanced'
+folder = 'circuit14variantfitted0'
 nsamples =  10
 save_figure = False
 tqdm_disable = False #disable tqdm
@@ -48,7 +48,8 @@ tqdm_disable = False #disable tqdm
 # open parameter dictionaries
 
 
-df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+# df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+df= pickle.load( open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
     # df = pickle.load(f)
@@ -56,7 +57,7 @@ df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles
 #solver parameters
 # specify dimensions of system
 L=9; dx =0.05; J = int(L/dx)
-T =50; dt = 0.05; N = int(T/dt)
+T =150; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
 
 divisionTimeHours=0.5
@@ -72,7 +73,7 @@ cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerica
 daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 # T =1; dt = 0.05; N = int(T/dt)
 # 0.5,0.02, 0.005
-T =10; dt = 0.05; N = int(T/dt)
+T =2; dt = 0.05; N = int(T/dt)
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 #%%
 parID=1
@@ -93,7 +94,6 @@ elapsed_time = time.time() - st
 print('Execution time numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
 plt.imshow(U_final[-1])
 plt.show()
-print(U_final[0,12,12])
 
 
 
