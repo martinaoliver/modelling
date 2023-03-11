@@ -63,7 +63,7 @@ print(f'batch_size: {batch_size}')
 # Define work to be done per batch of parameter sets
 def lsa_check(start_batch_index,n_param_sets,df,circuit_n=circuit_n, variant=variant, n_species=n_species):
     print('pool' + str(start_batch_index))
-    output_df = big_turing_analysis_df(df,circuit_n,n_species,print_parID=False)
+    output_df = big_turing_analysis_df(df,circuit_n,n_species,print_parID=True)
     print('calculated')
     
     pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_batch%r.pkl'%(circuit_n,variant,n_param_sets, start_batch_index), 'wb'))
