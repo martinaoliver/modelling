@@ -103,3 +103,6 @@ count = 0
 for J in (J_list):
     print(J_list[count] + ' = ' + str(list(jac[count])))
     count+=1
+
+
+print ('def function_list(variables,wvn):')
