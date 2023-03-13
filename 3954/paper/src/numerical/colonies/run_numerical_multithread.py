@@ -40,14 +40,16 @@ else:
 print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
-circuit_n=14;variant='1nd';n_species=6
+# circuit_n=14;variant='fitted1';n_species=6
+circuit_n=14;variant='2nd';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 1000000
-balance = 'balanced'
-folder = 'circuit14variant1nd_turing'
+# balance = 'balanced'
+# folder = 'circuit14variantfitted1'
+folder = 'circuit14variant2ndBalancedTuring'
 modelArgs = [circuit_n,variant,n_species,folder]
 
 # Specifiy number of parameter sets in parameterset file to be loaded
+# nsamples = 2000000
 nsamples = 1000000
 
 # specify dimensions of system
@@ -101,6 +103,9 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
         D = np.zeros(n_species)
         Dr = float(par_dict['Dr'])
         D[:2] = [1,Dr ]
+        degDiv = 3
+        par_dict['muASV'] =par_dict['muASV']/degDiv
+        par_dict['muLVA'] = par_dict['muLVA'] /degDiv
         # steadystates=par_dict['ss_list']
 
         filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
@@ -117,10 +122,10 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
             save = True
             if save == True:
                         
-                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
+                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s_degDiv%s.pkl'%(folder,filename(parID),degDiv), "wb" ) as f:
                     pickle.dump(U_final, f)
                 # with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
-                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
+                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s_degDiv%s.pkl'%(folder,filename(parID),degDiv), "wb" ) as f:
                     pickle.dump(U_record, f)
                 
             del U_record
@@ -151,7 +156,9 @@ start_time = time.perf_counter()
 # df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # df= pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+# instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+# with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
     df = pickle.load(f)
     
 # turing_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
@@ -179,11 +186,11 @@ for start_batch_index in batch_indices:
 pool.close()
 pool.join()
 print('Run finished')
-
-for count,start_batch_index in enumerate(batch_indices):
-    print('error' + str(start_batch_index))
-    pool_output[count].get()
 # Report time taken
 finish_time = time.perf_counter()
 time_taken = finish_time-start_time
 print("Time taken: %d s" %time_taken)
+
+for count,start_batch_index in enumerate(batch_indices):
+    print('error' + str(start_batch_index))
+    pool_output[count].get()

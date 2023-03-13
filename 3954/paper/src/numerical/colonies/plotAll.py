@@ -21,15 +21,15 @@ import numpy as np
 
 #############################
 # Specify name of circuit and variant investigated
-circuit_n=14;variant='1nd';n_species=6
+# circuit_n=14;variant='fitted1';n_species=6
+circuit_n=14;variant='2nd';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 1000000
-balance = 'balanced'
-folder = 'circuit14variant1nd_turing'
+# balance = 'balanced'
+# folder = 'circuit14variantfitted1'
+folder ='circuit14variant2ndBalancedTuring'
 modelArgs = [circuit_n,variant,n_species,folder]
 
 # Specifiy number of parameter sets in parameterset file to be loaded
-nsamples = 1000000
 
 # specify dimensions of system
 # specify dimensions of system
@@ -43,7 +43,8 @@ shape = 'ca'
 
 x_gridpoints=int(1/dx)
 
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+# filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+degDiv=4;filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r_degDiv%s'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N,degDiv)
 data_path = modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s'%(folder)
 parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 
@@ -52,8 +53,3 @@ stop = len(parID_list)
 # stop=10
 plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,folder=folder,start=start, stop=stop, tqdm_disable=False, saveFig=True)
 
-
-# df = pickle.load( open( modellingpath + '/growth/out/patternAnalysis/%s/%s/%s/%s_df_%s.pkl'%(circuit_n,mechanism,metric,metric,filename('x')), 'rb'))
-# print(df['system_class'].value_counts())
-
-    # pickle.dump(lsa_df , open( modellingpath + '/growth/out/patternAnalysis/%s/%s/%s/%s_df_%s.pkl'%(circuit_n,mechanism,metric,metric,filename('x')), 'wb'))

@@ -17,11 +17,11 @@ import pickle
 
 
 # Specify name of circuit and variant investigated
-circuit_n=14;variant='1nd';n_species=6
+circuit_n=14;variant='2nd';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 1000000
-balance = 'balanced'
-folder = 'circuit14variant1nd_turing'
+n_param_sets = 2000000
+# balance = 'balanced'
+folder = 'circuit14variant2ndBalancedTuring'
 modelArgs = [circuit_n,variant,n_species,folder]
 
 # Specifiy number of parameter sets in parameterset file to be loaded
@@ -35,8 +35,9 @@ divisionTimeHours=0.5
 p_division=1;seed=1
 
 shape = 'ca'
-
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+degDiv = 3
+# filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r_degDiv%s'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N,degDiv)
 print(f'filename: {filename(1)}')
 datafile= modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename('*'))
 print(datafile)

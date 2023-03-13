@@ -144,7 +144,7 @@ paramNames = ['Vc', 'Vd', 'Ve', 'Vf', 'Kvd', 'Kda', 'Kce', 'Kfe']
 pfitDict = {}
 for param in popt:
     pfitDict[paramNames[popt.tolist().index(param)]] = param
-
+print(pfitDict)
 fluorescenceFit = steadystate(OC14data_new, *popt)
 fluorescenceFit_continuous = steadystate(OC14data_continuous, *popt)
 gfpFit1 = fluorescenceFit[:5]; rfpFit1 = fluorescenceFit[5:10]; gfpFit3 = fluorescenceFit[10:16]; rfpFit3 = fluorescenceFit[16:22]
@@ -178,7 +178,7 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=14
-variant='fitted0'
+variant='fitted1'
 #diffusion parameters
 
 

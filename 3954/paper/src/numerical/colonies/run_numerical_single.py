@@ -34,12 +34,12 @@ from numerical.plotting_numerical import *
 #############
 # %matplotlib inline
 shape = 'ca'
-circuit_n=14;variant='fitted0';n_species=6
+circuit_n=14;variant='2nd';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 10
 # balance = 'balanced'
-folder = 'circuit14variantfitted0'
-nsamples =  10
+folder = 'circuit14variant2ndBalancedTuring'
+nsamples =  1000000
 save_figure = False
 tqdm_disable = False #disable tqdm
 # boundarycoeff = float(sys.argv[6])
@@ -49,15 +49,15 @@ tqdm_disable = False #disable tqdm
 
 
 # df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-df= pickle.load( open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-# instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-# with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
-    # df = pickle.load(f)
-
+# df= pickle.load( open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+# instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+    df = pickle.load(f)
+print(df)
 #solver parameters
 # specify dimensions of system
 L=9; dx =0.05; J = int(L/dx)
-T =150; dt = 0.05; N = int(T/dt)
+T =50; dt = 0.05; N = int(T/dt)
 boundarycoeff = 1
 
 divisionTimeHours=0.5
@@ -73,14 +73,17 @@ cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerica
 daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 # T =1; dt = 0.05; N = int(T/dt)
 # 0.5,0.02, 0.005
-T =2; dt = 0.05; N = int(T/dt)
+# T =2; dt = 0.05; N = int(T/dt)
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 #%%
-parID=1
+parID=316386
 # for parID in range(10):
-par_dict = df.loc[parID].to_dict()
+par_dict = df.iloc[0].to_dict()
 D = np.zeros(n_species)
 Dr = float(par_dict['Dr'])
+degDiv = 1
+par_dict['muASV'] =par_dict['muASV']/degDiv
+par_dict['muLVA'] = par_dict['muLVA'] /degDiv
 D[:2] = [1,Dr ]
 
 print(par_dict)
@@ -97,27 +100,9 @@ plt.show()
 
 
 
-pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) )
-pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'wb'))
+pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s_degDiv%r.pkl'%(folder,filename(parID), degDiv), "wb" ) )
+pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s_degDiv%r.pkl'%(folder,filename(parID), degDiv), 'wb'))
 
-print(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)))
+print(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s_degDiv%s.pkl'%(folder,filename(parID), degDiv))
 print('saved')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # %%
