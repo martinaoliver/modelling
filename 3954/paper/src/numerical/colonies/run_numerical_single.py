@@ -60,7 +60,7 @@ with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_data
 print(df)
 #solver parameters
 # specify dimensions of system
-L=4; dx =0.05; J = int(L/dx)
+L=4; dx =0.01; J = int(L/dx)
 T =50; dt = 0.005; N = int(T/dt)
 boundarycoeff = 1
 
