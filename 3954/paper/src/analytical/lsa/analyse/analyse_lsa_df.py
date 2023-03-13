@@ -36,13 +36,16 @@ def pieChart_lsa(valueCounts_dict,title,log=True):
 
 # Specify name of circuit and variant investigated
 circuit_n='circuit14'
-variant='fitted0'
+variant='2nd'
+balance = 'balanced'
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 2000000
+n_param_sets = 1000000
 
 print(f'Circuit:{circuit_n}, Variant:{variant}')
 
-df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+# df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,balance), "rb"))
+
 print(df['system_class'].value_counts())
 
 
@@ -84,7 +87,7 @@ if saveInstabilities ==True:
     instabilities_df = df.loc[df['system_class'].isin(instabilities)]
     instabilities_df.index  = instabilities_df.index.droplevel(-1)
     print(instabilities_df['system_class'].value_counts())
-    pickle.dump( instabilities_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
+    pickle.dump( instabilities_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,balance), "wb" ) )
     len(instabilities_df)
 # instabilityComplex_df = pd.concat([complex_df, instabilities_df])
 # pickle.dump( instabilityComplex_df, open(modellingpath + '/growth/out/analytical/instabilityComplex/instabilityComplex_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
@@ -98,7 +101,8 @@ if saveTuring == True:
     turing_df.index  = turing_df.index.droplevel(-1)
     # turing_df = turing_df.loc[turing_df['ss_n']==1]
     # turing_df = turing_df.sort_values(by=['maxeig'],  ascending=False)
-    pickle.dump( turing_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
+    # pickle.dump( turing_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
+    pickle.dump( turing_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,balance), "wb" ) )
 #%%
 compare_two_dfs=False
 if compare_two_dfs == True:

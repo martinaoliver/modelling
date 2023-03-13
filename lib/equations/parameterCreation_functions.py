@@ -36,8 +36,11 @@ def parameterGaussian(name, mean, noisetosignal, size):
     gaussianDistribution = np.random.normal(mean, stdev, size)
     return gaussianDistribution
 
-def parameterLogNormal(name, mean, sigma, size):
-    lognormalDistribution = np.random.lognormal(mean, sigma, size)
+def parameterLogNormal(name, mean, noisetosignal, size):
+    sigma = noisetosignal * mean
+    normal_std = np.sqrt(np.log(1 + (sigma/mean)**2))
+    normal_mean = np.log(mean) - normal_std**2 / 2
+    lognormalDistribution = np.random.lognormal(normal_mean, normal_std, size)
     return lognormalDistribution
 
 def parameterLogUniform(name, min, max, size):
@@ -55,7 +58,7 @@ def parameterDistribution(parameterDict,size):
     if parameterDict['distribution']=='gaussian':
         dist = parameterGaussian(parameterDict['name'],parameterDict['mean'], parameterDict['noisetosignal'],size)
     if parameterDict['distribution']=='lognormal':
-        dist = parameterLogNormal(parameterDict['name'],parameterDict['mean'], parameterDict['sigma'],size)
+        dist = parameterLogNormal(parameterDict['name'],parameterDict['mean'], parameterDict['noisetosignal'],size)
     if parameterDict['distribution']=='loguniform':
         dist =  parameterLogUniform(parameterDict['name'],parameterDict['min'], parameterDict['max'],size)
     if parameterDict['distribution']=='fixed':

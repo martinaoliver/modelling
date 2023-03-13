@@ -144,7 +144,7 @@ paramNames = ['Vc', 'Vd', 'Ve', 'Vf', 'Kvd', 'Kda', 'Kce', 'Kfe']
 pfitDict = {}
 for param in popt:
     pfitDict[paramNames[popt.tolist().index(param)]] = param
-
+print(pfitDict)
 fluorescenceFit = steadystate(OC14data_new, *popt)
 fluorescenceFit_continuous = steadystate(OC14data_continuous, *popt)
 gfpFit1 = fluorescenceFit[:5]; rfpFit1 = fluorescenceFit[5:10]; gfpFit3 = fluorescenceFit[10:16]; rfpFit3 = fluorescenceFit[16:22]
@@ -178,7 +178,7 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=14
-variant='fitted0'
+variant='fitted1'
 #diffusion parameters
 
 
@@ -190,10 +190,16 @@ minV = 10;maxV=1000;minb=0.1;maxb=1
 Va = {'name':'Va','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
 Vb = {'name':'Vb','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
 
-Vc = {'name':'Vc','distribution':'gaussian', 'mean':pfitDict['Vc'], 'noisetosignal':0.3}
-Vd = {'name':'Vd','distribution':'gaussian', 'mean':pfitDict['Vd'], 'noisetosignal':0.3}
-Ve = {'name':'Ve','distribution':'gaussian', 'mean':pfitDict['Ve'], 'noisetosignal':0.3}
-Vf = {'name':'Vf','distribution':'gaussian', 'mean':pfitDict['Vf'], 'noisetosignal':0.3}
+# Vc = {'name':'Vc','distribution':'gaussian', 'mean':pfitDict['Vc'], 'noisetosignal':0.3}
+# Vd = {'name':'Vd','distribution':'gaussian', 'mean':pfitDict['Vd'], 'noisetosignal':0.3}
+# Ve = {'name':'Ve','distribution':'gaussian', 'mean':pfitDict['Ve'], 'noisetosignal':0.3}
+# Vf = {'name':'Vf','distribution':'gaussian', 'mean':pfitDict['Vf'], 'noisetosignal':0.3}
+
+
+Vc = {'name':'Vc','distribution':'lognormal', 'mean':pfitDict['Vc'], 'noisetosignal':1}
+Vd = {'name':'Vd','distribution':'lognormal', 'mean':pfitDict['Vd'], 'noisetosignal':1}
+Ve = {'name':'Ve','distribution':'lognormal', 'mean':pfitDict['Ve'], 'noisetosignal':1}
+Vf = {'name':'Vf','distribution':'lognormal', 'mean':pfitDict['Vf'], 'noisetosignal':1}
 
 V_parameters = [Va,Vb, Vc, Vd, Ve, Vf]
 
@@ -229,11 +235,17 @@ Kee = {'name':'Kee','distribution':'fixed','value':0.001}
 
 Kub = {'name':'Kub','distribution':'loguniform', 'min':Kdiffstar(muU,KdiffpromMin,K2), 'max':Kdiffstar(muU,KdiffpromMax,K2)}
 
-Kvd = {'name':'Kvd','distribution':'gaussian', 'mean':pfitDict['Kvd'], 'noisetosignal':0.3}
-Kda = {'name':'Kda','distribution':'gaussian', 'mean':pfitDict['Kda'], 'noisetosignal':0.3}
-Kce = {'name':'Kce','distribution':'gaussian', 'mean':pfitDict['Kce'], 'noisetosignal':0.3}
-Kfe = {'name':'Kfe','distribution':'gaussian', 'mean':pfitDict['Kfe'], 'noisetosignal':0.3}
+# Kvd = {'name':'Kvd','distribution':'gaussian', 'mean':pfitDict['Kvd'], 'noisetosignal':0.3}
+# Kda = {'name':'Kda','distribution':'gaussian', 'mean':pfitDict['Kda'], 'noisetosignal':0.3}
+# Kce = {'name':'Kce','distribution':'gaussian', 'mean':pfitDict['Kce'], 'noisetosignal':0.3}
+# Kfe = {'name':'Kfe','distribution':'gaussian', 'mean':pfitDict['Kfe'], 'noisetosignal':0.3}
 
+
+Kvd = {'name':'Kvd','distribution':'lognormal', 'mean':pfitDict['Kvd'], 'noisetosignal':1}
+Kda = {'name':'Kda','distribution':'lognormal', 'mean':pfitDict['Kda'], 'noisetosignal':1}
+Kce = {'name':'Kce','distribution':'lognormal', 'mean':pfitDict['Kce'], 'noisetosignal':1}
+Kfe = {'name':'Kfe','distribution':'lognormal', 'mean':pfitDict['Kfe'], 'noisetosignal':1}
+print(pfitDict['Kvd'], pfitDict['Kda'], pfitDict['Kce'], pfitDict['Kfe'])
 
 # Kab = {'name':'Kab','distribution':'loguniform', 'min':muU_low*DU_low/k1, 'max':muU_high*DU_high/k1}
 # Kbd = {'name':'Kbd','distribution':'loguniform', 'min':muV_low*DV_low/k2, 'max':muV_high*DV_high/k2}
@@ -244,7 +256,7 @@ K_parameters = [ Kub, Keb, Kee, Kvd, Kda, Kce, Kfe]
 #protein degradation parameters (mu)
 # mu = mux/mua
 muASV = {'name':'muASV','distribution':'fixed', 'value':muASV_estimate/muASV_estimate}
-muLVA = {'name':'muLVA','distribution': 'gaussian','mean':muLVA_estimate /muASV_estimate, 'noisetosignal':0.1}
+muLVA = {'name':'muLVA','distribution': 'lognormal','mean':muLVA_estimate /muASV_estimate, 'noisetosignal':1}
 mu_parameters = [muLVA,muASV]
 
 
@@ -264,7 +276,7 @@ n_parameters = [nub,nee,neb,nvd,nda,nce,nfe]
 plotDistributions=False
 if plotDistributions == True:
     D_parameters = [Dr, Dr]
-    nsamples=10
+    nsamples=1000
     parameterTypeList = [ D_parameters  , V_parameters , K_parameters , mu_parameters , n_parameters]
 
     for parameterType in parameterTypeList:
