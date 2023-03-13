@@ -51,7 +51,7 @@ def cell_automata_colony(cell_matrix, p_division):
     return cell_matrix_new, daughterToMotherDict
     
 # numba.jit(nopython=True)
-def adi_ca(L,dx,J,T,dt,N,n_species,division_TimeHours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
+def adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
     I=J
 
     print(f'dt{dt}')
@@ -111,100 +111,109 @@ def adi_ca(L,dx,J,T,dt,N,n_species,division_TimeHours,tqdm_disable=False, p_divi
     # print(np.shape(cell_matrix_record))
     return cell_matrix_record,memory_matrix_record, daughterToMotherDictList
 
-#execution parameters
+def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.5,seed=1,plot1D=True, plotScatter = True, plotVideo=False):
+        
+    #execution parameters
 
-save_figure = False
-tqdm_disable = False #disable tqdm
-n_species=6
-#%%
-# L=5; x_gridpoints =5; J = L*x_gridpoints
-# T =10; t_gridpoints = 10; N = T*t_gridpoints
-# L=4; dx =0.025; J = int(L/dx)
-# T =65; dt = 0.0025; N = int(T/dt)
-L=10; dx =0.05; J = int(L/dx)
-T =150; dt = 0.05; N = int(T/dt)
+    save_figure = False
+    tqdm_disable = False #disable tqdm
+    n_species=6
+    #%%
+    # L=5; x_gridpoints =5; J = L*x_gridpoints
+    # T =10; t_gridpoints = 10; N = T*t_gridpoints
+    # L=4; dx =0.025; J = int(L/dx)
+    # T =65; dt = 0.0025; N = int(T/dt)
+    # L=10; dx =0.05; J = int(L/dx)
+    # T =150; dt = 0.05; N = int(T/dt)
 
-L=10; dx =0.05; J = int(L/dx)
-T =150; dt = 1; N = int(T/dt)
-boundarycoeff = 1
+    J = int(L/dx)
+    N = int(T/dt)
+    # boundarycoeff = 1
 
-divisionTimeHours=1
-p_division=0.5;seed=1
+    # divisionTimeHours=1
+    # p_division=0.5;seed=1
 
-# L=8; dx =0.05; J = int(L/dx)
-# T =50; dt = 0.05; N = int(T/dt)
-# boundarycoeff = 1
+    # L=9; dx =0.05; J = int(L/dx)
+    # T =50; dt = 0.05; N = int(T/dt)
+    # boundarycoeff = 1
 
-# divisionTimeHours=1
-# p_division=0.22;seed=1
+    # divisionTimeHours=0.5
+    # p_division=1;seed=1
 
-# L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
-# T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
+    # L=8; dx =0.05; J = int(L/dx)
+    # T =50; dt = 0.05; N = int(T/dt)
+    # boundarycoeff = 1
 
-L_x = L
-L_y = L
-I = J
+    # divisionTimeHours=1
+    # p_division=0.22;seed=1
 
-# p_division=float(sys.argv[5]);seed=1
+    # L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
+    # T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
 
-cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
-pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-pickle.dump( memory_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    L_x = L
+    L_y = L
+    I = J
 
-# print(np.shape(cell_matrix_record))
-# for ti in range(N):
-    # print(np.shape(memory_matrix_record[:,:,ti]))
-    # print(memory_matrix_record[:,:,ti])
-#%%
-plot1D=True
-if plot1D == True:
-    print('Final Mask')
-    plt.imshow(cell_matrix_record[:,:,-1], cmap='Greys')# plot_2D_final_concentration(final_concentration,grids,filename,n_species=n_species)
-    tick_positions = np.linspace(0, L/dx, 4)
-    tick_labels = np.linspace(0, L, 4).round(decimals=2)
-    plt.xticks(tick_positions, tick_labels)
-    plt.yticks(tick_positions, tick_labels)
-    plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
-    plt.show()
-    plt.close()
-#%%
-plotVideo=False
-if plotVideo==True:
-    def show_rgbvideo(timeseries_unstacked):
-        time=0
+    # p_division=float(sys.argv[5]);seed=1
 
-        fig = plt.plot()
-        rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
-        N = len(rgb_timeseries)
-        im=plt.imshow(rgb_timeseries[:,:,0].astype('uint8'), origin= 'lower', cmap='Greys')
-        for time in range(len(rgb_timeseries[0,0,:])):
-            im.set_data(rgb_timeseries[:,:,time].astype('uint8'))
-            
-            plt.xlabel(time)
-            plt.pause(0.00000000000000001)
+    cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
+    pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( memory_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+
+    # print(np.shape(cell_matrix_record))
+    # for ti in range(N):
+        # print(np.shape(memory_matrix_record[:,:,ti]))
+        # print(memory_matrix_record[:,:,ti])
+    #%%
+    if plot1D == True:
+        print('Final Mask')
+        plt.imshow(cell_matrix_record[:,:,-1], cmap='Greys')# plot_2D_final_concentration(final_concentration,grids,filename,n_species=n_species)
+        tick_positions = np.linspace(0, L/dx, 4)
+        tick_labels = np.linspace(0, L, 4).round(decimals=2)
+        plt.xticks(tick_positions, tick_labels)
+        plt.yticks(tick_positions, tick_labels)
+        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
+        plt.show()
+        plt.close()
+    #%%
+    if plotVideo==True:
+        def show_rgbvideo(timeseries_unstacked):
+            time=0
+
+            fig = plt.plot()
+            rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+            N = len(rgb_timeseries)
+            im=plt.imshow(rgb_timeseries[:,:,0].astype('uint8'), origin= 'lower', cmap='Greys')
+            for time in range(len(rgb_timeseries[0,0,:])):
+                im.set_data(rgb_timeseries[:,:,time].astype('uint8'))
+                
+                plt.xlabel(time)
+                plt.pause(0.00000000000000001)
+            plt.show()
+
+        show_rgbvideo(cell_matrix_record)
+
+    #%%
+    if plotScatter==True:
+        print('Scatter')
+        lenght_list = []
+        for i in range(len(cell_matrix_record[0,0,:])):
+            lenght = np.count_nonzero(cell_matrix_record[:,int(J/2),i])
+            lenght_list.append(lenght)
+        lenght_list = np.array(lenght_list)*dx
+
+        plt.scatter(range(0,N),lenght_list, c='k',s=1)
+        plt.xlabel('Time (hours)')
+        plt.ylabel('Colony diameter (mm)')
+        tick_positions = np.linspace(0, T/dt, 4)
+        tick_labels = np.linspace(0, T , 4).round(decimals=2)
+        plt.xticks(tick_positions, tick_labels)
+        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
         plt.show()
 
-    show_rgbvideo(cell_matrix_record)
 
-#%%
-plotScatter = True
-if plotScatter==True:
-    print('Scatter')
-    lenght_list = []
-    for i in range(len(cell_matrix_record[0,0,:])):
-        lenght = np.count_nonzero(cell_matrix_record[:,int(J/2),i])
-        lenght_list.append(lenght)
-    lenght_list = np.array(lenght_list)*dx
-
-    plt.scatter(range(0,N),lenght_list, c='k',s=1)
-    plt.xlabel('Time (hours)')
-    plt.ylabel('Colony diameter (mm)')
-    tick_positions = np.linspace(0, T/dt, 4)
-    tick_labels = np.linspace(0, T , 4).round(decimals=2)
-    plt.xticks(tick_positions, tick_labels)
-    plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
-    plt.show()
-
-
+    # %%
+    
+# maskFunction(L=6,dx=0.05, T=50, dt=0.05, divisionTimeHours=0.5, p_division=0.5)
 # %%
