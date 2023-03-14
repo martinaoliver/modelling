@@ -76,7 +76,7 @@ with open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivi
     daughterToMotherDictList = pickle.load(f)
 
 
-def numerical_check(df, circuit_n,test=True,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder):
+def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder):
     # L=8; dx =0.02; J = int(L/dx)
     # T =125; dt = 0.05; N = int(T/dt)
     # boundarycoeff = 1.7
@@ -88,7 +88,7 @@ def numerical_check(df, circuit_n,test=True,modelArgs=modelArgs, systemArgs=syst
 
 
     if test==True:
-        # T =1; dt = 0.025; N = int(T/dt)
+        T =1; dt = 0.025; N = int(T/dt)
         tqdm_disable = False
     else:
         tqdm_disable = True
