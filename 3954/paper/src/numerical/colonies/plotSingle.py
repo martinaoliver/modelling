@@ -38,11 +38,10 @@ nsamples = 1000000
 
 # specify dimensions of system
 L=9; dx =0.05; J = int(L/dx)
-T =50; dt = 0.05; N = int(T/dt)
+T =150; dt = 0.005; N = int(T/dt)
 boundarycoeff = 1
 divisionTimeHours=0.5
-p_division=1;seed=1
-
+p_division=0.3;seed=1
 
 
 shape = 'ca'

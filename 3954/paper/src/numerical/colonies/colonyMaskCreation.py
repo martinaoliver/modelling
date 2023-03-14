@@ -153,7 +153,8 @@ def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.
     L_x = L
     L_y = L
     I = J
-
+    suggesteddt = float(dx*dx*2)
+    print(f'suggested dt = {suggesteddt}')
     # p_division=float(sys.argv[5]);seed=1
 
     cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)

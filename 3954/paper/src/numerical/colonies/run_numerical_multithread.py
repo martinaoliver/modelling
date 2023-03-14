@@ -53,12 +53,11 @@ modelArgs = [circuit_n,variant,n_species,folder]
 nsamples = 1000000
 
 # specify dimensions of system
-L=9; dx =0.05; J = int(L/dx)
-T =50; dt = 0.05; N = int(T/dt)
+L=10; dx =0.1; J = int(L/dx)
+T =150; dt = 0.025; N = int(T/dt)
 boundarycoeff = 1
-
-divisionTimeHours=0.5
-p_division=1;seed=1
+divisionTimeHours=1
+p_division=0.23;seed=1
 
 
 
@@ -77,7 +76,7 @@ with open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivi
     daughterToMotherDictList = pickle.load(f)
 
 
-def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder, test=False):
+def numerical_check(df, circuit_n,test=True,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder):
     # L=8; dx =0.02; J = int(L/dx)
     # T =125; dt = 0.05; N = int(T/dt)
     # boundarycoeff = 1.7
@@ -89,7 +88,7 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
 
 
     if test==True:
-        T =1; dt = 0.05; N = int(T/dt)
+        # T =1; dt = 0.025; N = int(T/dt)
         tqdm_disable = False
     else:
         tqdm_disable = True
@@ -103,7 +102,7 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
         D = np.zeros(n_species)
         Dr = float(par_dict['Dr'])
         D[:2] = [1,Dr ]
-        degDiv = 3
+        degDiv = int(sys.argv[2])
         par_dict['muASV'] =par_dict['muASV']/degDiv
         par_dict['muLVA'] = par_dict['muLVA'] /degDiv
         # steadystates=par_dict['ss_list']
