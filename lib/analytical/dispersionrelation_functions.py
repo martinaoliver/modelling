@@ -3,7 +3,7 @@ from numpy import linalg as LA
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 import itertools
-
+from numpy import unravel_index
 #This class can return the jacobian which is stored in circuit*_eq class.
 class jacobian():
     def __init__(self,par_dict, circuit_n):
@@ -41,7 +41,16 @@ def calculate_dispersion(par_dict,circuit_n, x,top_dispersion):
         eigenvalues[count]  = eigenval
         count +=1
 
-    return eigenvalues
+    #find the wavenumber with the highest instability
+    max_index = unravel_index(np.real(eigenvalues).argmax(), np.real(eigenvalues).shape)[0]
+    max_wvn = wvn_list[max_index]
+    if max_wvn == 0:
+        estimated_wvl = np.nan
+    else:
+        estimated_wvl = 2*np.pi/(max_wvn)
+
+
+    return eigenvalues, estimated_wvl
 
 def stability_no_diffusion(eigenvalues):
 
@@ -88,7 +97,6 @@ def stability_no_diffusion(eigenvalues):
 def stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss, complex_dispersion):
     maxeig = np.amax(eigenvalues) #highest eigenvalue of all wvn's and all the 6 eigenvalues.
     maxeig_real = maxeig.real #real part of maxeig
-
     if stability_ss == 'stable' or stability_ss == 'neutral':#turing I, turing I oscillatory, turing II, Unstable
         if maxeig_real <= 0:
             system_class = 'simple stable'
@@ -162,11 +170,16 @@ def dispersionrelation(par_dict,steadystate_values_ss_n,circuit_n,top_dispersion
     x = steadystate_values_ss_n
 
     #calculate dispersion and obtain eigenvalues
-    eigenvalues = calculate_dispersion(par_dict,circuit_n, x,top_dispersion)
+    eigenvalues, estimated_wvl = calculate_dispersion(par_dict,circuit_n, x,top_dispersion)
 
     #Classify equilibrium point (no diffusion)
     ss_class, complex_ss, stability_ss, complex_dispersion = stability_no_diffusion(eigenvalues)
 
     system_class, maxeig= stability_diffusion(eigenvalues, ss_class, complex_ss, stability_ss, complex_dispersion)
 
-    return ss_class, system_class, eigenvalues, maxeig, complex_dispersion
+
+    #find the wavenumber with highest eigenvalue
+    max_index = unravel_index(eigenvalues.argmax(), eigenvalues.shape)[0]
+
+
+    return ss_class, system_class, eigenvalues, maxeig, estimated_wvl,complex_dispersion
