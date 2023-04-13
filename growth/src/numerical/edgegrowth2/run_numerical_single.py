@@ -21,7 +21,7 @@ import numpy as np
 
 #system parameters
 circuit_n = 'turinghill'
-variant=0 
+variant=0
 n_param_sets = 2000000
 
 # par_dict = {'c1':0.1, 'c2':1,'c3':0.9,'c4':1, 'd_A': 1, 'd_B':10}
