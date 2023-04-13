@@ -17,7 +17,7 @@ from analytical.linear_stability_analysis import big_turing_analysis_df, detaile
 import pickle
 
 #######################
-#########CODE##########
+#########CODE##########a
 #######################
 
 
@@ -31,7 +31,7 @@ df_lenght = 2000
 n_param_sets = 2000
 
 start_batch_index = 0
-batch_size = 2000
+batch_size = 10
 # obtain a dictionary with some parameters to use in our analysis
 df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 df_batch = df.iloc[start_batch_index:start_batch_index+batch_size]

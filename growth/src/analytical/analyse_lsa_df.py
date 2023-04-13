@@ -31,10 +31,10 @@ def pieChart_lsa(valueCounts_dict,title,log=True):
 
 
 circuit_n='turinghill'
-variant= 0
+variant= 4
 n_species=2
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 2000000
+n_param_sets = 2000
 
 
 df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
@@ -43,7 +43,7 @@ print(df['system_class'].value_counts())
 #cut df
 cutDf = True
 if cutDf == True:
-    cropValue = 200000
+    cropValue = 2000
     cuttedDf = df.iloc[:cropValue]
     pickle.dump( cuttedDf, open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,cropValue), "wb" ) )
 
