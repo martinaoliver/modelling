@@ -76,56 +76,52 @@ semGreen3 = doseResponseExp3['std_gfp']; semRed3 = doseResponseExp3['std_rfp']
 plotData(OC14_list3, rfpExp_list3, gfpExp_list3, semRed3, semGreen3)
 
 ##fitting params
+
 nvd = 2
 nfe = 5
 nda=2
 nce=3
+
 def gfp1_steadystate(OC14, Vf,Kvd): 
     muv = 0.0225 ; kv =  0.0183 ;
-    # nvd=2
     F1 = 1 + Vf*(1/(1+((muv*Kvd)/(kv*OC14 + 1e-8))**nvd ))
     return F1
 
-def rfp1_steadystate(OC14, Vf,Kvd,Ve,Kfe): 
+def rfp1_steadystate(OC14, Vf,Kvd,VeKfenfe): 
     muv = 0.0225 ; kv =  0.0183 ;
-    # nvd=2;nfe=5
-    
-    E1 = 1 + Ve*(1/(1+((1 + Vf*(1/(1+((muv*Kvd)/(kv*OC14 + 1e-8))**nvd )))/(Kfe+1e-8))**nfe))
+    E1 = 1 + VeKfenfe*(1/(1+((1 + Vf*(1/(1+((muv*Kvd)/(kv*OC14 + 1e-8))**nvd ))))**nfe))
 
     return E1
 
 
 def gfp3_steadystate(OC14,  Vd,Kvd): 
-    # nvd=2
     muv = 0.0225 ; kv =  0.0183 ;
     D3 = 1 + Vd*(1/(1+((muv*Kvd)/(kv*OC14 + 1e-8))**nvd ))
     return D3
 
-def bfp3_steadystate(D,Vc,Kda): 
-    # nda=2
-    C3= 1 + Vc*(1/(1+((D/(Kda+1e-8))**nda)))
+def bfp3_steadystate(D,VcKdanda): 
+    C3= 1 + VcKdanda*(1/(1+((D)**nda)))
     return C3
 
-def rfp3_steadystate(OC14,  Vd,Kvd,Vc, Kda,  Ve,Kce): 
-    # nce=3
-    E3 = 1 + Ve*(1/(1+((bfp3_steadystate(gfp3_steadystate(OC14,  Vd,Kvd), Vc, Kda)/(Kce+1e-8))**nce)))
+def rfp3_steadystate(OC14,  Vd,Kvd,VcKdanda,  VeKcence): 
+    E3 = 1 + VeKcence*(1/(1+((bfp3_steadystate(gfp3_steadystate(OC14,  Vd,Kvd), VcKdanda))**nce)))
     return E3
 
 
 OC14_continuous = np.logspace(-3,1, 100)
 
 
-def steadystate(OC14,Vc, Vd, Ve, Vf, Kvd, Kda, Kce, Kfe):
+def steadystate(OC14,Vf,Vd, Kvd, VeKfenfe, VcKdanda, VeKcence):
+  
   if len(OC14) == 22:
       gaps = [5,5,6,6]
   else:
         gaps = [int(len(OC14)/4)]*4
   F1 = gfp1_steadystate(OC14[:np.sum(gaps[:1])],  Vf,Kvd)
-  E1 = rfp1_steadystate(OC14[np.sum(gaps[:1]):np.sum(gaps[:2])],Vf,Kvd,Ve,Kfe)
+  E1 = rfp1_steadystate(OC14[np.sum(gaps[:1]):np.sum(gaps[:2])],Vf,Kvd,VeKfenfe)
   D3 = gfp3_steadystate(OC14[np.sum(gaps[:2]):np.sum(gaps[:3])], Vd,Kvd)
-  E3 = rfp3_steadystate(OC14[np.sum(gaps[:3]):np.sum(gaps[:4])],  Vd,Kvd,Vc, Kda,  Ve,Kce)
+  E3 = rfp3_steadystate(OC14[np.sum(gaps[:3]):np.sum(gaps[:4])],  Vd,Kvd,VcKdanda,  VeKcence)
   FE = np.hstack([F1,E1, D3, E3])
-
   return FE
 
 
@@ -134,17 +130,13 @@ OC14data_new = np.hstack([OC14_list1,OC14_list1, OC14_list3,OC14_list3])
 OC14data_continuous= np.hstack([OC14_continuous,OC14_continuous, OC14_continuous,OC14_continuous])
 semStacked= np.hstack([semGreen1,semRed1, semGreen3,semRed3])
 
-# popt, pcov = curve_fit(f=steadystate, xdata=OC14data_new, ydata=fluorescenceData ,bounds = (0,10), maxfev = 100000000)
 popt, pcov = curve_fit(f=steadystate, xdata=OC14data_new, ydata=fluorescenceData ,sigma =semStacked, bounds = (0,100), maxfev = 100000000)
 
-# gfpFit, rfpFit = steadystate(OC14data_new, *popt)
-# fluorescenceFit = steadystate(OC14data_new, *popt)
-# fluorescenceFit_continuous = steadystate(OC14data_continuous, *popt)
-paramNames = ['Vc', 'Vd', 'Ve', 'Vf', 'Kvd', 'Kda', 'Kce', 'Kfe']
+paramNames = ['Vf','Vd', 'Kvd', 'VeKfenfe', 'VcKdanda', 'VeKcence']
 pfitDict = {}
 for param in popt:
     pfitDict[paramNames[popt.tolist().index(param)]] = param
-print(pfitDict)
+
 fluorescenceFit = steadystate(OC14data_new, *popt)
 fluorescenceFit_continuous = steadystate(OC14data_continuous, *popt)
 gfpFit1 = fluorescenceFit[:5]; rfpFit1 = fluorescenceFit[5:10]; gfpFit3 = fluorescenceFit[10:16]; rfpFit3 = fluorescenceFit[16:22]
@@ -153,8 +145,7 @@ gfpFit1_continuous = fluorescenceFit_continuous[:100]; rfpFit1_continuous = fluo
 plotFitvsData(OC14_list1,OC14_continuous, gfpExp_list1, rfpExp_list1, semGreen1, semRed1, gfpFit1_continuous,rfpFit1_continuous)
 
 plotFitvsData(OC14_list3,OC14_continuous, gfpExp_list3, rfpExp_list3, semGreen3, semRed3, gfpFit3_continuous,rfpFit3_continuous)
-
-
+gfpFit1_continuous_copy,rfpFit1_continuous_copy, gfpFit3_continuous_copy,rfpFit3_continuous_copy = gfpFit1_continuous,rfpFit1_continuous, gfpFit3_continuous,rfpFit3_continuous 
 
 
 #creating df
@@ -178,7 +169,7 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=14
-variant='fitted1'
+variant='fitted3'
 #diffusion parameters
 
 
@@ -186,7 +177,7 @@ variant='fitted1'
 # V* = V/b
 # V = 10-1000
 # b=0.1-1
-minV = 10;maxV=1000;minb=0.1;maxb=1
+minV = 10;maxV=1000;minb=0.01;maxb=1
 Va = {'name':'Va','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
 Vb = {'name':'Vb','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
 
@@ -206,7 +197,7 @@ V_parameters = [Va,Vb, Vc, Vd, Ve, Vf]
 
 
 K1=0.0183; K2=0.0183
-DUmin=0.1; DUmax=10; DVmin=0.1; DVmax=10
+DUmin=1; DUmax=1; DVmin=0.001; DVmax=1
 muU=0.0225; muV=0.0225
 KdiffpromMin=0.1;KdiffpromMax=250
 muLVA_estimate =1.143
@@ -233,7 +224,7 @@ Keb = {'name':'Keb','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb
 
 Kee = {'name':'Kee','distribution':'fixed','value':0.001}
 
-Kub = {'name':'Kub','distribution':'loguniform', 'min':Kdiffstar(muU,KdiffpromMin,K2), 'max':Kdiffstar(muU,KdiffpromMax,K2)}
+Kub = {'name':'Kub','distribution':'loguniform', 'min':Kdiffstar(muU,KdiffpromMin,K1), 'max':Kdiffstar(muU,KdiffpromMax,K1)}
 
 # Kvd = {'name':'Kvd','distribution':'gaussian', 'mean':pfitDict['Kvd'], 'noisetosignal':0.3}
 # Kda = {'name':'Kda','distribution':'gaussian', 'mean':pfitDict['Kda'], 'noisetosignal':0.3}
@@ -273,7 +264,7 @@ n_parameters = [nub,nee,neb,nvd,nda,nce,nfe]
 
 
 
-plotDistributions=True
+plotDistributions=False
 if plotDistributions == True:
     D_parameters = [Dr, Dr]
     nsamples=1000
@@ -285,7 +276,7 @@ if plotDistributions == True:
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
 
-createParams=False
+createParams=True
 if createParams == True:
     nsamples=2000000
     # nsamples=int(sys.argv[1])

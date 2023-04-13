@@ -37,13 +37,13 @@ print('Number of Threads set to ', Number_of_Threads)
 # Specify name of circuit and variant investigated
 
 circuit_n='circuit14'
-# variant='fitted1'
-variant='2nd'
+variant='fitted2'
+# variant='2nd'
 n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
 # n_param_sets = 10
-balance = 'balanced'
+# balance = 'balanced'
 # df_lenght = 10
 # n_param_sets = 10
 
@@ -81,7 +81,7 @@ df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles
 
 # df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 print('df_loaded')
-print('df_%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,n_param_sets))
+# print('df_%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,n_param_sets))
 # df= pickle.load( open("../lhs_parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
 df_lenght = len(df)
 # df_lenght=10

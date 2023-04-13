@@ -8,6 +8,7 @@ import sys
 
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/modelling'
 sys.path.append(modellingpath + '/lib')
 
 import pickle
@@ -32,7 +33,6 @@ from numerical.plotting_numerical import *
 from numerical.cn_plot import *
 from colonyMaskCreation import *
 #%%
-# # %matplotlib inline
 #############
 ###execution parameters#####
 #############
@@ -57,15 +57,25 @@ tqdm_disable = False #disable tqdm
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
     df = pickle.load(f)
-print(df)
 #solver parameters
 # specify dimensions of system
-L=10; dx =0.1; J = int(L/dx)
-T =150; dt = 0.025; N = int(T/dt)
-boundarycoeff = 1
-divisionTimeHours=1
-p_division=0.23;seed=1
+# L=4; dx =0.05; J = int(L/dx)
+# T =37; dt =0.005; N = int(T/dt)
+# boundarycoeff = 1
+# divisionTimeHours=0.5
+# p_division=0.4;seed=1
 
+# L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
+# T =int(sys.argv[3]); dt =float(sys.argv[4]); N = int(T/dt)
+# boundarycoeff = 1
+# divisionTimeHours=float(sys.argv[5])
+# p_division=float(sys.argv[6]);seed=1
+
+L=20; dx =0.1; J = int(L/dx)
+T =50; dt = 0.02; N = int(T/dt)
+boundarycoeff = 1
+divisionTimeHours=0.5
+p_division=1;seed=1
 
 shape = 'ca'
 x_gridpoints=int(1/dx)
@@ -73,6 +83,7 @@ x_gridpoints=int(1/dx)
 # p_division=0.22;seed=1
 # L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
 # T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
+# maskFunction(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
 
 try:
     cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
@@ -94,23 +105,34 @@ except:
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 #%%
-
-parID=316386
+# test = bool(sys.argv[7])
+test = False
+tqdm_disable=False
+if test==True:
+    print('test')
+    T=3;N = int(T/dt)
+    tqdm_disable=False
+# parID=int(sys.argv[8])
+parID=195238
 print('parID = ' + str(parID))
 par_dict = df.loc[parID].to_dict()
 D = np.zeros(n_species)
-Dr = float(par_dict['Dr'])
+DrDiv=10
+print(par_dict['Dr'])
+
+Dr = float(par_dict['Dr'])/DrDiv
+print(f'Dr new {Dr}')
 D[:2] = [1,Dr ]
-degDiv = 1
-par_dict['muASV'] =par_dict['muASV']/degDiv
-par_dict['muLVA'] = par_dict['muLVA'] /degDiv
+# degDiv = 1
+# par_dict['muASV'] =par_dict['muASV']/degDiv
+# par_dict['muLVA'] = par_dict['muLVA'] /degDiv
 print(par_dict)
 
 # U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=boundarycoeff)
 # U_record,U_final =  adi(par_dict,L,L,J,J,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0)
 # get the start time
 st = time.time()
-U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
+U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
 elapsed_time = time.time() - st
 print('Execution time numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
 plt.imshow(U_final[-1])
@@ -118,15 +140,56 @@ plt.show()
 
 
 
-pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s_degDiv%r.pkl'%(folder,filename(parID), degDiv), "wb" ) )
-pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s_degDiv%r.pkl'%(folder,filename(parID), degDiv), 'wb'))
+pickle.dump(U_final, open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) )
+pickle.dump(U_record, open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'wb'))
 
-print(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s_degDiv%s.pkl'%(folder,filename(parID), degDiv))
+print(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s_DrDiv%r.pkl'%(folder,filename(parID)))
 print('saved')
 # %%
-rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure=False)
+# rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure=False)
 
 # %%
-plt.imshow(U_final[-1])
-plt.colorbar()
+# plt.imshow(U_final[-1])
+# plt.colorbar()
 # %%
+
+#Save video
+saveVideo=True
+if saveVideo==True:
+        
+    import numpy as np
+    from matplotlib import pyplot as plt
+    from matplotlib import animation
+    # plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
+    plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
+    rgb_timeseries = redgreen_contrast_timeseries(U_record)
+    # show_rgbvideo(rgb_timeseries,parID)
+    saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
+
+
+    def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
+        fig = plt.figure()
+        ims = []
+        rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+        im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+
+        for i in range(len(rgb_timeseries)):
+            im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
+            plt.title(str(filename) + str(i))
+            plt.xlabel(f'Time: {i}h')
+            
+            ims.append([im])
+        ani = animation.ArtistAnimation(fig, ims,interval=50000000)
+        
+        # ani.save(saveVideoPath + '/%s.mp4' %filename)
+        print('Video saved')
+        
+        #FOR GIF
+        writergif = animation.PillowWriter(fps=10)
+        ani.save(saveVideoPath + filename + '.gif',writer=writergif)
+
+        # FOR MP4
+        # mywriter = animation.FFMpegWriter()
+        # ani.save('mymovie.mp4',writer=mywriter)
+        
+    save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
