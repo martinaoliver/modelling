@@ -1,4 +1,3 @@
-from unicodedata import name
 from sklearn.utils import column_or_1d
 
 import numpy as np

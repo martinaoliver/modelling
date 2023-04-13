@@ -178,7 +178,7 @@ import pandas as pd
 import pickle as pkl
 # %matplotlib inline
 circuit_n=14
-variant='fitted1'
+variant='fitted2'
 #diffusion parameters
 
 
@@ -186,7 +186,7 @@ variant='fitted1'
 # V* = V/b
 # V = 10-1000
 # b=0.1-1
-minV = 10;maxV=1000;minb=0.1;maxb=1
+minV = 10;maxV=1000;minb=0.01;maxb=1
 Va = {'name':'Va','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
 Vb = {'name':'Vb','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
 
@@ -206,7 +206,7 @@ V_parameters = [Va,Vb, Vc, Vd, Ve, Vf]
 
 
 K1=0.0183; K2=0.0183
-DUmin=0.1; DUmax=10; DVmin=0.1; DVmax=10
+DUmin=1; DUmax=1; DVmin=0.001; DVmax=1
 muU=0.0225; muV=0.0225
 KdiffpromMin=0.1;KdiffpromMax=250
 muLVA_estimate =1.143
@@ -233,7 +233,7 @@ Keb = {'name':'Keb','distribution':'loguniform', 'min':Kstar(muLVA_estimate,maxb
 
 Kee = {'name':'Kee','distribution':'fixed','value':0.001}
 
-Kub = {'name':'Kub','distribution':'loguniform', 'min':Kdiffstar(muU,KdiffpromMin,K2), 'max':Kdiffstar(muU,KdiffpromMax,K2)}
+Kub = {'name':'Kub','distribution':'loguniform', 'min':Kdiffstar(muU,KdiffpromMin,K1), 'max':Kdiffstar(muU,KdiffpromMax,K1)}
 
 # Kvd = {'name':'Kvd','distribution':'gaussian', 'mean':pfitDict['Kvd'], 'noisetosignal':0.3}
 # Kda = {'name':'Kda','distribution':'gaussian', 'mean':pfitDict['Kda'], 'noisetosignal':0.3}
@@ -273,7 +273,7 @@ n_parameters = [nub,nee,neb,nvd,nda,nce,nfe]
 
 
 
-plotDistributions=True
+plotDistributions=False
 if plotDistributions == True:
     D_parameters = [Dr, Dr]
     nsamples=1000
@@ -285,7 +285,7 @@ if plotDistributions == True:
         lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterType])
         plotDist(parameterType,lhsDist_df)
 
-createParams=False
+createParams=True
 if createParams == True:
     nsamples=2000000
     # nsamples=int(sys.argv[1])
@@ -299,3 +299,52 @@ if createParams == True:
     pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
 
     print(lhsDist_df)
+
+
+
+createBalancedParams=False
+if createBalancedParams == True:
+    seed=0
+    nsamples=1000000
+    # nsamples=10
+    parameterDictList = D_parameters  + V_parameters + K_parameters + mu_parameters + n_parameters
+    # parameterDictList = [DU, DV, bA, bB, bC, bD, bE, bF, VA, VB, VC, VD, VE, VF, Kbd, Kab, Kda, Kfe, Kee, Keb, Kce, KaTc, Kiptg, muLVA, muAAV, muASV, muUb, muVb, muaTc, muU, muV, nbd, nab, nda, nfe, nee, neb, nce, naTc, niptg, k1, k2, iptg]
+    stackedDistributions = preLhs(parameterDictList)
+    balancedDf = pd.DataFrame()
+    semiBalancedDf = pd.DataFrame()
+    notBalancedDf = pd.DataFrame()
+    while len(balancedDf)<nsamples:
+        lhsDist = lhs(stackedDistributions,nsamples, seed = seed, tqdm_disable = True)
+        lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterDictList])
+        #check balance
+
+        balanceList = []    
+        for parID in lhsDist_df.index:
+            par_dict = lhsDist_df.loc[parID].to_dict()
+            balanceList.append(checkBalance(par_dict))
+        lhsDist_df['balance'] = balanceList
+        
+        #separate 3df
+        balancedDfPre = lhsDist_df[lhsDist_df['balance']=='Balanced']
+        semiBalancedDfPre = lhsDist_df[lhsDist_df['balance']=='Semi balanced']
+        notBalancedDfPre = lhsDist_df[lhsDist_df['balance']=='Not balanced']
+        
+        #concat to df
+        if len(balancedDf)<nsamples:
+            balancedDf = pd.concat([balancedDf, balancedDfPre], ignore_index=True)
+        if len(semiBalancedDf)<nsamples:
+            semiBalancedDf = pd.concat([semiBalancedDf, semiBalancedDfPre], ignore_index=True)
+        if len(notBalancedDf)<nsamples:
+            notBalancedDf = pd.concat([notBalancedDf, notBalancedDfPre], ignore_index=True)
+
+        seed+=1
+        # print(seed, len(balancedDf))
+    
+        pkl.dump(balancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
+        pkl.dump(semiBalancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_semiBalanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
+        pkl.dump(notBalancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_notBalanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
+        # pkl.dump(lhsDist_df, open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
+
+
+
+

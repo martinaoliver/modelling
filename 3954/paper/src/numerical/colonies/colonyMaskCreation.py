@@ -53,7 +53,6 @@ def cell_automata_colony(cell_matrix, p_division):
 # numba.jit(nopython=True)
 def adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
     I=J
-
     print(f'dt{dt}')
 
 
@@ -76,7 +75,6 @@ def adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_divis
     # cell_matrix_record = np.zeros([J, I, int(T/divisionTimeHours)])
     cell_matrix_record = np.zeros([J, I, N])
     memory_matrix_record = np.zeros([J, I, N], dtype='i,i')
-    
     cell_matrix_record[:, :, 0] = cell_matrix #issue in this line
     memory_matrix_record[int(I/2), int(J/2), :] = int(I/2), int(J/2)#issue in this line
     memory_matrix = memory_matrix_record[:,:,0]
@@ -111,57 +109,23 @@ def adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_divis
     # print(np.shape(cell_matrix_record))
     return cell_matrix_record,memory_matrix_record, daughterToMotherDictList
 
-def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.5,seed=1,plot1D=True, plotScatter = True, plotVideo=False):
+def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.5,seed=1,plot1D=False, plotScatter = False, plotVideo=False):
         
     #execution parameters
-
-    save_figure = False
-    tqdm_disable = False #disable tqdm
     n_species=6
-    #%%
-    # L=5; x_gridpoints =5; J = L*x_gridpoints
-    # T =10; t_gridpoints = 10; N = T*t_gridpoints
-    # L=4; dx =0.025; J = int(L/dx)
-    # T =65; dt = 0.0025; N = int(T/dt)
-    # L=10; dx =0.05; J = int(L/dx)
-    # T =150; dt = 0.05; N = int(T/dt)
 
     J = int(L/dx)
     N = int(T/dt)
-    # boundarycoeff = 1
 
-    # divisionTimeHours=1
-    # p_division=0.5;seed=1
-
-    # L=9; dx =0.05; J = int(L/dx)
-    # T =50; dt = 0.05; N = int(T/dt)
-    # boundarycoeff = 1
-
-    # divisionTimeHours=0.5
-    # p_division=1;seed=1
-
-    # L=8; dx =0.05; J = int(L/dx)
-    # T =50; dt = 0.05; N = int(T/dt)
-    # boundarycoeff = 1
-
-    # divisionTimeHours=1
-    # p_division=0.22;seed=1
-
-    # L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
-    # T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
-
-    L_x = L
-    L_y = L
-    I = J
     suggesteddt = float(dx*dx*2)
     print(f'suggested dt = {suggesteddt}')
     # p_division=float(sys.argv[5]);seed=1
 
     cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
+    print(np.shape(cell_matrix_record))
     pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
     pickle.dump( memory_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
     pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-
     # print(np.shape(cell_matrix_record))
     # for ti in range(N):
         # print(np.shape(memory_matrix_record[:,:,ti]))
@@ -213,8 +177,14 @@ def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.
         plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
         plt.show()
 
+    return cell_matrix_record, memory_matrix_record, daughterToMotherDictList
 
     # %%
     
-# maskFunction(L=6,dx=0.05, T=50, dt=0.05, divisionTimeHours=0.5, p_division=0.5)
-# %%
+# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction(L=20,dx=0.2, T=100 ,dt=0.05, divisionTimeHours=1, p_division=0.37)
+# # %%
+# L=20; dx =0.2; J = int(L/dx)
+# T =100; dt = 0.05; N = int(T/dt)
+# boundarycoeff = 1
+# divisionTimeHours=1
+# p_division=0.37;seed=1

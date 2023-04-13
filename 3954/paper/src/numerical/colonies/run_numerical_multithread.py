@@ -53,11 +53,11 @@ modelArgs = [circuit_n,variant,n_species,folder]
 nsamples = 1000000
 
 # specify dimensions of system
-L=10; dx =0.1; J = int(L/dx)
-T =150; dt = 0.025; N = int(T/dt)
-boundarycoeff = 1
-divisionTimeHours=1
-p_division=0.23;seed=1
+L=20; dx =0.1; J = int(L/dx)
+T =35; dt = 0.02; N = int(T/dt)
+boundarycoeff = 2
+divisionTimeHours=0.1
+p_division=0.17;seed=1
 
 
 
@@ -102,9 +102,8 @@ def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=sys
         D = np.zeros(n_species)
         Dr = float(par_dict['Dr'])
         D[:2] = [1,Dr ]
-        degDiv = int(sys.argv[2])
-        par_dict['muASV'] =par_dict['muASV']/degDiv
-        par_dict['muLVA'] = par_dict['muLVA'] /degDiv
+        # par_dict['muASV'] =par_dict['muASV']/degDiv
+        # par_dict['muLVA'] = par_dict['muLVA'] /degDiv
         # steadystates=par_dict['ss_list']
 
         filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
@@ -121,10 +120,10 @@ def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=sys
             save = True
             if save == True:
                         
-                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s_degDiv%s.pkl'%(folder,filename(parID),degDiv), "wb" ) as f:
+                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
                     pickle.dump(U_final, f)
                 # with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
-                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s_degDiv%s.pkl'%(folder,filename(parID),degDiv), "wb" ) as f:
+                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
                     pickle.dump(U_record, f)
                 
             del U_record

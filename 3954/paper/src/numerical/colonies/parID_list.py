@@ -17,10 +17,13 @@ import pickle
 
 
 # Specify name of circuit and variant investigated
+# circuit_n=14;variant='fitted1';n_species=6
 circuit_n=14;variant='2nd';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 2000000
+# n_param_sets = 2000000
 # balance = 'balanced'
+# folder = 'circuit14variantfitted1'
 folder = 'circuit14variant2ndBalancedTuring'
 modelArgs = [circuit_n,variant,n_species,folder]
 
@@ -28,18 +31,17 @@ modelArgs = [circuit_n,variant,n_species,folder]
 nsamples = 1000000
 
 # specify dimensions of system
-L=10; dx =0.1; J = int(L/dx)
-T =150; dt = 0.025; N = int(T/dt)
-boundarycoeff = 1
-divisionTimeHours=1
-p_division=0.23;seed=1
-
+L=20; dx =0.1; J = int(L/dx)
+T =35; dt = 0.02; N = int(T/dt)
+boundarycoeff = 2
+divisionTimeHours=0.1
+p_division=0.17;seed=1
 
 
 shape = 'ca'
 degDiv = 1
 # filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r_degDiv%s'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N,degDiv)
+filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 print(f'filename: {filename(1)}')
 datafile= modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename('*'))
 print(datafile)
