@@ -123,6 +123,7 @@ def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.
 
     cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
     print(np.shape(cell_matrix_record))
+    print(np.shape(cell_matrix_record))
     pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
     pickle.dump( memory_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
     pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
@@ -169,22 +170,45 @@ def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.
         lenght_list = np.array(lenght_list)*dx
 
         plt.scatter(range(0,N),lenght_list, c='k',s=1)
-        plt.xlabel('Time (hours)')
-        plt.ylabel('Colony diameter (mm)')
+        plt.xlabel('Time (hours)',fontsize=15)
+        plt.ylabel('Colony diameter (mm)', fontsize=15)
         tick_positions = np.linspace(0, T/dt, 4)
         tick_labels = np.linspace(0, T , 4).round(decimals=2)
-        plt.xticks(tick_positions, tick_labels)
+        plt.xticks(tick_positions, tick_labels,fontsize=15)
         plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
         plt.show()
 
     return cell_matrix_record, memory_matrix_record, daughterToMotherDictList
 
     # %%
-    
-# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction(L=20,dx=0.2, T=100 ,dt=0.05, divisionTimeHours=1, p_division=0.37)
+    if plotVolume == True:
+        plt.rcParams["figure.figsize"] = [7.00, 3.50]
+        plt.rcParams["figure.autolayout"] = True
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        z, x, y = cell_matrix_record.nonzero()
+        my_cmap = plt.get_cmap('magma')
+
+        ax.plot_trisurf(z,x,y, linewidth = 100,
+                        antialiased = True,alpha=1,cmap=my_cmap)
+        ax.set_xlabel('y', labelpad=-10,size=20)
+        ax.set_ylabel('x', labelpad=-10,size=20)
+        ax.set_zlabel('Time', labelpad=-10,size=20, rotation=90)
+        # ax.set_ylabel('Y', rotation=0, labelpad=10)
+        color_tuple = (1.0, 1.0, 1.0, 0.0)
+
+        ax.tick_params(color=color_tuple, labelcolor=color_tuple)
+        ax.grid(False)
+        ax.view_init(20,40, 0)
+
+        plt.show()
+
+
+    return cell_matrix_record, memory_matrix_record, daughterToMotherDictList
+
+
+cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction(L=20,dx=0.1, T=50 ,dt=0.02, divisionTimeHours=0.5, p_division=1, plot1D=True, plotScatter=True)
 # # %%
-# L=20; dx =0.2; J = int(L/dx)
-# T =100; dt = 0.05; N = int(T/dt)
-# boundarycoeff = 1
-# divisionTimeHours=1
-# p_division=0.37;seed=1
+
+
+# %%
