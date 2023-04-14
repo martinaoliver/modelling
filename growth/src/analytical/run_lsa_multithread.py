@@ -1,132 +1,121 @@
-##########################
-#########README##########
-##########################
-# Generate parameter sets using latin hypercube sampling in a loguniform distribution.
-# run in commandline ' python parameterfiles_creator.py '
-# the number of samples is defined below in the 'numbercombinations' variable.
-# $1 number of parameter combinations
-
 #############
 ###paths#####
 #############
 import sys
 import os
-from tkinter import N
+
+from importlib_metadata import distribution
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
 sys.path.append(modellingpath + '/lib')
 #############
 
-#############
-###imports###
-#############
+from analytical.linear_stability_analysis import big_turing_analysis_df, detailed_turing_analysis_dict
+
+
 import pickle
+from datetime import date
 import pandas as pd
 import numpy as np
-from tqdm import tqdm
+import time
+import multiprocessing
 
 
+'''
+====================================================
+    Code
+====================================================
+'''
 
-#######################
-#########CODE##########
-#######################
-
+# Set number of threads to 1 if no valid number provided
+if len(sys.argv) > 1:
+    Number_of_Threads = int(sys.argv[1])
+else:
+    Number_of_Threads = 1
+print('Number of Threads set to ', Number_of_Threads)
+# Number_of_Threads=48
+# Specify name of circuit and variant investigated
 circuit_n='turinghill'
-variant=4
-np.random.seed(1)
+variant= 4
+n_species=2
+# Specifiy number of parameter sets in parameterset file to be loaded
+df_lenght = 2000000
+n_param_sets = 2000000
+# df_lenght = 10
+# n_param_sets = 10
 
 
-def loguniform(low=-3, high=3, size=None):
-    return (10) ** (np.random.uniform(low, high, size))
+# Specify date today
+date = date.today().strftime('%m_%d_%Y')
+
+# Specify size of batches in which to complete computations
+# Does not need to be a factor of number of parameter sets
+# batch_size = 20000
+batch_size = 41666
+# batch_size = 10
+print(batch_size)
 
 
-def uniform(low=-3, high=3, size=None):
-    return np.random.uniform(low, high, size)
+# Define work to be done per batch of parameter sets
+def lsa_check(start_batch_index,n_param_sets,df,circuit_n=circuit_n, variant=variant, n_species=n_species):
+    print('pool' + str(start_batch_index))
+    output_df = big_turing_analysis_df(df,circuit_n,n_species,print_parID=False)
+    print('calculated')
+    pickle.dump(output_df, open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets_batch%r.pkl'%(circuit_n,variant,n_param_sets,start_batch_index), 'wb'))
+    print('saved')
+# Runs if the module is the main program
+# if __name__ == '__main__':
+print('start_time')
+start_time = time.perf_counter()
+start_parameter = int(0)
+# Load dataframe of parameter sets
+print('df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets))
+# df= pickle.load( open('../parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
+df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+# df = df.iloc[:10]
+# df= pickle.load( open("../parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
+batch_indices = list(range(0+start_parameter, len(df) + start_parameter, batch_size))
+# batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))
 
+# Create a pool of workers
+pool = multiprocessing.Pool(Number_of_Threads)
 
-def lhs(data, nsample):
-    m, nvar = data.shape
-    ran = np.random.uniform(size=(nsample, nvar))
-    s = np.zeros((nsample, nvar))
-    for j in tqdm(range(0, nvar)):
-        idx = np.random.permutation(nsample) + 1
-        P = ((idx - ran[:, j]) / nsample) * 100
-        s[:, j] = np.percentile(data[:, j], P)
+# Define jobs as different batches of parameter sets
+# Run lsa_check function in parallel across different threads
+pool_output = []
+print('start_loop')
+for start_batch_index in batch_indices:
 
-    return s
+    print('main' + str(start_batch_index))
+    df_batch = df.iloc[start_batch_index:start_batch_index+batch_size]
+    # df_batch = df.iloc[start_batch_index:start_batch_index+2]
 
+    pool_output.append(pool.apply_async(lsa_check, args=(start_batch_index, n_param_sets,df_batch)))
+# Close the parallel processing job
+pool.close()
+pool.join()
+print('Run finished')
 
-def parameterfile_creator_function(numbercombinations):
-    loguniformdist = loguniform(size=1000000)
+for count,start_batch_index in enumerate(batch_indices):
+    print('error' + str(start_batch_index))
+    pool_output[count].get()
+# Report time taken
+finish_time = time.perf_counter()
+time_taken = finish_time-start_time
+print("Time taken: %d s" %time_taken)
 
-    b_range = (0.1,100)
-    Vm_range = (0.1, 100)
-    km_range = (0.1, 100)
-    mu_range = (0.01, 1)
-    # d_B_range = (10**(-3), 10**3)
-    n_range=(2,4)
+my_data = {}
 
-    b_distribution = [x for x in loguniformdist if b_range[0] <= x <= b_range[1]]
-    Vm_distribution = [x for x in loguniformdist if Vm_range[0] <= x <= Vm_range[1]]
-    km_distribution = [x for x in loguniformdist if km_range[0] <= x <= km_range[1]]
-    mu_distribution = [x for x in loguniformdist if mu_range[0] <= x <= mu_range[1]]
-    # d_B_distribution = [x for x in loguniformdist if d_B_range[0] <= x <= d_B_range[1]]
-    n_distribution = [x for x in loguniformdist if n_range[0] <= x <= n_range[1]]
+# Load all batch dataframes
+for start_batch_index in batch_indices:
+    my_data[start_batch_index] = pickle.load(open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets_batch%r.pkl'%(circuit_n,variant,n_param_sets,start_batch_index), "rb" ) )
+    # my_data[start_batch_index] = pickle.load(open('../results/output_dataframes/lsa_df_circuit%r_variant%r_%rparametersets_batch%r_rbslibrary0.pkl'%(circuit_n,variant,n_param_sets,start_batch_index), "rb" ) )
+# Join all batch results to large results dataframe
+results_df = pd.concat(my_data.values(), ignore_index=False)
 
-    # lenghtsdistributions = ( len(Vm_distribution), len(km_distribution), len(mu_distribution))
-    # lenghtsdistributions = ( len(b_distribution), len(Vm_distribution), len(km_distribution), len(mu_distribution), len(d_B_distribution))
-    lenghtsdistributions = ( len(b_distribution), len(Vm_distribution), len(km_distribution), len(mu_distribution), len(n_distribution))
-    minimumlenghtdistribution = np.amin(lenghtsdistributions)
-    b_distribution = b_distribution[:minimumlenghtdistribution]
-    Vm_distribution = Vm_distribution[:minimumlenghtdistribution]
-    km_distribution = km_distribution[:minimumlenghtdistribution]
-    mu_distribution = mu_distribution[:minimumlenghtdistribution]
-    # d_B_distribution = d_B_distribution[:minimumlenghtdistribution] 
-    n_distribution = n_distribution[:minimumlenghtdistribution]
-
-    # A general matrix is generated with the distributions for each parameter
-    b_matrix = np.column_stack(( b_distribution, b_distribution))
-    Vm_matrix = np.column_stack((Vm_distribution, Vm_distribution))
-    km_matrix = np.column_stack((km_distribution, km_distribution, km_distribution, km_distribution,))
-    mu_matrix = np.column_stack((mu_distribution, mu_distribution))
-    # d_B_matrix = np.column_stack( (d_B_distribution)).transpose()  # needs transposing as only one element leads to np.array the other way around.
-    n_matrix = np.column_stack( (n_distribution)).transpose() 
-
-    # par_distribution_matrix = np.concatenate((Vm_matrix, km_matrix, mu_matrix), 1)
-    par_distribution_matrix = np.concatenate((b_matrix, Vm_matrix, km_matrix, mu_matrix,n_matrix), 1)
-    #
-    points = lhs(par_distribution_matrix, numbercombinations)
-
-    # bx = np.full((numbercombinations, 1), 0.01)
-    # cooperativity = np.full((numbercombinations, 1), 3)
-    d_A = np.full((numbercombinations, 1), 0.001)
-    d_B= np.full((numbercombinations, 1), 1)
-    # d_B = np.full((numbercombinations, 1), 0.8)
-    parameterindex = np.arange(1, numbercombinations + 1, dtype=int).reshape(numbercombinations, 1)
-    points = np.concatenate((parameterindex, points, d_A, d_B), 1)
-    parameternames = (
-    'index', 'ba', 'bb', 'Va', 'Vb', 'kaa', 'kba', 'kab', 'kbb', 'mua', 'mub','n','d_A', 'd_B')
-    print(np.shape(points), np.shape(parameternames))
-    df = pd.DataFrame(data=points, columns=parameternames)
-    df['index'] = df['index'].astype(int)
-    # df['n'] = df['n'].astype(int)
-    df = df.set_index('index')
-
-    return df
-
-# number_of_dataframes=64
-
-# n_param_sets = int(sys.argv[1]) # this number needs to be a multiple of 64
-n_param_sets = 2000000# this number needs to be a multiple of 64
-# n_param_sets = int(numbercombinations / number_of_dataframes)
-# count = 0
-# n_batches= 64
-# batch_size = int(n_param_sets/n_batches)
-
-# for n in tqdm(range(n_batches)):
-for n in range(1):
-    # df = parameterfile_creator_function(batch_size)
-    df = parameterfile_creator_function(n_param_sets)
-    pickle.dump(df, open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), 'wb'))
-    print ('Parameterfile a %r created' %n)
-    print(df)
+# Pickle and save results dataframe
+tupled_index =  [tuple(l) for l in results_df.index]
+multi_index = pd.MultiIndex.from_tuples(tupled_index)
+results_df = results_df.set_index(multi_index)
+pickle.dump(results_df, open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), 'wb'))
+# print(results_df)
