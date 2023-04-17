@@ -36,6 +36,8 @@ suggesteddt = float(dx*dx*2)
 
 print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
+suggesteddt = float(dx*dx*2)
+print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
 parID= (2115,0) #parameter set to use
 par_dict = df.loc[parID].to_dict()

@@ -14,21 +14,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 print('heehehe')
 
-def pieChart_lsa(valueCounts_dict,title,log=True):
-    colors=['grey','grey','grey','grey','peachpuff','coral','coral','coral','coral','coral','grey','coral','coral']
-    labels = []
-    sizes = []
-    
-    for x, y in valueCounts_dict.items():
-        labels.append(x)
-        sizes.append(y)
-    if log==True:
-        sizes = np.log(sizes)
-    plt.pie(sizes,colors=colors, labels=labels)
-    plt.axis('equal')
-    plt.title(title)
-    plt.show()
-
 
 circuit_n='turinghill'
 variant= 4
@@ -48,9 +33,26 @@ if cutDf == True:
     pickle.dump( cuttedDf, open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,cropValue), "wb" ) )
 
 #plot pieChart
+def pieChart_lsa(valueCounts_dict,title,log=True):
+    colors=['grey','grey','grey','grey','peachpuff','coral','coral','coral','coral','coral','grey','coral','coral']
+    labels = []
+    sizes = []
+    
+    for x, y in valueCounts_dict.items():
+        labels.append(x)
+        sizes.append(y)
+    if log==True:
+        sizes = np.log(sizes)
+    plt.pie(sizes,colors=colors, labels=labels)
+    plt.axis('equal')
+    plt.title(title)
+    plt.show()
+
 valueCounts_dict = dict(df['system_class'].value_counts())
 title = f'{circuit_n} Variant {variant}'
 pieChart_lsa(valueCounts_dict,title)
+
+
 
 #values for which complex dispersion = true
 complex_df = df[df['complex_dispersion']==True]
