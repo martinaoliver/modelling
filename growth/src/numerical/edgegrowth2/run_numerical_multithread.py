@@ -6,11 +6,11 @@ import os
 
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
-modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/modelling'
+# modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/modelling'
+modellingephemeral = '/rds/general/user/mo2016/ephemeral/Documents/modelling'
 sys.path.append(modellingpath + '/lib')
 #############
-'/rds/general/ephemeral/user/mo2016/ephemeral'
-'/rds/general/user/mo2016/home'
+
 from numerical.cn_edgegrowth2_numba import cn_edgegrowth2 as cn_edgegrowth2_numba
 from numerical.cn_nogrowth import cn_nogrowth
 
@@ -39,13 +39,12 @@ print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
 circuit_n='turinghill'
-variant= 0
+variant= 4
 n_species=2
 
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 100000
-
-
+n_param_sets = 2000000
+folder = 'turinghill_variant4_nogrowth'
 
 # Specify date today
 date = date.today().strftime('%m_%d_%Y')
@@ -66,13 +65,16 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test =
     # boundaryCoeff=2;rate=0.01
 
     # smaller time and smaller dt 
-    L=100; dx =1; J = int(L/dx)
-    T =5000; dt = 0.05; N = int(T/dt)
-    boundaryCoeff=2;rate=0.1
+
+    L=30; dx =0.1; J = int(L/dx)
+    T =10000; dt = 0.02; N = int(T/dt)
+    boundaryCoeff=1;rate=0.1
+
+
 
     filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
     if test == True:
-        T =100; dt = 0.1; N = int(T/dt)
+        T =3; dt = 0.1; N = int(T/dt)
         tqdm_disable = False
     else:
         tqdm_disable = True
@@ -102,12 +104,11 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test =
                 
             mechanism = 'nogrowth'
             U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=tqdm_disable)
-            with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
+            with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,parIDss)), 'wb') as f:
                 pickle.dump(U_final, f)
 
-            with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
+            with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Drecord_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,parIDss)), 'wb') as f:
                 pickle.dump(U_record, f)
-                
             # pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
             # pickle.dump(U_record, open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
 
@@ -134,8 +135,8 @@ start_time = time.perf_counter()
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 df = None
-with open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
-#with open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
+# with open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
+with open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
     df = pickle.load(f)
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 df.index.names = ['parID','ss']
@@ -167,5 +168,5 @@ for count,start_batch_index in enumerate(batch_indices):
 finish_time = time.perf_counter()
 time_taken = finish_time-start_time
 print("Time taken: %d s" %time_taken)
-with open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
-    df = pickle.load(f)
+# with open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
+#     df = pickle.load(f)

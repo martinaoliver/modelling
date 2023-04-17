@@ -1,4 +1,4 @@
-#############
+#%%#############
 ###paths#####
 #############
 import sys
@@ -17,34 +17,37 @@ import pickle
 import matplotlib.pyplot as plt
 import time
 import numpy as np
-
+print('heheh')
 
 #system parameters
 circuit_n = 'turinghill'
-variant=0
+variant=4
 n_param_sets = 2000000
 
 # par_dict = {'c1':0.1, 'c2':1,'c3':0.9,'c4':1, 'd_A': 1, 'd_B':10}
 df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # df = multiple_df.xs(0, level=1)
 #solver parameters
-L=100; dx =1; J = int(L/dx)
-T =1000; dt = 0.005; N = int(T/dt)
-boundaryCoeff=2;rate=0.1
+L=30; dx =0.1; J = int(L/dx)
+T =10000; dt = 0.02; N = int(T/dt)
+boundaryCoeff=1;rate=0.1
+
+suggesteddt = float(dx*dx*2)
+
+print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
 
-
-
-
-
-parID= (1869288,0) #parameter set to use
+parID= (2115,0) #parameter set to use
 par_dict = df.loc[parID].to_dict()
-U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=False)
+print(f'estimated wavelenght = {par_dict["estimated_wvl"]}')
 
+print(par_dict)
+
+#%%
 #run
 
-no_numba = False
-if no_numba == True:
+no_numba_growth = False
+if no_numba_growth == True:
     st = time.time()
     U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, rate=0.1, boundaryCoeff=2)
     elapsed_time = time.time() - st
@@ -62,8 +65,8 @@ if no_numba == True:
     plt.show()
 
 
-numba=False
-if numba == True: 
+numba_growth=False
+if numba_growth == True: 
     st = time.time()
     U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=0.1, boundaryCoeff=2)
     elapsed_time = time.time() - st

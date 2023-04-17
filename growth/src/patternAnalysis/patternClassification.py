@@ -1,4 +1,5 @@
-#############
+#%%
+#####
 ###paths#####
 #############
 import sys
@@ -36,7 +37,7 @@ def countPeaks(U, showPlot1D=True):
     return peaks
 def parID_surfpattern(parIDss,L,J,T,morphogen=0,record_every_x_hours = 10):
     #data 
-    U_record = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))    
+    U_record = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Drecord_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,parIDss)), 'rb'))    
     #grids
     dx = float(L)/float(J-1)
     x_grid = np.array([j*dx for j in range(J)])
@@ -107,37 +108,38 @@ def patternClassification(U_final, U_record, normalize=True):
 
 
 circuit_n='turinghill'
-variant= 0
+variant= 4
 n_species=2
 mechanism='nogrowth'
+folder = 'turinghill_variant4_nogrowth'
 
+L=50; dx =0.1; J = int(L/dx)
+T =5000; dt = 0.02; N = int(T/dt)
+boundaryCoeff=1;rate=0.1
 
-L=100; dx =1; J = int(L/dx)
-T =5000; dt = 0.05; N = int(T/dt)
-boundaryCoeff=2;rate=0.1
 
 # pattern_df = pickle.load(open( modellingpath + '/growth/out/patternAnalysis/%s/%s/pattern/pattern_df_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), 'rb'))
 
 filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
 n_param_sets=2000000
 lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-parID_list = pickle.load(open( modellingephemeral + '/growth/out/numerical/%s/%s/simulation/parID_list_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), "rb" ) )
+parID_list = pickle.load(open( modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/parID_list_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,'x')), "rb" ) )
 # parID_list=['1009985.2', '1009876.3']
 
-start=0;stop=len(parID_list)
+start=0;stop=len(parID_list);stop=10
 parID_list = [i for i in parID_list[start:stop]] #turn string list into integer list
 
 # parID_list.sort() #sort from lower to higher values
 patternDict = {}
 # parID_list=[41018,30997,2, 4]
-test=False
+test=True
 
 for count,parIDss in enumerate(tqdm(parID_list, disable=False)):
     # print(parID)
     #load records 
-    U_final = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))
+    U_final = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,parIDss)), 'rb'))
     U_final = np.round(U_final,decimals=4)
-    U_record = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'rb'))    
+    U_record = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Drecord_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,parIDss)), 'rb'))    
     
     pattern, converged, flat, regular = patternClassification(U_final, U_record)
 
