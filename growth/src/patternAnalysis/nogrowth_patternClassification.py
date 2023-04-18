@@ -57,7 +57,8 @@ def patternClassification(U_final, U_record, normalize=True):
     #check if converged
     relRangeConverged=[0,0]
     for count,Ux_record in enumerate(U_record):
-        relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[-10:])]
+        relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[-5:])]
+    # if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
     if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
         converged=False
     else:
@@ -113,8 +114,8 @@ n_species=2
 mechanism='nogrowth'
 folder = 'turinghill_variant4_nogrowth'
 
-L=50; dx =0.1; J = int(L/dx)
-T =5000; dt = 0.02; N = int(T/dt)
+L=15; dx =0.1; J = int(L/dx)
+T =40000; dt = 0.02; N = int(T/dt)
 boundaryCoeff=1;rate=0.1
 
 
@@ -123,10 +124,11 @@ boundaryCoeff=1;rate=0.1
 filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
 n_param_sets=2000000
 lsa_df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+# turing_df= pickle.load( open(modellingpath + '/growth/out/analytical/turing_data/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 parID_list = pickle.load(open( modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/parID_list_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,'x')), "rb" ) )
 # parID_list=['1009985.2', '1009876.3']
 
-start=0;stop=len(parID_list);stop=10
+start=0;stop=len(parID_list);stop=30
 parID_list = [i for i in parID_list[start:stop]] #turn string list into integer list
 
 # parID_list.sort() #sort from lower to higher values
@@ -135,7 +137,7 @@ patternDict = {}
 test=True
 
 for count,parIDss in enumerate(tqdm(parID_list, disable=False)):
-    # print(parID)
+    print(parID)
     #load records 
     U_final = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,parIDss)), 'rb'))
     U_final = np.round(U_final,decimals=4)

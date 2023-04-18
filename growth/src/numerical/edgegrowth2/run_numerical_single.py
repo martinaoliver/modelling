@@ -29,8 +29,9 @@ df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%
 # df = multiple_df.xs(0, level=1)
 #solver parameters
 L=30; dx =0.1; J = int(L/dx)
+# T =100; dt = 0.02; N = int(T/dt)
 T =10000; dt = 0.02; N = int(T/dt)
-boundaryCoeff=1;rate=0.1
+boundaryCoeff=1;rate=0.003
 
 suggesteddt = float(dx*dx*2)
 
@@ -39,7 +40,7 @@ print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 suggesteddt = float(dx*dx*2)
 print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
-parID= (2115,0) #parameter set to use
+parID= (1201838,0) #parameter set to use
 par_dict = df.loc[parID].to_dict()
 print(f'estimated wavelenght = {par_dict["estimated_wvl"]}')
 
@@ -48,12 +49,12 @@ print(par_dict)
 #%%
 #run
 
-no_numba_growth = False
+no_numba_growth = True
 if no_numba_growth == True:
     st = time.time()
-    U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, rate=0.1, boundaryCoeff=2)
+    U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=2)
     elapsed_time = time.time() - st
-    print('Execution time numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+    print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
     plt.scatter(x_grid,cellMatrix)
     plt.show()
     
@@ -66,15 +67,7 @@ if no_numba_growth == True:
     surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
 
-
-numba_growth=False
-if numba_growth == True: 
-    st = time.time()
-    U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=0.1, boundaryCoeff=2)
-    elapsed_time = time.time() - st
-    print('Execution time:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-
-
+#%%
 no_growth = True
 if no_growth == True:
     st = time.time()
@@ -91,3 +84,19 @@ if no_growth == True:
 
 
 print(np.sum(U_final[0]))
+# %%
+#%%
+numba_growth=False
+if numba_growth == True: 
+    st = time.time()
+    U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=2)
+    elapsed_time = time.time() - st
+    print('Execution time numba :', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+
+    #plot
+    plot1D(U, savefig=False,filename='')
+    plt.show()
+    surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+    plt.show()
+    surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+    plt.show()

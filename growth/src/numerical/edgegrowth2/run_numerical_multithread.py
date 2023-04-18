@@ -53,7 +53,7 @@ date = date.today().strftime('%m_%d_%Y')
 
 
 
-def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test = False):
+def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test = True):
     # bigger field
     # L=500; dx =1; J = int(L/dx)
     # T =3000; dt = 0.05; N = int(T/dt)
@@ -67,14 +67,14 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test =
     # smaller time and smaller dt 
 
     L=30; dx =0.1; J = int(L/dx)
-    T =10000; dt = 0.02; N = int(T/dt)
+    T =20000; dt = 0.02; N = int(T/dt)
     boundaryCoeff=1;rate=0.1
 
 
 
     filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
     if test == True:
-        T =3; dt = 0.1; N = int(T/dt)
+        T =10; dt = 0.1; N = int(T/dt)
         tqdm_disable = False
     else:
         tqdm_disable = True

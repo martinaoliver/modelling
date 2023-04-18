@@ -36,7 +36,7 @@ print('Number of Threads set to ', Number_of_Threads)
 # Number_of_Threads=48
 # Specify name of circuit and variant investigated
 circuit_n='turinghill'
-variant= 4
+variant= 5
 n_species=2
 # Specifiy number of parameter sets in parameterset file to be loaded
 df_lenght = 2000000

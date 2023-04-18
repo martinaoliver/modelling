@@ -32,7 +32,7 @@ from tqdm import tqdm
 #######################
 
 circuit_n='turinghill'
-variant=4
+variant=5
 np.random.seed(1)
 
 
@@ -99,7 +99,7 @@ def parameterfile_creator_function(numbercombinations):
 
     # bx = np.full((numbercombinations, 1), 0.01)
     # cooperativity = np.full((numbercombinations, 1), 3)
-    d_A = np.full((numbercombinations, 1), 0.001)
+    d_A = np.full((numbercombinations, 1), 0.01)
     d_B= np.full((numbercombinations, 1), 1)
     # d_B = np.full((numbercombinations, 1), 0.8)
     parameterindex = np.arange(1, numbercombinations + 1, dtype=int).reshape(numbercombinations, 1)

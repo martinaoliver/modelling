@@ -22,8 +22,8 @@ circuit_n='turinghill'
 mechanism='nogrowth'
 variant=4
 folder = 'turinghill_variant4_nogrowth'
-L=50; dx =0.1; J = int(L/dx)
-T =5000; dt = 0.02; N = int(T/dt)
+L=15; dx =0.1; J = int(L/dx)
+T=40000; dt = 0.02; N = int(T/dt)
 boundaryCoeff=1;rate=0.1
 
 
