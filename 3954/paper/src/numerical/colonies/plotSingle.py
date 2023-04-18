@@ -26,31 +26,26 @@ from numerical.cn_plot import *
 #############
 
 # Specify name of circuit and variant investigated
-circuit_n=14;variant='fitted1';n_species=6
-# circuit_n=14;variant='2nd';n_species=6
+# circuit_n=14;variant='fitted1';n_species=6
+circuit_n=14;variant='2nd';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
 # balance = 'balanced'\
 # circuit_n=14;variant='fitted1';n_species=6
 
-folder = 'circuit14variantfitted1'
-# folder = 'circuit14variant2ndBalancedTuring'
+# folder = 'circuit14variantfitted1'
+folder = 'circuit14variant2ndBalancedTuring'
 modelArgs = [circuit_n,variant,n_species,folder]
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 nsamples = 1000000
 
 # specify dimensions of system
-L=20; dx =0.1; J = int(L/dx)
-T =50; dt =0.02; N = int(T/dt)
-L=20; dx =0.1; J = int(L/dx)
-T =50; dt = 0.02; N = int(T/dt)
+L=5; dx =0.1; J = int(L/dx)
+T =10; dt = 0.02; N = int(T/dt)
 boundarycoeff = 1
-# divisionTimeHours=0.5
-# p_division=0.4;seed=1
-# divisionTimeHours=2
-# p_division=0.35;seed=1
-
+divisionTimeHours=0.5
+p_division=1;seed=1
 
 shape = 'ca'
 x_gridpoints=int(1/dx)
@@ -59,22 +54,17 @@ x_gridpoints=int(1/dx)
 
 save_figure = False
 
-
-parID=1003789
 parID=195238
-# parID = 651894
-# parID_list = [89407, 706280]
-# parID = parID_list[1]
-# parID = 62509
 
 #%%
 #load image
 # U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+# filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+perturbation = 'Kda2'
+filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r_%s'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N,perturbation)
 
 U_record = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
 U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
-
 
 
 # pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) )
@@ -88,43 +78,7 @@ savefig_path  = ''
 # plt.imshow(rgb.astype('uint8'), origin= 'lower')
 
 
-#%%
-import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib import animation
-# plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
-plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
-rgb_timeseries = redgreen_contrast_timeseries(U_record)
-# show_rgbvideo(rgb_timeseries,parID)
-saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
 
-
-def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
-    fig = plt.figure()
-    ims = []
-    rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
-    im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
-
-    for i in range(len(rgb_timeseries)):
-        im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
-        plt.title(str(filename) + str(i))
-        plt.xlabel(f'Time: {i}h')
-        
-        ims.append([im])
-    ani = animation.ArtistAnimation(fig, ims,interval=50000000, repeat=False)
-    
-    # ani.save(saveVideoPath + '/%s.mp4' %filename)
-    print('Video saved')
-    
-    #FOR GIF
-    writergif = animation.PillowWriter(fps=10)
-    ani.save(saveVideoPath + filename + '.gif',writer=writergif)
-
-    # FOR MP4
-    # mywriter = animation.FFMpegWriter()
-    # ani.save('mymovie.mp4',writer=mywriter)
-    
-save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 
 
 # %%
@@ -195,8 +149,8 @@ def redgreen_contrast_timeseries(records):
     simulation_time = len(records[0][0][0])
     for time in range (simulation_time):
         red_timeseries,green_timeseries = records[-2],records[-1]
-        red = red_timeseries[100,:,time]
-        green = green_timeseries[100,:,time]
+        red = red_timeseries[int(J/2),:,time]
+        green = green_timeseries[int(J/2),:,time]
         normalised_red = matrix_rgb_normalisation(red)[0]
         normalised_green = matrix_rgb_normalisation(green)[0]
         # normalised_red =preprocessing.normalize([red])*255
@@ -225,3 +179,40 @@ plt.show()
 
 
 # %%
+#%%
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib import animation
+# plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
+plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
+rgb_timeseries = redgreen_contrast_timeseries(U_record)
+# show_rgbvideo(rgb_timeseries,parID)
+saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
+
+
+def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
+    fig = plt.figure()
+    ims = []
+    rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+    im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+
+    for i in range(len(rgb_timeseries)):
+        im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
+        plt.title(str(filename) + str(i))
+        plt.xlabel(f'Time: {i}h')
+        
+        ims.append([im])
+    ani = animation.ArtistAnimation(fig, ims,interval=50000000, repeat=False)
+    
+    # ani.save(saveVideoPath + '/%s.mp4' %filename)
+    print('Video saved')
+    
+    #FOR GIF
+    writergif = animation.PillowWriter(fps=10)
+    ani.save(saveVideoPath + filename + '.gif',writer=writergif)
+
+    # FOR MP4
+    # mywriter = animation.FFMpegWriter()
+    # ani.save('mymovie.mp4',writer=mywriter)
+    
+save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))

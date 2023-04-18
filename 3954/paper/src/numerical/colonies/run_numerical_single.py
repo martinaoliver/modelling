@@ -72,8 +72,8 @@ with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_data
 # divisionTimeHours=float(sys.argv[5])
 # p_division=float(sys.argv[6]);seed=1
 
-L=20; dx =0.1; J = int(L/dx)
-T =50; dt = 0.02; N = int(T/dt)
+L=5; dx =0.1; J = int(L/dx)
+T =10; dt = 0.02; N = int(T/dt)
 boundarycoeff = 1
 divisionTimeHours=0.5
 p_division=1;seed=1
@@ -104,9 +104,8 @@ except:
     # T =1; dt = 0.05; N = int(T/dt)
 # 0.5,0.02, 0.005
 # T =2; dt = 0.05; N = int(T/dt)
-DrDiv=1
 
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r_DrDiv%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N,DrDiv)
+
 #%%
 # test = bool(sys.argv[7])
 test = False
@@ -115,53 +114,53 @@ if test==True:
     print('test')
     T=3;N = int(T/dt)
     tqdm_disable=False
-# parID=int(sys.argv[8])
+
+
+# degDiv = 1
+# par_dict['muASV'] =par_dict['muASV']/degDiv
+# par_dict['muLVA'] = par_dict['muLVA'] /degDiv
+# degDiv = 1
+# par_dict['muASV'] =par_dict['muASV']/degDiv
+
 parID=195238
 print('parID = ' + str(parID))
 par_dict = df.loc[parID].to_dict()
-D = np.zeros(n_species)
-DrDiv=10
-print(par_dict['Dr'])
+parampowerList = [-2,-1,-0.5,0,0.5,1,2]
+parampowerList = [-0.25,0.25]
+parampowerList = [-0.1]
+for parampower in parampowerList:
+    par_dict = df.loc[parID].to_dict()
+    par_dict['Kub'] = par_dict['Kub'] * 10**parampower
+    par_dict['Kvd'] = par_dict['Kvd'] * 10**parampower
+    perturbation = 'KubKvd%s'%parampower
 
-Dr = float(par_dict['Dr'])/DrDiv
-print(f'Dr new {Dr}')
-DrDiv=10
-print(par_dict['Dr'])
 
-Dr = float(par_dict['Dr'])/DrDiv
-print(f'Dr new {Dr}')
-D[:2] = [1,Dr ]
-# degDiv = 1
-# par_dict['muASV'] =par_dict['muASV']/degDiv
-# par_dict['muLVA'] = par_dict['muLVA'] /degDiv
-# degDiv = 1
-# par_dict['muASV'] =par_dict['muASV']/degDiv
-# par_dict['muLVA'] = par_dict['muLVA'] /degDiv
-print(par_dict)
+    D = np.zeros(n_species)
+    Dr = float(par_dict['Dr'])
+    D[:2] = [1,Dr ]
 
-# U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=boundarycoeff)
-# U_record,U_final =  adi(par_dict,L,L,J,J,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0)
-# get the start time
-st = time.time()
-U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
-U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
-elapsed_time = time.time() - st
-print('Execution time numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-plt.imshow(U_final[-1])
-plt.show()
+    print(par_dict)
+
+    filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r_%s'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N,perturbation)
+
+    # U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=boundarycoeff)
+    # U_record,U_final =  adi(par_dict,L,L,J,J,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0)
+    # get the start time
+    st = time.time()
+    U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
+    elapsed_time = time.time() - st
+    print('Execution time numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+    plt.imshow(U_final[-1])
+    plt.show()
 
 
 
-pickle.dump(U_final, open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) )
-pickle.dump(U_record, open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'wb'))
-pickle.dump(U_final, open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) )
-pickle.dump(U_record, open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'wb'))
+    pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) )
+    pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'wb'))
 
-print(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s_DrDiv%r.pkl'%(folder,filename(parID)))
-print('saved')
-# %%
-# rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure=False)
-# rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure=False)
+    print('saved')
+
+    rgb = plot_redgreen_contrast(U_final,L,parID=filename(parID),scale_factor=x_gridpoints,save_figure=False)
 
 # %%
 # plt.imshow(U_final[-1])
