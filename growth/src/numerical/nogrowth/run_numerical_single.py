@@ -28,18 +28,18 @@ n_param_sets = 2000000
 df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # df = multiple_df.xs(0, level=1)
 #solver parameters
-L=30; dx =0.1; J = int(L/dx)
-T =10000; dt = 0.02; N = int(T/dt)
+L=50; dx =0.2; J = int(L/dx)
+T =20000; dt = 0.08; N = int(T/dt)
 boundaryCoeff=1;rate=0.1
 
-suggesteddt = float(dx*dx*2)
+# L=10; dx =0.2; J = int(L/dx)
+# T =20000; dt = 0.08; N = int(T/dt)
+# boundaryCoeff=1;rate=0.1
 
+suggesteddt = float(dx*dx*2)
 print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
-suggesteddt = float(dx*dx*2)
-print(f'suggested dt = {suggesteddt}, used dt = {dt}')
-
-parID= (2115,0) #parameter set to use
+parID= (1997736,0) #parameter set to use
 par_dict = df.loc[parID].to_dict()
 print(f'estimated wavelenght = {par_dict["estimated_wvl"]}')
 

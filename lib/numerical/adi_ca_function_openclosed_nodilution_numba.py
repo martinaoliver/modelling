@@ -51,7 +51,7 @@ def adi_ca_openclosed_nodilution(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,
         U0.append(np.random.uniform(low=steadystates[index] - perturbation, high=steadystates[index] + perturbation, size=(I, J)))
     U0 = U0*cell_matrix
 
-
+    print(boundarycoeff)
     #A matrix (right-hand side of Ax=b)
     def A(alphan):
         bottomdiag = [-alphan for j in range(J-1)]

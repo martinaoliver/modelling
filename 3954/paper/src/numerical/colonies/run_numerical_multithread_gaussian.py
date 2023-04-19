@@ -41,23 +41,25 @@ print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
 # circuit_n=14;variant='fitted1';n_species=6
-circuit_n=14;variant='2nd';n_species=6
+circuit_n=14;variant=int(sys.argv[2]);n_species=6;nsr=float(sys.argv[3])
+
 # Specifiy number of parameter sets in parameterset file to be loaded
 # balance = 'balanced'
 # folder = 'circuit14variantfitted1'
-folder = 'circuit14variant2ndBalancedTuring'
+# folder = 'circuit14variant2ndBalancedTuring'
+folder = f'circuit14variant{variant}'
 modelArgs = [circuit_n,variant,n_species,folder]
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 # nsamples = 2000000
-nsamples = 1000000
-
+nsamples = 2000
 # specify dimensions of system
+
 L=20; dx =0.1; J = int(L/dx)
-T =35; dt = 0.02; N = int(T/dt)
-boundarycoeff = 2
-divisionTimeHours=0.1
-p_division=0.17;seed=1
+T =50; dt = 0.02; N = int(T/dt)
+boundarycoeff = 1
+divisionTimeHours=0.5
+p_division=1;seed=1
 
 
 
@@ -76,7 +78,7 @@ with open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivi
     daughterToMotherDictList = pickle.load(f)
 
 
-def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder):
+def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder):
     # L=8; dx =0.02; J = int(L/dx)
     # T =125; dt = 0.05; N = int(T/dt)
     # boundarycoeff = 1.7
@@ -86,9 +88,8 @@ def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=sys
     L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours = systemArgs
     df_index = np.unique(df.index.get_level_values(0))
 
-
-    if test==True:
-        T =1; dt = 0.025; N = int(T/dt)
+    if int(sys.argv[1]) == 1:
+        T =1; dt =0.5; N = int(T/dt)
         tqdm_disable = False
     else:
         tqdm_disable = True
@@ -106,7 +107,7 @@ def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=sys
         # par_dict['muLVA'] = par_dict['muLVA'] /degDiv
         # steadystates=par_dict['ss_list']
 
-        filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+        filename= lambda parID: 'circuit%r_variant%snsr%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsr,boundarycoeff, shape,parID,L,J,T,N)
         savefig=False
         savefigpath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s/'%(folder)
 
@@ -156,9 +157,12 @@ start_time = time.perf_counter()
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
-with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+# with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+#     df = pickle.load(f)
+with open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%r_variant%sgaussian%snsr_%rparametersets.pkl'%(circuit_n,variant,nsr,nsamples), "rb" ) as f:
     df = pickle.load(f)
-    
+
+
 # turing_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 total_params=len(df)
 # total_params=10
