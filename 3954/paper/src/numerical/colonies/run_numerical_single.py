@@ -110,7 +110,7 @@ except:
 
 #%%
 # test = bool(sys.argv[7])
-test = True
+test = False
 tqdm_disable=False
 if test==True:
     print('test')
@@ -149,8 +149,8 @@ for param in paramList:
     U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
     elapsed_time = time.time() - st
     print('Execution time numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-    plt.imshow(U_final[-1])
-    plt.show()
+    # plt.imshow(U_final[-1])
+    # plt.show()
 
 
 
