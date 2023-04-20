@@ -18,6 +18,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 #############
 ###Imports#####
 #############
@@ -71,14 +72,11 @@ with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_data
 # divisionTimeHours=float(sys.argv[5])
 # p_division=float(sys.argv[6]);seed=1
 
-
-
-L=20; dx =0.1; J = int(L/dx)
-T =50; dt = 0.02; N = int(T/dt)
+L=5; dx =0.1; J = int(L/dx)
+T =10; dt = 0.02; N = int(T/dt)
 boundarycoeff = 1
 divisionTimeHours=0.5
 p_division=1;seed=1
-
 
 shape = 'ca'
 x_gridpoints=int(1/dx)
@@ -110,11 +108,11 @@ except:
 
 #%%
 # test = bool(sys.argv[7])
-test = True
+test = False
 tqdm_disable=False
 if test==True:
     print('test')
-    T=1;N =1
+    T=3;N = int(T/dt)
     tqdm_disable=False
 
 
@@ -127,11 +125,14 @@ if test==True:
 parID=195238
 print('parID = ' + str(parID))
 par_dict = df.loc[parID].to_dict()
-paramList = [1,1.5,2]
-
-for param in paramList:
+parampowerList = [-2,-1,-0.5,0,0.5,1,2]
+parampowerList = [-0.25,0.25]
+parampowerList = [-0.1]
+for parampower in parampowerList:
     par_dict = df.loc[parID].to_dict()
-    boundarycoeff = param
+    par_dict['Kub'] = par_dict['Kub'] * 10**parampower
+    par_dict['Kvd'] = par_dict['Kvd'] * 10**parampower
+    perturbation = 'KubKvd%s'%parampower
 
 
     D = np.zeros(n_species)
@@ -140,7 +141,7 @@ for param in paramList:
 
     print(par_dict)
 
-    filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+    filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r_%s'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N,perturbation)
 
     # U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=boundarycoeff)
     # U_record,U_final =  adi(par_dict,L,L,J,J,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0)
@@ -168,43 +169,83 @@ for param in paramList:
 # plt.colorbar()
 # %%
 
-# #Save video
-# saveVideo=False
-# if saveVideo==True:
+#Save video
+saveVideo=True
+if saveVideo==True:
         
-#     import numpy as np
-#     from matplotlib import pyplot as plt
-#     from matplotlib import animation
-#     # plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
-#     plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
-#     rgb_timeseries = redgreen_contrast_timeseries(U_record)
-#     # show_rgbvideo(rgb_timeseries,parID)
-#     saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
+    import numpy as np
+    from matplotlib import pyplot as plt
+    from matplotlib import animation
+    # plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
+    plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
+    rgb_timeseries = redgreen_contrast_timeseries(U_record)
+    # show_rgbvideo(rgb_timeseries,parID)
+    saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
 
 
-#     def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
-#         fig = plt.figure()
-#         ims = []
-#         rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
-#         im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+    def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
+        fig = plt.figure()
+        ims = []
+        rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+        im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
 
-#         for i in range(len(rgb_timeseries)):
-#             im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
-#             plt.title(str(filename) + str(i))
-#             plt.xlabel(f'Time: {i}h')
+        for i in range(len(rgb_timeseries)):
+            im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
+            plt.title(str(filename) + str(i))
+            plt.xlabel(f'Time: {i}h')
             
-#             ims.append([im])
-#         ani = animation.ArtistAnimation(fig, ims,interval=50000000)
+            ims.append([im])
+        ani = animation.ArtistAnimation(fig, ims,interval=50000000)
         
-#         # ani.save(saveVideoPath + '/%s.mp4' %filename)
-#         print('Video saved')
+        # ani.save(saveVideoPath + '/%s.mp4' %filename)
+        print('Video saved')
         
-#         #FOR GIF
-#         writergif = animation.PillowWriter(fps=10)
-#         ani.save(saveVideoPath + filename + '.gif',writer=writergif)
+        # #FOR GIF
+        # writergif = animation.PillowWriter(fps=10)
+        # ani.save(saveVideoPath + filename + '.gif',writer=writergif)
 
-#         # FOR MP4
-#         # mywriter = animation.FFMpegWriter()
-#         # ani.save('mymovie.mp4',writer=mywriter)
+        # FOR MP4
+        mywriter = animation.FFMpegWriter()
+        ani.save('mymovie.mp4',writer=mywriter)
         
-#     save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
+    save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
+#Save video
+saveVideo=True
+if saveVideo==True:
+        
+    import numpy as np
+    from matplotlib import pyplot as plt
+    from matplotlib import animation
+    # plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
+    plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
+    rgb_timeseries = redgreen_contrast_timeseries(U_record)
+    # show_rgbvideo(rgb_timeseries,parID)
+    saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
+
+
+    def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
+        fig = plt.figure()
+        ims = []
+        rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+        im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+
+        for i in range(len(rgb_timeseries)):
+            im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
+            plt.title(str(filename) + str(i))
+            plt.xlabel(f'Time: {i}h')
+            
+            ims.append([im])
+        ani = animation.ArtistAnimation(fig, ims,interval=50000000)
+        
+        # ani.save(saveVideoPath + '/%s.mp4' %filename)
+        print('Video saved')
+        
+        #FOR GIF
+        writergif = animation.PillowWriter(fps=10)
+        ani.save(saveVideoPath + filename + '.gif',writer=writergif)
+
+        # FOR MP4
+        # mywriter = animation.FFMpegWriter()
+        # ani.save('mymovie.mp4',writer=mywriter)
+        
+    save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
