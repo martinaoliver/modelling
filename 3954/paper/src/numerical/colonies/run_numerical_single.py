@@ -200,13 +200,13 @@ if saveVideo==True:
         # ani.save(saveVideoPath + '/%s.mp4' %filename)
         print('Video saved')
         
-        #FOR GIF
-        writergif = animation.PillowWriter(fps=10)
-        ani.save(saveVideoPath + filename + '.gif',writer=writergif)
+        # #FOR GIF
+        # writergif = animation.PillowWriter(fps=10)
+        # ani.save(saveVideoPath + filename + '.gif',writer=writergif)
 
         # FOR MP4
-        # mywriter = animation.FFMpegWriter()
-        # ani.save('mymovie.mp4',writer=mywriter)
+        mywriter = animation.FFMpegWriter()
+        ani.save('mymovie.mp4',writer=mywriter)
         
     save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 #Save video

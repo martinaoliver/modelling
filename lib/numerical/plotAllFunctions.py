@@ -109,7 +109,7 @@ def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoin
     if saveFig==False:
         plt.show()
     if saveFig==True:
-        if stop==len_fullDataset:
+        if stop==len_fullDataset and start==0:
             plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s.png'%(folder,filename('x')),dpi=dpi)
         
         else:

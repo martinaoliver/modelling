@@ -1,3 +1,4 @@
+print('hehe')
 #############
 ###paths#####
 #############
@@ -14,7 +15,7 @@ from numerical.plotAllFunctions import plotAllFunctionColonies
 
 import pickle
 import numpy as np
-print('hehe')
+print('hehe2')
 # import matplotlib.pyplot as plt
 # from matplotlib import colors
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -25,7 +26,8 @@ print('hehe')
 # circuit_n=14;variant='fitted1';n_species=6
 # circuit_n=14;variant='2nd';n_species=6
 # circuit_n=14;variant=int(sys.argv[1]);n_species=6;nsr=0.05
-circuit_n=14;variant=195238;n_species=6;nsr=0.05
+# circuit_n=14;variant=195238;n_species=6;nsr=0.05
+circuit_n=14;variant=783895;n_species=6;nsr=0.05
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 # balance = 'balanced'
@@ -56,15 +58,18 @@ shape = 'ca'
 
 x_gridpoints=int(1/dx)
 
+
 # filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 # filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 filename= lambda parID: 'circuit%r_variant%snsr%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsr,boundarycoeff, shape,parID,L,J,T,N)
 data_path = modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s'%(folder)
 parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 
-start = 0
+# start=0
+start = 825
+
 stop = len(parID_list) 
-stop = 825
+# stop = 825
 
 plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,folder=folder,start=start, stop=stop, tqdm_disable=False, saveFig=True)
 
