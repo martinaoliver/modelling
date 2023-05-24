@@ -369,7 +369,8 @@ n_parameters = [nub,nee,neb,nvd,nda,nce,nfe]
 
 createParams=True
 if createParams == True:
-    nsamples=1000
+    # nsamples=len(df)
+    nsamples=3000000
     # nsamples=int(sys.argv[1])
     parameterDictList = D_parameters  + V_parameters + K_parameters + mu_parameters + n_parameters
     stackedDistributions = preLhs(parameterDictList)
@@ -426,14 +427,12 @@ def checkBalance(par_dict):
 
 createBalancedParams=True
 if createBalancedParams == True:
-    nsamples=10
-
     balancedDf = pd.DataFrame()
     semiBalancedDf = pd.DataFrame()
     notBalancedDf = pd.DataFrame()
 
     balanceList = []    
-    for parID in lhsDistFit_df.index:
+    for parID in tqdm(lhsDistFit_df.index):
         par_dict = lhsDistFit_df.loc[parID].to_dict()
         balanceList.append(checkBalance(par_dict))
     lhsDistFit_df['balance'] = balanceList
@@ -443,13 +442,13 @@ if createBalancedParams == True:
     semiBalancedDfPre = lhsDistFit_df[lhsDistFit_df['balance']=='Semi balanced']
     notBalancedDfPre = lhsDistFit_df[lhsDistFit_df['balance']=='Not balanced']
     
-    #concat to df
-    if len(balancedDf)<nsamples:
-        balancedDf = pd.concat([balancedDf, balancedDfPre], ignore_index=True)
-    if len(semiBalancedDf)<nsamples:
-        semiBalancedDf = pd.concat([semiBalancedDf, semiBalancedDfPre], ignore_index=True)
-    if len(notBalancedDf)<nsamples:
-        notBalancedDf = pd.concat([notBalancedDf, notBalancedDfPre], ignore_index=True)
+    # #concat to df
+    # if len(balancedDf)<nsamples:
+    #     balancedDf = pd.concat([balancedDf, balancedDfPre], ignore_index=True)
+    # if len(semiBalancedDf)<nsamples:
+    #     semiBalancedDf = pd.concat([semiBalancedDf, semiBalancedDfPre], ignore_index=True)
+    # if len(notBalancedDf)<nsamples:
+    #     notBalancedDf = pd.concat([notBalancedDf, notBalancedDfPre], ignore_index=True)
 
     lhsDistFit_df_balancesemibalance = lhsDistFit_df[lhsDistFit_df['balance']!='Not balanced']
     print('Lenght of balancedsemibalance df: %r'%len(lhsDistFit_df_balancesemibalance))
@@ -457,7 +456,7 @@ if createBalancedParams == True:
         # pkl.dump(semiBalancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_semiBalanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
         # pkl.dump(notBalancedDf[:nsamples], open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_notBalanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
     pkl.dump(lhsDistFit_df, open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
-    pkl.dump(lhsDistFit_df_balancesemibalance, open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), 'wb'))
+    pkl.dump(lhsDistFit_df_balancesemibalance, open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,nsamples), 'wb'))
 
 
 len(balancedDf), len(semiBalancedDf), len(notBalancedDf), len(lhsDistFit_df_balancesemibalance)
