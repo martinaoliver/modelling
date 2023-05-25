@@ -74,15 +74,19 @@ def plotFitvsData(inducer,inducer_continuous, gfpExp_list, rfpExp_list, semGreen
 #############
 ###load dataset#####
 #############
+HSLdiv = 0.07
+
+
+
 doseResponseExp1 = pkl.load(open('input/liquid_culture/curatedData/Jure_subcircuit1_circuit14_doseResponseOC14_0.5ATC.pkl','rb'))
-OC14_list1= np.array(doseResponseExp1['OC14']); gfpExp_list1 = list(doseResponseExp1['mean_gfp']); rfpExp_list1 = list(doseResponseExp1['mean_rfp'])
+OC14_list1= np.array(doseResponseExp1['OC14'])/HSLdiv; gfpExp_list1 = list(doseResponseExp1['mean_gfp']); rfpExp_list1 = list(doseResponseExp1['mean_rfp'])
 semGreen1 = doseResponseExp1['std_gfp']; semRed1 = doseResponseExp1['std_rfp']
 plotData(OC14_list1, rfpExp_list1, gfpExp_list1, semRed1, semGreen1)
 
 
 
 doseResponseExp3 = pkl.load(open('input/liquid_culture/curatedData/Jure_subcircuit3_circuit14_doseResponseOC14_0.5ATC.pkl','rb'))
-OC14_list3= np.array(doseResponseExp3['OC14']); gfpExp_list3 = list(doseResponseExp3['mean_gfp']); rfpExp_list3 = list(doseResponseExp3['mean_rfp'])
+OC14_list3= np.array(doseResponseExp3['OC14'])/HSLdiv; gfpExp_list3 = list(doseResponseExp3['mean_gfp']); rfpExp_list3 = list(doseResponseExp3['mean_rfp'])
 semGreen3 = doseResponseExp3['std_gfp']; semRed3 = doseResponseExp3['std_rfp']
 plotData(OC14_list3, rfpExp_list3, gfpExp_list3, semRed3, semGreen3)
 print(np.amax([rfpExp_list3, rfpExp_list1]))
@@ -129,7 +133,7 @@ def rfp3_steadystate(D,Vc, Kda,Kce):
     E3 = 1 + Ve*(1/(1+((bfp3_steadystate(D, Vc, Kda)/(Kce+1e-8))**nce)))
     return E3
 
-OC14_continuous = np.logspace(-3,2, 100)
+OC14_continuous = np.logspace(-3,2, 100)/HSLdiv
 
 
 def steadystate(OC14,Vc,Vd,Vf, Kvd,Kda, Kfe, Kce):
@@ -227,7 +231,7 @@ if test==True:
         
     fig,ax = plt.subplots()
     ax2=ax.twinx()
-    OC14_continuous = np.logspace(-3,2,100)
+    OC14_continuous = np.logspace(-3,2,100)/HSLdiv
 
     for p in parameters_list:
         fluorescenceFit = steadystate(OC14data_new, *p)
@@ -301,7 +305,7 @@ pfitDict['nda'] = nda
 pfitDict['nce'] = nce
 
 circuit_n=14
-variant='fitted2'
+variant='fitted3'
 #diffusion parameters
 
 

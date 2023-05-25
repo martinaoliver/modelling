@@ -37,11 +37,11 @@ print('Number of Threads set to ', Number_of_Threads)
 # Specify name of circuit and variant investigated
 
 circuit_n='circuit14'
-variant='fitted2'
+variant='fitted3'
 # variant='2nd'
 n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets =1000000
+n_param_sets =3000000
 # n_param_sets = 10
 # balance = 'balanced'
 # df_lenght = 10
@@ -55,9 +55,8 @@ date = date.today().strftime('%m_%d_%Y')
 # Does not need to be a factor of number of parameter sets
 # batch_size = 20000
 # batch_size = 2
-# batch_size = 208
-batch_size =int(n_param_sets/Number_of_Threads)
-# batch_size=10
+batch_size =5208
+# batch_size =int(n_param_sets/Number_of_Threads)
 print(f'batch_size: {batch_size}')
 
 
@@ -87,8 +86,8 @@ print('df_loaded')
 
 # print('df_%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,n_param_sets))
 # df= pickle.load( open("../lhs_parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
-df_lenght = len(df)
-# df_lenght=10
+# df_lenght = len(df)
+df_lenght=500000
 batch_indices = list(range(0+start_parameter, df_lenght + start_parameter, batch_size))
 # batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))
 
