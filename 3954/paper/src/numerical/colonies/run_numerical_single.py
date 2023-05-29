@@ -39,11 +39,13 @@ from colonyMaskCreation import *
 # %matplotlib inline
 shape = 'ca'
 circuit_n=14;variant='2nd';n_species=6
+circuit_n=14;variant='fitted3';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 10
 # balance = 'balanced'
-folder = 'circuit14variant2ndBalancedTuring'
-nsamples =  1000000
+# folder = 'circuit14variant2ndBalancedTuring'
+folder = 'circuit14fitted3balancedSemibalanced'
+nsamples =  3000000
 save_figure = False
 tqdm_disable = False #disable tqdm
 # boundarycoeff = float(sys.argv[6])
@@ -55,9 +57,11 @@ tqdm_disable = False #disable tqdm
 # df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # df= pickle.load( open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+# with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit%r_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
     df = pickle.load(f)
-#solver parameters
+#remove second index in multindex
+# #solver parameters
 # specify dimensions of system
 # L=4; dx =0.05; J = int(L/dx)
 # T =37; dt =0.005; N = int(T/dt)
@@ -124,13 +128,14 @@ if test==True:
 # degDiv = 1
 # par_dict['muASV'] =par_dict['muASV']/degDiv
 
-parID=195238
+parID=341399
 print('parID = ' + str(parID))
 par_dict = df.loc[parID].to_dict()
 paramList = [1,1.5,2]
 
 for param in paramList:
-    par_dict = df.loc[parID].to_dict()
+    # par_dict = df.loc[parID].to_dict()
+    par_dict = df.loc[(parID,0)].to_dict()
     boundarycoeff = param
 
 
