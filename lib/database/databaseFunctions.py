@@ -16,7 +16,14 @@ import psycopg2
 import os
 import pickle
 
-password = os.environ['DB_PASSWORD']
+if modellingpath == '/rds/general/user/mo2016/home/Documents/modelling':
+    f = open('/rds/general/user/mo2016/home/Documents/nico_db', 'r')
+    password = f.read()
+f.close()
+if modellingpath == '/Users/mo2016/Documents/modelling':
+    password = os.environ['DB_PASSWORD']
+
+
 credentials=f"postgresql://marti:{password}@vps.dcotta.eu:5432/marti_phd"
 
 
@@ -36,6 +43,7 @@ def saveModelParameters(df, circuit_n, variant):
 
     lhs_df.index.name = 'parID'
     # print(lhs_df)
+    print('aaaa')
     rows = df.to_sql('model_param', con=credentials, if_exists='append', index=True, index_label='parID')
     # print('inserted_rows: ', rows)
     return
@@ -76,13 +84,14 @@ def queryNumericalResult(parID, simID, circuit_n, var):
 #%%
 # Specify name of circuit and variant investigated
 circuit_n='circuit14'
-variant='2nd'
+variant='1nd'
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 1000000
+n_param_sets = 5000
 
 print(f'Circuit:{circuit_n}, Variant:{variant}')
-lhs_df = pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,100000), "rb"))
-
+lhs_df = pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+lhs_df = lhs_df.iloc[:3]
+print('sgxjfh')
 saveModelParameters(lhs_df, circuit_n, variant)
 
 # %%

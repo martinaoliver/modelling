@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from math import log10 , floor
 from scipy.signal import find_peaks
-
+print('hehe')
 def NormalizeData(data):
     return (data - np.min(data)) / (np.max(data) - np.min(data)+1e-8)
 
@@ -57,9 +57,9 @@ def patternClassification(U_final, U_record, normalize=True):
     #check if converged
     relRangeConverged=[0,0]
     for count,Ux_record in enumerate(U_record):
-        relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[-5:])]
+        relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[-3:])]
     # if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
-    if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
+    if np.amax(relRangeConverged[0])>0.01 or np.amax(relRangeConverged[1])>0.01:
         converged=False
     else:
         converged=True
@@ -107,16 +107,17 @@ def patternClassification(U_final, U_record, normalize=True):
 
 
 
-
 circuit_n='turinghill'
-variant= 4
-n_species=2
+# mechanism='edgegrowth2'
 mechanism='nogrowth'
-folder = 'turinghill_variant4_nogrowth'
+n_species=2
 
-L=15; dx =0.1; J = int(L/dx)
-T =40000; dt = 0.02; N = int(T/dt)
+variant=5
+folder = f'turinghill_variant{variant}_{mechanism}'
+L=50; dx =0.2; J = int(L/dx)
+T =20000; dt = 0.08; N = int(T/dt)
 boundaryCoeff=1;rate=0.1
+
 
 
 # pattern_df = pickle.load(open( modellingpath + '/growth/out/patternAnalysis/%s/%s/pattern/pattern_df_%s.pkl'%(circuit_n,mechanism,filename(mechanism,'x')), 'rb'))
@@ -137,7 +138,7 @@ patternDict = {}
 test=True
 
 for count,parIDss in enumerate(tqdm(parID_list, disable=False)):
-    print(parID)
+    print(parIDss)
     #load records 
     U_final = pickle.load( open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,parIDss)), 'rb'))
     U_final = np.round(U_final,decimals=4)
