@@ -20,7 +20,7 @@ import seaborn as sns
 
 from equations.parameterCreation_functions import *
 
-test=True
+test=False
 
 
 #############
@@ -155,24 +155,25 @@ OC14data_new = np.hstack([OC14_list1,OC14_list1, OC14_list3,OC14_list3])
 OC14data_continuous= np.hstack([OC14_continuous,OC14_continuous, OC14_continuous,OC14_continuous])
 semStacked= np.hstack([semGreen1,semRed1, semGreen3,semRed3])
 
-popt, pcov = curve_fit(f=steadystate, xdata=OC14data_new, ydata=fluorescenceData ,sigma =semStacked)
+popt, pcov = curve_fit(f=steadystate, xdata=OC14data_new, ydata=fluorescenceData )
+# popt, pcov = curve_fit(f=steadystate, xdata=OC14data_new, ydata=fluorescenceData ,sigma =semStacked)
 
 paramNames = ['Vc','Vd','Vf', 'Kvd','Kda', 'Kfe', 'Kce']
 pfitDict = {}
 for param in popt:
     pfitDict[paramNames[popt.tolist().index(param)]] = param
 
-if test==True:
-    print(pfitDict)
-    fluorescenceFit = steadystate(OC14data_new, *popt)
-    fluorescenceFit_continuous = steadystate(OC14data_continuous, *popt)
-    gfpFit1 = fluorescenceFit[:10]; rfpFit1 = fluorescenceFit[10:20]; gfpFit3 = fluorescenceFit[20:30]; rfpFit3 = fluorescenceFit[30:40]
-    gfpFit1_continuous = fluorescenceFit_continuous[:100]; rfpFit1_continuous = fluorescenceFit_continuous[100:200]; gfpFit3_continuous = fluorescenceFit_continuous[200:300]; rfpFit3_continuous = fluorescenceFit_continuous[300:400]
+# if test==False:
+print(pfitDict)
+fluorescenceFit = steadystate(OC14data_new, *popt)
+fluorescenceFit_continuous = steadystate(OC14data_continuous, *popt)
+gfpFit1 = fluorescenceFit[:10]; rfpFit1 = fluorescenceFit[10:20]; gfpFit3 = fluorescenceFit[20:30]; rfpFit3 = fluorescenceFit[30:40]
+gfpFit1_continuous = fluorescenceFit_continuous[:100]; rfpFit1_continuous = fluorescenceFit_continuous[100:200]; gfpFit3_continuous = fluorescenceFit_continuous[200:300]; rfpFit3_continuous = fluorescenceFit_continuous[300:400]
 
-    plotFitvsData(OC14_list1,OC14_continuous, gfpExp_list1, rfpExp_list1, semGreen1, semRed1, gfpFit1_continuous,rfpFit1_continuous)
+plotFitvsData(OC14_list1,OC14_continuous, gfpExp_list1, rfpExp_list1, semGreen1, semRed1, gfpFit1_continuous,rfpFit1_continuous)
 
-    plotFitvsData(OC14_list3,OC14_continuous, gfpExp_list3, rfpExp_list3, semGreen3, semRed3, gfpFit3_continuous,rfpFit3_continuous)
-    gfpFit1_continuous_copy,rfpFit1_continuous_copy, gfpFit3_continuous_copy,rfpFit3_continuous_copy = gfpFit1_continuous,rfpFit1_continuous, gfpFit3_continuous,rfpFit3_continuous 
+plotFitvsData(OC14_list3,OC14_continuous, gfpExp_list3, rfpExp_list3, semGreen3, semRed3, gfpFit3_continuous,rfpFit3_continuous)
+gfpFit1_continuous_copy,rfpFit1_continuous_copy, gfpFit3_continuous_copy,rfpFit3_continuous_copy = gfpFit1_continuous,rfpFit1_continuous, gfpFit3_continuous,rfpFit3_continuous 
 
 
 
@@ -186,7 +187,7 @@ if test==True:
 if test==True:
     sampled_parameters = np.random.multivariate_normal(popt,pcov*100, size=100, check_valid='warn')#
 else:
-    sampled_parameters = np.random.multivariate_normal(popt,pcov*100, size=5000000, check_valid='warn')#
+    sampled_parameters = np.random.multivariate_normal(popt,pcov*100, size=12000000, check_valid='warn')#
 
 
 def steadystateloss(OC14,Vc,Vd,Vf, Kvd,Kda, Kfe, Kce):
@@ -377,7 +378,7 @@ n_parameters = [nub,nee,neb,nvd,nda,nce,nfe]
 createParams=True
 if createParams == True:
     # nsamples=len(df)
-    nsamples=3000000
+    nsamples=10000000
     if test==True:
         nsamples=100
     # nsamples=int(sys.argv[1])
