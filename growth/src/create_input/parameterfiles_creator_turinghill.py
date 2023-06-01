@@ -32,7 +32,7 @@ from tqdm import tqdm
 #######################
 
 circuit_n='turinghill'
-variant=5
+variant=6
 np.random.seed(1)
 
 
@@ -59,10 +59,17 @@ def lhs(data, nsample):
 def parameterfile_creator_function(numbercombinations):
     loguniformdist = loguniform(size=1000000)
 
-    b_range = (0.1,100)
-    Vm_range = (0.1, 100)
-    km_range = (0.1, 100)
-    mu_range = (0.01, 1)
+    # b_range = (0.1,100)
+    # Vm_range = (0.1, 100)
+    # km_range = (0.1, 100)
+    # mu_range = (0.01, 1)
+
+
+    b_range = (1,1000)
+    Vm_range = (1,1000)
+    km_range = (1,1000)
+    mu_range = (0.1,10)
+
     # d_B_range = (10**(-3), 10**3)
     n_range=(2,4)
 

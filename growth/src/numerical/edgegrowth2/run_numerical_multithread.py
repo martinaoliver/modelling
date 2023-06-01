@@ -66,7 +66,7 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test =
 
     # smaller time and smaller dt 
 
-    L=30; dx =0.1; J = int(L/dx)
+    L=100; dx =0.1; J = int(L/dx)
     T =20000; dt = 0.02; N = int(T/dt)
     boundaryCoeff=1;rate=0.1
 
