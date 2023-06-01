@@ -23,7 +23,7 @@ sys.path.append(modellingpath + '/lib')
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
-def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
+def cn_nogrowth_numba(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False):
     #spatial variables
     dx = float(L)/float(J-1)
     x_grid = np.array([j*dx for j in range(J)])
