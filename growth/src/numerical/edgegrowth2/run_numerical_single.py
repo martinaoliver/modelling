@@ -30,8 +30,8 @@ n_param_sets = 2000000
 df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
 # df = multiple_df.xs(0, level=1)
 #solver parameters
-L=20; dx =0.1; J = int(L/dx)
-T =1000; dt = 0.02; N = int(T/dt)
+L=100; dx =0.1; J = int(L/dx)
+T =10000; dt = 0.02; N = int(T/dt)
 
 # T =20000; dt = 0.02; N = int(T/dt)
 boundaryCoeff=1;rate=L/T

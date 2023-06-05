@@ -65,11 +65,10 @@ def parameterfile_creator_function(numbercombinations):
     # mu_range = (0.01, 1)
 
 
-    b_range = (1,1000)
-    Vm_range = (1,1000)
-    km_range = (1,1000)
-    mu_range = (0.1,10)
-
+    b_range = (10,10000)
+    Vm_range = (10,10000)
+    km_range = (10,10000)
+    mu_range = (1,100)
     # d_B_range = (10**(-3), 10**3)
     n_range=(2,4)
 
