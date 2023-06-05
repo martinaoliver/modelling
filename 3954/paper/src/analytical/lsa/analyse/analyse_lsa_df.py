@@ -39,7 +39,7 @@ circuit_n='circuit14'
 variant='fitted4'
 # balance = 'balanced'
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 3000000
+n_param_sets = 10000000
 
 print(f'Circuit:{circuit_n}, Variant:{variant}')
 

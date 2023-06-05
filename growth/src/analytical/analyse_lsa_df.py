@@ -1,3 +1,4 @@
+#%%
 #############
 ###paths#####
 #############
@@ -16,7 +17,7 @@ print('heehehe')
 
 
 circuit_n='turinghill'
-variant= 5
+variant= 6
 n_species=2
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 2000000
@@ -24,14 +25,14 @@ n_param_sets = 2000000
 
 df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 print(df['system_class'].value_counts())
-
+#%%
 #cut df
 cutDf = True
 if cutDf == True:
     cropValue = 2000
     cuttedDf = df.iloc[:cropValue]
     pickle.dump( cuttedDf, open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,cropValue), "wb" ) )
-
+#%%
 #plot pieChart
 def pieChart_lsa(valueCounts_dict,title,log=True):
     colors=['grey','grey','grey','grey','peachpuff','coral','coral','coral','coral','coral','grey','coral','coral']
@@ -51,7 +52,7 @@ def pieChart_lsa(valueCounts_dict,title,log=True):
 valueCounts_dict = dict(df['system_class'].value_counts())
 title = f'{circuit_n} Variant {variant}'
 pieChart_lsa(valueCounts_dict,title)
-
+#%%
 
 
 #values for which complex dispersion = true
@@ -86,3 +87,5 @@ if saveTuring == True:
 
 
 
+
+# %%

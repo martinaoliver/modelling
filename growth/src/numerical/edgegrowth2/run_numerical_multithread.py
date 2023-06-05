@@ -39,12 +39,12 @@ print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
 circuit_n='turinghill'
-variant= 4
+variant= 6
 n_species=2
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 2000000
-folder = 'turinghill_variant4_nogrowth'
+folder = 'turinghill_variant6_nogrowth'
 
 # Specify date today
 date = date.today().strftime('%m_%d_%Y')
@@ -53,7 +53,7 @@ date = date.today().strftime('%m_%d_%Y')
 
 
 
-def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test = True):
+def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
     # bigger field
     # L=500; dx =1; J = int(L/dx)
     # T =3000; dt = 0.05; N = int(T/dt)
@@ -65,7 +65,11 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test =
     # boundaryCoeff=2;rate=0.01
 
     # smaller time and smaller dt 
-
+    if Number_of_Threads == 1:
+        test=True
+        print('test')
+    else:
+        test=False
     L=100; dx =0.1; J = int(L/dx)
     T =20000; dt = 0.02; N = int(T/dt)
     boundaryCoeff=1;rate=0.1
@@ -76,6 +80,7 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species, test =
     if test == True:
         T =10; dt = 0.1; N = int(T/dt)
         tqdm_disable = False
+
     else:
         tqdm_disable = True
     # df_index = np.unique(df.index.get_level_values(0))
@@ -141,8 +146,8 @@ with open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 df.index.names = ['parID','ss']
 total_params=len(df)
-print(len(df))
-print('loaded')
+print(df)
+print('loadedd')
 batch_size = int(total_params/Number_of_Threads) + 1
 print(df.head())
 batch_indices = list(range(0, len(df), batch_size))
