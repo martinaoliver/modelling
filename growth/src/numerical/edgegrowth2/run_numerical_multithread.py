@@ -39,7 +39,7 @@ print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
 circuit_n='turinghill'
-variant= 6
+variant= 10
 n_species=2
 
 # Specifiy number of parameter sets in parameterset file to be loaded

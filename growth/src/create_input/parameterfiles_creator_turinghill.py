@@ -32,7 +32,7 @@ from tqdm import tqdm
 #######################
 
 circuit_n='turinghill'
-variant=7
+variant=10
 np.random.seed(1)
 
 
@@ -67,7 +67,7 @@ def parameterfile_creator_function(numbercombinations):
 
     b_range = (10,10000)
     Vm_range = (10,10000)
-    km_range = (10,10000)
+    km_range = (0.1,100)
     mu_range = (1,100)
 
     # d_B_range = (10**(-3), 10**3)

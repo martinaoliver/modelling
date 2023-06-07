@@ -36,7 +36,7 @@ print('Number of Threads set to ', Number_of_Threads)
 # Number_of_Threads=48
 # Specify name of circuit and variant investigated
 circuit_n='turinghill'
-variant= 7
+variant= int(sys.argv[2])
 n_species=2
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 2000000
@@ -73,7 +73,11 @@ start_parameter = int(0)
 print('df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets))
 # df= pickle.load( open('../parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
 df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+print('df loaded')
+print(df)
 df = df.iloc[:df_lenght]
+print('df cropped')
+print(df)
 # df= pickle.load( open("../parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
 batch_indices = list(range(0+start_parameter, len(df) + start_parameter, batch_size))
 # batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))
@@ -103,7 +107,8 @@ for count,start_batch_index in enumerate(batch_indices):
 # Report time taken
 finish_time = time.perf_counter()
 time_taken = finish_time-start_time
-print("Time taken: %d s" %time_taken)
+time_taken_hours = time_taken/3600
+print(f'Time taken: {time_taken} s, {time_taken_hours} h')
 
 my_data = {}
 
