@@ -19,19 +19,19 @@ import pickle
 import matplotlib.pyplot as plt
 import time
 import numpy as np
-print('heheh')
 
 #system parameters
 circuit_n = 'turinghill'
-variant=4
+variant=9
 n_param_sets = 2000000
 
 # par_dicxt = {'c1':0.1, 'c2':1,'c3':0.9,'c4':1, 'd_A': 1, 'd_B':10}
 df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
+
 # df = multiple_df.xs(0, level=1)
 #solver parameters
-L=100; dx =0.1; J = int(L/dx)
-T =10000; dt = 0.02; N = int(T/dt)
+L=50; dx =0.1; J = int(L/dx)
+T =1000; dt = 0.0002; N = int(T/dt)
 
 # T =20000; dt = 0.02; N = int(T/dt)
 boundaryCoeff=1;rate=L/T
@@ -43,8 +43,8 @@ print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 suggesteddt = float(dx*dx*2)
 print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
-parID= (1201838,0) #parameter set to use
-parID= (1) #parameter set to use
+# parID= (14414,0) #parameter set to use
+parID= (2) #parameter set to use
 par_dict = df.iloc[parID].to_dict()
 print(par_dict)
 parameter_to_modify = ['ba', 'bb', 'Va', 'Vb', 'kaa', 'kba', 'kab', 'mua', 'mub']
@@ -53,6 +53,7 @@ for parameter in parameter_to_modify:
 print(par_dict)
 # par_dict = df.loc[parID].to_dict()
 print(f'estimated wavelenght = {par_dict["estimated_wvl"]}')
+
 
 print(par_dict)
 

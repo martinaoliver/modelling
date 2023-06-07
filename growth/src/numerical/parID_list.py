@@ -20,17 +20,17 @@ import pickle
 circuit_n='turinghill'
 # mechanism='edgegrowth2'
 mechanism='nogrowth'
-variant=5
+variant=4
 folder = f'turinghill_variant{variant}_{mechanism}'
-L=50; dx =0.2; J = int(L/dx)
-T =20000; dt = 0.08; N = int(T/dt)
+L=100; dx =0.1; J = int(L/dx)
+T =20000; dt = 0.02; N = int(T/dt)
 boundaryCoeff=1;rate=0.1
 
 
 filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
 print(filename(mechanism, 1))
-datafile= modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism, '*'))
-print(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism, '*')))
+datafile= modellingpath + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism, '*'))
+print(modellingpath + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism, '*')))
 files = glob.glob(datafile)
 print(len(files))
 parID_list = []
@@ -42,7 +42,7 @@ print(parID_list[:10])
 print(len(parID_list))
 print(modellingpath + '/growth/out/numerical/%s/%s/simulation/%s/parID_list_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism, 'x')))
 
-pickle.dump( parID_list, open( modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/parID_list_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,'x')), "wb" ) )
-print(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/parID_list_%s.pkl'%(circuit_n,mechanism,folder, filename(mechanism,'x')))
+pickle.dump( parID_list, open( modellingpath + '/growth/out/numerical/%s/%s/simulation/%s/parID_list_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,'x')), "wb" ) )
+print(modellingpath + '/growth/out/numerical/%s/%s/simulation/%s/parID_list_%s.pkl'%(circuit_n,mechanism,folder, filename(mechanism,'x')))
 print('------')
 print(parID_list.count('47.0'))
