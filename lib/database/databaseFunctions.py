@@ -4,29 +4,19 @@
 import sys
 import os
 
-pwd = os.getcwd()
-modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
-sys.path.append(modellingpath + '/lib')
-#############
-
-
-
 
 import psycopg2
 import os
 import pickle
 
-if modellingpath == '/rds/general/user/mo2016/home/Documents/modelling':
-    f = open('/rds/general/user/mo2016/home/Documents/nico_db', 'r')
-    password = f.read()
-f.close()
-if modellingpath == '/Users/mo2016/Documents/modelling':
-    password = os.environ['DB_PASSWORD']
 
 
-credentials=f"postgresql://marti:{password}@vps.dcotta.eu:5432/marti_phd"
+# credentials=f"postgresql://moliver:{password}@ld-rendres07.bc.ic.ac.uk/moliver"
+credentials=f"postgresql://moliver:moliver@ld-rendres07.bc.ic.ac.uk/moliver"
 
-
+#user=moliver
+#server=ld-rendres07.bc.ic.ac.uk
+#database=moliver
 
 # df has:
 # - columns: parID, circuit_n, var, ...parameters
@@ -37,11 +27,19 @@ def saveModelParameters(df, circuit_n, variant):
     conn = psycopg2.connect(credentials)
     cur = conn.cursor()
     for column in df.columns:
-        cur.execute('ALTER TABLE %s ADD COLUMN if not exists "%s" numeric' % ('model_param', column))
-        conn.commit()
+        # cur.execute("SELECT f_add_col('public.%s', '%s', 'numeric');"%('model_param',column))
+        # cur.execute('ALTER TABLE %s ADD COLUMN "%s" numeric' % ('model_param', column))
+        try:
+            cur.execute('ALTER TABLE %s ADD COLUMN "%s" numeric' % ('model_param', column))
+
+            conn.commit()
+        except psycopg2.errors.DuplicateColumn:
+            conn.rollback()
+            # print('failed to commit: ')
+            
     conn.close()
 
-    lhs_df.index.name = 'parID'
+    df.index.name = 'parID'
     # print(lhs_df)
     print('aaaa')
     rows = df.to_sql('model_param', con=credentials, if_exists='append', index=True, index_label='parID')
@@ -81,17 +79,5 @@ def queryNumericalResult(parID, simID, circuit_n, var):
     return snapshot, timeseries
 
 
-#%%
-# Specify name of circuit and variant investigated
-circuit_n='circuit14'
-variant='1nd'
-# Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 5000
-
-print(f'Circuit:{circuit_n}, Variant:{variant}')
-lhs_df = pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-lhs_df = lhs_df.iloc[:3]
-print('sgxjfh')
-saveModelParameters(lhs_df, circuit_n, variant)
 
 # %%

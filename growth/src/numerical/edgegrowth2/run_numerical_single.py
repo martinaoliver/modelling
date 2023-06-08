@@ -30,8 +30,8 @@ df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%
 
 # df = multiple_df.xs(0, level=1)
 #solver parameters
-L=50; dx =0.1; J = int(L/dx)
-T =1000; dt = 0.0002; N = int(T/dt)
+L=10; dx =0.1; J = int(L/dx)
+T =100; dt = 0.02; N = int(T/dt)
 
 # T =20000; dt = 0.02; N = int(T/dt)
 boundaryCoeff=1;rate=L/T
@@ -44,12 +44,12 @@ suggesteddt = float(dx*dx*2)
 print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
 # parID= (14414,0) #parameter set to use
-parID= (2) #parameter set to use
+parID= (3) #parameter set to use
 par_dict = df.iloc[parID].to_dict()
 print(par_dict)
-parameter_to_modify = ['ba', 'bb', 'Va', 'Vb', 'kaa', 'kba', 'kab', 'mua', 'mub']
+parameter_to_modify = ['ba', 'bb', 'Va', 'Vb', 'mua', 'mub']
 for parameter in parameter_to_modify:
-    par_dict[parameter] = par_dict[parameter] *0.7
+    par_dict[parameter] = par_dict[parameter] 
 print(par_dict)
 # par_dict = df.loc[parID].to_dict()
 print(f'estimated wavelenght = {par_dict["estimated_wvl"]}')
@@ -115,3 +115,5 @@ if no_growth_numba == True:
 
 print(np.sum(U_final[0]))
 
+
+# %%
