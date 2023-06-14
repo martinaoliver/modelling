@@ -26,7 +26,7 @@ test=False
 
 circuit_n=14
 variant='fitted6'
-n_samples = 8000000
+n_samples = 40
 if test==True:
     n_samples=100
 #############

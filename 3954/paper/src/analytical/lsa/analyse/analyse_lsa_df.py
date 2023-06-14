@@ -36,10 +36,10 @@ def pieChart_lsa(valueCounts_dict,title,log=True):
 
 # Specify name of circuit and variant investigated
 circuit_n='circuit14'
-variant='fitted4'
+variant='fitted6'
 # balance = 'balanced'
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 10000000
+n_param_sets = 8000000
 
 print(f'Circuit:{circuit_n}, Variant:{variant}')
 
