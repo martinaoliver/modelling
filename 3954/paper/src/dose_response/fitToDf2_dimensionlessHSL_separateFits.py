@@ -30,7 +30,7 @@ test=False
 
 circuit_n=14
 variant='fitted7'
-n_samples = 4000
+n_samples = 13700000
 if test==True:
     n_samples=100
 #############
@@ -176,7 +176,9 @@ if test==True:
 #############
 
 #sample from the two subcircuit fits
+print('Creating subcircuit 1 distribution fit')
 sampled_parameters_subcircuit1 = np.random.multivariate_normal(popt_subcircuit1,pcov_subcircuit1*10, size= n_samples*2, check_valid='warn')#
+print('Creating subcircuit 3 distribution fit')
 sampled_parameters_subcircuit3 = np.random.multivariate_normal(popt_subcircuit3,pcov_subcircuit3*10, size=n_samples*2, check_valid='warn')#
 
 
@@ -184,7 +186,9 @@ sampled_parameters_subcircuit3 = np.random.multivariate_normal(popt_subcircuit3,
 sampled_parameters = np.hstack([sampled_parameters_subcircuit1,sampled_parameters_subcircuit3])
 
 #filter parameters for negative values
+print('Filtering parameters for negative values')
 filtered_parameters = [p for p in sampled_parameters if np.all(p>0)]
+print('Filtered!')
 if len(filtered_parameters) < n_samples:
     print('not enough fitted samples')
 if test==True:

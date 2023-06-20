@@ -9,6 +9,17 @@ Created on Wed Apr  8 12:33:13 2020
 # linear stability analysis on a desired parameter set. The parameter set can be inputed either as a
 # dictionary (single parameter set) or as a dataframe (multiple parameter sets).
 
+#############
+
+###paths#####
+#############
+import sys
+import os
+
+pwd = os.getcwd()
+modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
+sys.path.append(modellingpath + '/lib')
+#############
 
 import sys
 from analytical.findsteadystates_functions import findsteadystates
@@ -16,16 +27,16 @@ from analytical.dispersionrelation_functions import dispersionrelation
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+import pickle
 
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 #Turing analysis carried out on a dataframe. The input is a df with every parameter set.
-def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parID=False, tqdm_disable=True):
+def big_turing_analysis_df(df,circuit_n,variant,n_samples,n_species,top_dispersion=5000,print_parID=False, tqdm_disable=True):
     len_df = len(df) #lenght of dataframe (number of parameter sets to analyse)
     output_df = pd.DataFrame(data=None, columns=df.columns)
-    # par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['new_index'] =[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]
-
+    instabilities_list = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
     for parID in tqdm(df.index,disable=tqdm_disable):
         if print_parID == True:
             print(parID)
@@ -44,6 +55,10 @@ def big_turing_analysis_df(df,circuit_n,n_species,top_dispersion=5000,print_parI
                 # maxeig, pattern_class, eigenvalues ,oscillations, eigenvalsteadystate= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n)
                 # par_dict['ss_n'],par_dict['ss_list'],par_dict['class'],par_dict['maxeig'],par_dict['oscillations'],par_dict['k0_eig'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,pattern_class,maxeig,oscillations,eigenvalsteadystate,[parID,ss_n]
                 par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['estimated_wvl'],par_dict['complex_dispersion'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,ss_class,system_class,maxeig,estimated_wvl,complex_dispersion,[parID,ss_n]
+                if system_class in instabilities_list:
+                    print(system_class, parID)
+                    pickle.dump(par_dict, open('turing_output/par_dict_ID%s_%s_variant%s_%rparametersets_%s.pkl, '%(parID,circuit_n,variant,n_samples, system_class.replace(" ", "")), 'wb'))
+                    print(par_dict)
                 output_df = pd.concat([output_df,pd.DataFrame([par_dict], columns=par_dict.keys())], ignore_index=True)
                 
         else:
