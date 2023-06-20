@@ -30,8 +30,8 @@ df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%
 
 # df = multiple_df.xs(0, level=1)
 #solver parameters
-L=10; dx =0.1; J = int(L/dx)
-T =100; dt = 0.02; N = int(T/dt)
+L=30; dx =0.1; J = int(L/dx)
+T =1000; dt = 0.02; N = int(T/dt)
 
 # T =20000; dt = 0.02; N = int(T/dt)
 boundaryCoeff=1;rate=L/T
@@ -60,10 +60,10 @@ print(par_dict)
 #%%
 #run
 
-growth = False
+growth = True
 if growth == True:
     st = time.time()
-    U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=2)
+    U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=2, tqdm_disable=True)
     elapsed_time = time.time() - st
     print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
     plt.scatter(x_grid,cellMatrix)

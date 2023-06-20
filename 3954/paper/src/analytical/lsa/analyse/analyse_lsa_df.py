@@ -36,17 +36,17 @@ def pieChart_lsa(valueCounts_dict,title,log=True):
 
 # Specify name of circuit and variant investigated
 circuit_n='circuit14'
-variant='fitted6'
-# balance = 'balanced'
+variant='2nd'
+balance = 'balanced'
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 8000000
+n_param_sets = 1000000
 
 print(f'Circuit:{circuit_n}, Variant:{variant}')
 
 # df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 # df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-# df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,balance), "rb"))
-df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_param_sets), 'rb'))
+df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,balance), "rb"))
+# df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_param_sets), 'rb'))
 
 print(df['system_class'].value_counts())
 
@@ -71,7 +71,7 @@ for i in tqdm(range(1000000)):
 # %%
 
 valueCounts_dict = dict(df['system_class'].value_counts())
-title = f'{circuit_n} Variant {variant} Not-Balanced'
+title = f'{circuit_n} Variant {variant} {balance}'
 pieChart_lsa(valueCounts_dict,title)
 dfunstable = df[df['system_class']=='simple unstable']
 #%%

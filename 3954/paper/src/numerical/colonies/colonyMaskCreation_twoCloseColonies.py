@@ -51,7 +51,7 @@ def cell_automata_colony(cell_matrix, p_division):
     return cell_matrix_new, daughterToMotherDict
     
 # numba.jit(nopython=True)
-def adi_ca_twoColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
+def adi_ca_twoCloseColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
     I=J
     print(f'dt{dt}')
 
@@ -63,9 +63,9 @@ def adi_ca_twoColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=Fa
     np.random.seed(seed)
 
     cell_matrix = np.zeros(shape=(I,J))
-    cell_matrix[int(I/3), int(J/3)] = 1
-    cell_matrix[int(2*I/3), int(2*J/3)] = 1
 
+    cell_matrix[int(2*I/5), int(2*J/5)] = 1
+    cell_matrix[int(3*I/5), int(3*J/5)] = 1
     # for index in range(n_species):
     #     U0.append(np.ones((I, J)))
     # U0 = U0*cell_matrix
@@ -111,7 +111,7 @@ def adi_ca_twoColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=Fa
     # print(np.shape(cell_matrix_record))
     return cell_matrix_record,memory_matrix_record, daughterToMotherDictList
 
-def maskFunction_twoColonies(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.5,seed=1,plot1D=False, plotScatter = False, plotVideo=False):
+def maskFunction_twoCloseColonies(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.5,seed=1,plot1D=False, plotScatter = False, plotVideo=False):
         
     #execution parameters
     n_species=6
@@ -123,7 +123,7 @@ def maskFunction_twoColonies(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p
     print(f'suggested dt = {suggesteddt}')
     # p_division=float(sys.argv[5]);seed=1
 
-    cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca_twoColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
+    cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca_twoCloseColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
     print(np.shape(cell_matrix_record))
     print(np.shape(cell_matrix_record))
     # pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
@@ -210,7 +210,7 @@ def maskFunction_twoColonies(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p
 
 #%%
 # cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction(L=40,dx=0.1, T=50 ,dt=0.02, divisionTimeHours=0.5, p_division=1, plot1D=True, plotScatter=True)
-# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction_twoColonies(L=25,dx=0.1, T=50 ,dt=0.5, divisionTimeHours=0.5, p_division=1, plot1D=True, plotScatter=True)
+# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction_twoCloseColonies(L=25,dx=0.1, T=50 ,dt=0.5, divisionTimeHours=0.5, p_division=1, plot1D=True, plotScatter=True)
 # # %%
 
 

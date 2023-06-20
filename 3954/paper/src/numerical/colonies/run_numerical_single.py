@@ -39,12 +39,14 @@ from colonyMaskCreation import *
 # %matplotlib inline
 shape = 'ca'
 circuit_n=14;variant='2nd';n_species=6
-circuit_n=14;variant='fitted3';n_species=6
+# circuit_n=14;variant='fitted3';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 10
 # balance = 'balanced'
-# folder = 'circuit14variant2ndBalancedTuring'
-folder = 'circuit14fitted3balancedSemibalanced'
+folder = 'circuit14variant2ndBalancedTuring'
+
+# folder = 'circuit14variant2nd_turing'
+# folder = 'circuit14fitted3balancedSemibalanced'
 nsamples =  3000000
 save_figure = False
 tqdm_disable = False #disable tqdm
@@ -54,44 +56,15 @@ tqdm_disable = False #disable tqdm
 # open parameter dictionaries
 
 
-# df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-# df= pickle.load( open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-# instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
-# with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
-with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit%r_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
-    df = pickle.load(f)
-#remove second index in multindex
-# #solver parameters
-# specify dimensions of system
-# L=4; dx =0.05; J = int(L/dx)
-# T =37; dt =0.005; N = int(T/dt)
-# boundarycoeff = 1
-# divisionTimeHours=0.5
-# p_division=0.4;seed=1
-
-# L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
-# T =int(sys.argv[3]); dt =float(sys.argv[4]); N = int(T/dt)
-# boundarycoeff = 1
-# divisionTimeHours=float(sys.argv[5])
-# p_division=float(sys.argv[6]);seed=1
-
-
-
 L=20; dx =0.1; J = int(L/dx)
 T =50; dt = 0.02; N = int(T/dt)
-boundarycoeff = 1
+boundarycoeff = 2
 divisionTimeHours=0.5
 p_division=1;seed=1
 
 
 shape = 'ca'
 x_gridpoints=int(1/dx)
-# divisionTimeHours=0.5
-# p_division=0.22;seed=1
-# L=int(sys.argv[1]); dx =float(sys.argv[2]); J = int(L/dx)
-# T =int(sys.argv[3]); dt = float(sys.argv[4]); N = int(T/dt)
-# maskFunction(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
-# maskFunction(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
 
 try:
     cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
@@ -128,7 +101,8 @@ if test==True:
 # degDiv = 1
 # par_dict['muASV'] =par_dict['muASV']/degDiv
 
-parID=341399
+parID=195238
+# 195238
 print('parID = ' + str(parID))
 par_dict = df.loc[parID].to_dict()
 paramList = [1,1.5,2]
@@ -171,45 +145,57 @@ for param in paramList:
 # plt.colorbar()
 # plt.imshow(U_final[-1])
 # plt.colorbar()
+
 # %%
 
-# #Save video
-# saveVideo=False
-# if saveVideo==True:
-        
-#     import numpy as np
-#     from matplotlib import pyplot as plt
-#     from matplotlib import animation
-#     # plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
-#     plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
-#     rgb_timeseries = redgreen_contrast_timeseries(U_record)
-#     # show_rgbvideo(rgb_timeseries,parID)
-#     saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
 
 
-#     def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
-#         fig = plt.figure()
-#         ims = []
-#         rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
-#         im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+U_final = pickle.load(open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "rb" ) )
+U_record = pickle.load(open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib import animation
+# plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
+# plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
+rgb_timeseries = redgreen_contrast_timeseries(U_record)
+# show_rgbvideo(rgb_timeseries,parID)
+saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
 
-#         for i in range(len(rgb_timeseries)):
-#             im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
-#             plt.title(str(filename) + str(i))
-#             plt.xlabel(f'Time: {i}h')
-            
-#             ims.append([im])
-#         ani = animation.ArtistAnimation(fig, ims,interval=50000000)
-        
-#         # ani.save(saveVideoPath + '/%s.mp4' %filename)
-#         print('Video saved')
-        
-#         #FOR GIF
-#         writergif = animation.PillowWriter(fps=10)
-#         ani.save(saveVideoPath + filename + '.gif',writer=writergif)
+def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
+    fig = plt.figure()
+    ims = []
+    rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+    im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
 
-#         # FOR MP4
-#         # mywriter = animation.FFMpegWriter()
-#         # ani.save('mymovie.mp4',writer=mywriter)
+    for i in range(len(rgb_timeseries)):
+        im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
+        plt.title(str(filename) + str(i))
+        plt.xlabel(f'Time: {i}h')
         
-#     save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
+        ims.append([im])
+    ani = animation.ArtistAnimation(fig, ims,interval=50000000)
+    
+    # FOR GIF
+    # writergif = animation.PillowWriter(fps=10)
+    # ani.save(saveVideoPath + filename + '.gif',writer=writergif)
+    
+    # FOR MP4
+    mywriter = animation.FFMpegWriter()
+    ani.save(saveVideoPath + '/%s.mp4' %filename,writer=mywriter)
+    print('Video saved', filename)
+
+save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
+print('Video saved', filename(parID))
+# %%
+import seaborn as sns 
+# def black_to_green_palette(num_colors):
+#     cmap = sns.color_palette("b", "g", num_colors)  # Generate color palette
+#     return cmap
+cm = sns.color_palette('blend:green,black', as_cmap=True)
+plt.imshow(-U_final[-1], cmap=cm)
+plt.show()
+cm = sns.color_palette('blend:red,black', as_cmap=True)
+plt.imshow(-U_final[-2], cmap=cm)
+plt.show()
+
+    # %%

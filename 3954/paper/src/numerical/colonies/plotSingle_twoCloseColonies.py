@@ -32,19 +32,23 @@ from numerical.adi_ca_function_openclosed_nodilution_preMask_numba import \
 from numerical.adi_square_function import adi
 from numerical.plotting_numerical import *
 from numerical.cn_plot import *
-from colonyMaskCreation_fastMother import *
+from colonyMaskCreation_twoCloseColonies import *
 #%%
 #############
 ###execution parameters#####
 #############
 # %matplotlib inline
-shape = 'caFastMother'
+shape = 'caTwoCloseColonies'
+
+# shape = 'caTwoColonies'
 circuit_n=14;variant='2nd';n_species=6
-# circuit_n=14;variant='fitted2';n_species=6
+# circuit_n=14;variant='fitted1';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 10
-# balance = 'balanced'
+balance = 'balanced'
+# folder = 'circuit14variantfitted1'
 folder = 'circuit14variant2ndBalancedTuring'
+# nsamples =  2000000
 nsamples =  1000000
 save_figure = False
 tqdm_disable = False #disable tqdm
@@ -63,17 +67,19 @@ df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles
 # specify dimensions of system
 
 L=25; dx =0.1; J = int(L/dx)
-T =100; dt = 0.02; N = int(T/dt)
-# T =100; dt = 0.5; N = int(T/dt)
+T =50; dt = 0.02; N = int(T/dt)
+# T =50; dt = 0.5; N = int(T/dt)
+# T =3; dt = 0.5; N = int(T/dt)
 boundarycoeff = 1
 divisionTimeHours=0.5
-p_division=0.4;seed=1
+p_division=1;seed=1
 
 x_gridpoints=int(1/dx)
+parID=195238
 
 try:
-    cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
-    daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+    cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/%sMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(shape,seed,p_division,L,J,T,N), "rb" ) )
+    daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/%sMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(shape,seed,p_division,L,J,T,N), "rb" ) )
     print('fileNotCreated')
 
 except:
@@ -81,9 +87,9 @@ except:
     FileNotFoundError
     print('fileCreation')
 
-    cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction_fastMother(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
-    pickle.dump( cell_matrix_record,open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-    pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction_twoCloseColonies(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
+    pickle.dump( cell_matrix_record,open(modellingpath + "/3954/paper/out/numerical/masks/%sMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(shape,seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/%sMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(shape,seed,p_division,L,J,T,N), "wb" ) )
 
     # cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     # daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
@@ -98,7 +104,6 @@ if test==True:
     T=1;N = int(T/dt); N=3
     tqdm_disable=False
 # parID=int(sys.argv[8])
-parID=195238
 print('parID = ' + str(parID))
 par_dict = df.loc[parID].to_dict()
 D = np.zeros(n_species)
@@ -124,9 +129,10 @@ pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/s
 
 
 print('saved')
-# %%
+
 rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure=False)
 # rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure=False)
+
 
 
 # %%
@@ -170,4 +176,8 @@ def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000)
 save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 print('Video saved', filename(parID))
 
+# %%
+#snapshots
+
+plt.imshow(rgb_timeseries[1].astype('uint8'), origin= 'lower')
 # %%

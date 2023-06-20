@@ -24,13 +24,12 @@ from fitting.load_dose_response import *
 from fitting.dose_response_plotting import *
 #%%
 
-
-test=False
+test=True
 
 
 circuit_n=14
-variant='fitted7'
-n_samples = 4000
+variant='fitted8'
+n_samples = 40
 if test==True:
     n_samples=100
 #############
@@ -101,7 +100,7 @@ semStacked= np.hstack([semGreen1,semRed1])
 
 popt_subcircuit1, pcov_subcircuit1 = curve_fit(f=steadystate_subcircuit1, xdata=OC14data_new, ydata=fluorescenceData,  p0 = [2,3.5,0.1,3],maxfev=10000000, bounds=(0,100))
 
-paramNames_subcircuit1 = ['Ve1','Vf', 'Kvd','Kfe']
+paramNames_subcircuit1 = ['Ve','Vf', 'Kvd','Kfe']
 pfitDict = {}
 for param in popt_subcircuit1:
     pfitDict[paramNames_subcircuit1[popt_subcircuit1.tolist().index(param)]] = param
@@ -170,103 +169,12 @@ if test==True:
 
     gfpFit3_continuous_copy,rfpFit3_continuous_copy = gfpFit3_continuous,rfpFit3_continuous
 
-
-#############
-###generate fit distribution#####
-#############
-
-#sample from the two subcircuit fits
-sampled_parameters_subcircuit1 = np.random.multivariate_normal(popt_subcircuit1,pcov_subcircuit1*10, size= n_samples*2, check_valid='warn')#
-sampled_parameters_subcircuit3 = np.random.multivariate_normal(popt_subcircuit3,pcov_subcircuit3*10, size=n_samples*2, check_valid='warn')#
-
-
-#stack two arrays horizontally
-sampled_parameters = np.hstack([sampled_parameters_subcircuit1,sampled_parameters_subcircuit3])
-
-#filter parameters for negative values
-filtered_parameters = [p for p in sampled_parameters if np.all(p>0)]
-if len(filtered_parameters) < n_samples:
-    print('not enough fitted samples')
-if test==True:
-    def steadystate_combined_subcircuits(OC14,Ve, Vf, Kvd, Kfe, Vc, Vd, Kda, Kce):
-        F1 = gfp1_steadystate(OC14, Vf,Kvd)
-        E1 = rfp1_steadystate(OC14,Ve,Vf,Kvd,Kfe)
-        D3 = gfp3_steadystate(OC14, Vd)
-        E3 = rfp3_steadystate(OC14,  Vc, Kda,Kce)
-        stacked_fluorescence = [F1,E1, D3, E3]
-
-        return stacked_fluorescence
-
-    fig,ax = plt.subplots()
-    ax2=ax.twinx()
-    OC14_continuous = np.logspace(-3,2, 100)*HSLtransform
-    best_fit_p = np.hstack([popt_subcircuit1, popt_subcircuit3])
-    for p in filtered_parameters:
-        fluorescenceFit = steadystate_combined_subcircuits(OC14_continuous, *p)
-        fluorescenceFit_continuous = steadystate_combined_subcircuits(OC14_continuous, *p)
-        fluorescenceSingleFit_continuous = steadystate_combined_subcircuits(OC14_continuous, *best_fit_p)
-
-        
-        ax2.plot(OC14_continuous, fluorescenceFit_continuous[0], c='darkseagreen', alpha=0.08)
-        ax.plot(OC14_continuous, fluorescenceFit_continuous[1], c='lightcoral', alpha=0.08)
-        ax2.scatter(OC14_list1_green,gfpExp_list1 , label='data', c='green')
-        ax2.errorbar(OC14_list1_green,gfpExp_list1,yerr=semGreen1,c='green',fmt='o')
-        ax.scatter(OC14_list1_red,rfpExp_list1 , label='data', c='red')
-        ax.errorbar(OC14_list1_red,rfpExp_list1,yerr=semRed1,c='red',fmt='o')
-        plt.xscale('log')
-
-
-    # ax.legend(loc='center left') #upper right
-    ax.set_ylabel('RFP / ($A_{600}$ $RFP_{basal})$', fontsize=15)
-    ax.set_xscale('log')
-    # ax2.legend(loc='center right') #upper left
-    ax2.set_ylabel('GFP / ($A_{600}$ $GFP_{basal})$',fontsize=15)
-    ax.set_xscale('log')
-    ax.set_xlabel(f'3OHC14-HSL concentration (µM)',fontsize=15)
-    ax.plot(OC14_continuous, rfpFit1_continuous_copy, c='red', alpha=1)
-    ax2.plot(OC14_continuous, gfpFit1_continuous_copy, c='green', alpha=1)
-    plt.show()
-
-    gfpFit1_continuous_copy
-    fig,ax = plt.subplots()
-    ax2=ax.twinx()
-    for p in filtered_parameters:
-        fluorescenceFit = steadystate_combined_subcircuits(OC14_continuous, *p)
-        fluorescenceFit_continuous = steadystate_combined_subcircuits(OC14_continuous, *p)
-        fluorescenceSingleFit_continuous = steadystate_combined_subcircuits(OC14_continuous, *best_fit_p)
-
-        
-        ax2.plot(OC14_continuous, fluorescenceFit_continuous[2], c='darkseagreen', alpha=0.08)
-        ax.plot(OC14_continuous, fluorescenceFit_continuous[3], c='lightcoral', alpha=0.08)
-        ax2.scatter(OC14_list1_green,gfpExp_list3 , label='data', c='green')
-        ax2.errorbar(OC14_list1_green,gfpExp_list3,yerr=semGreen3,c='green',fmt='o')
-        ax.scatter(OC14_list1_red,rfpExp_list3 , label='data', c='red')
-        ax.errorbar(OC14_list1_red,rfpExp_list3,yerr=semRed3,c='red',fmt='o')
-        plt.xscale('log')
-
-    # ax.legend(loc='center left') #upper right
-    ax.set_ylabel('RFP / ($A_{600}$ $RFP_{basal})$', fontsize=15)
-    ax.set_xscale('log')
-    # ax2.legend(loc='center right') #upper left
-    ax2.set_ylabel('GFP / ($A_{600}$ $GFP_{basal})$', fontsize=15)
-    ax.set_xscale('log')
-    ax.set_xlabel(f'3OHC14-HSL concentration (µM)', fontsize=15)
-
-    ax.plot(OC14_continuous, rfpFit3_continuous_copy, c='red', alpha=1)
-    ax2.plot(OC14_continuous, gfpFit3_continuous_copy, c='green', alpha=1)
-    plt.show()
-
-df = pd.DataFrame(filtered_parameters, columns= np.hstack([ paramNames_subcircuit1 , paramNames_subcircuit3]))
-
-
-if test==True:
-    sns.set_context("paper", rc={"axes.labelsize":20, "xtick.labelsize":15, "ytick.labelsize":15, "legend.fontsize":15, "axes.titlesize":20})
-    sns.pairplot(df)
+#%%
 
 #############
 ###generate lhs distribution#####
 #############
-#%%
+
 # pfitDict['Ve'] = np.amax([rfpExp_list3, rfpExp_list1]) - 1
 pfitDict['nvd'] = nvd
 pfitDict['nfe'] = nfe
@@ -274,14 +182,13 @@ pfitDict['nda'] = nda
 pfitDict['nce'] = nce
 pfitDict['Ve'] = Ve
 
-
-
+#%%
 #maximum production parameters (V*)
 minV = 10;maxV=1000;minb=0.1;maxb=1
 Va = {'name':'Va','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
 Vb = {'name':'Vb','distribution':'loguniform', 'min':minV/maxb, 'max':maxV/minb}
-Ve = {'name':'Ve','distribution':'gaussian', 'mean':pfitDict['Ve'], 'noisetosignal':0.3}
-V_parameters = [Va,Vb,Ve]
+Ve = {'name':'Ve','distribution':'lognormal', 'mean':pfitDict['Ve'], 'noisetosignal':0.3}
+V_parameters = [Va,Vb]
 
 
 
@@ -344,22 +251,21 @@ if createParams == True:
     lhsDist = lhs(stackedDistributions,n_samples)
     lhsDist_df = pd.DataFrame(data = lhsDist, columns=[parameter['name'] for parameter in parameterDictList])
 
-#%%
+
 
 #############
 ###concatenate lhs and fit#####
 #############
-df = df.drop(columns='Ve1')
+
 lhsDistFit_df=pd.concat([lhsDist_df, df], axis=1)
 lhsDistFit_df = lhsDistFit_df.dropna()
 if test==True:
     for column in lhsDistFit_df.columns:
         plt.hist(lhsDistFit_df[column],bins=20)
-        plt.xscale('log')
         plt.title(column)
         plt.show()
         
-#%%
+
 #############
 ###check balance of distributionst#####
 #############
@@ -417,4 +323,3 @@ if createBalancedParams == True:
 
 
 print(len(balancedDf), len(semiBalancedDf), len(notBalancedDf), len(lhsDistFit_df_balancesemibalance))
-# %%

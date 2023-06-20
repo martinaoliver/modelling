@@ -25,33 +25,41 @@ def check_neighbours(cell_matrix,y_pos,x_pos): #returns grid with the neighbouri
     neighbours_cellmatrix = np.array([top_array,middle_array,bottom_array])
     return neighbours_cellmatrix
 
-def cell_automata_colony(cell_matrix, p_division):
+def cell_automata_colony(cell_matrix, p_division, cell_matrix_fastGrowth):
     daughterToMotherDict = {}
     cell_matrix_new = copy.deepcopy(cell_matrix)
+    cell_matrix_fastGrowth_new = copy.deepcopy(cell_matrix_fastGrowth)
     for y_pos in np.linspace(1,len(cell_matrix)-2,len(cell_matrix)-2):
         for x_pos in np.linspace(1,len(cell_matrix)-2,len(cell_matrix)-2):
             y_pos = int(y_pos)
             x_pos = int(x_pos)
-            if cell_matrix[y_pos, x_pos]!=0:
-                neighbours_cellmatrix = check_neighbours(cell_matrix,y_pos,x_pos)
-
-                if 0 in neighbours_cellmatrix:
-                    cell_division=np.random.choice([1,0],p=[p_division,1-p_division])
-                    if cell_division==1:
+            if cell_matrix[y_pos, x_pos]!=0: #if there is a cell
+                neighbours_cellmatrix = check_neighbours(cell_matrix,y_pos,x_pos) #check neighbours
+                if cell_matrix_fastGrowth[y_pos, x_pos]==1: #if cell is fast growing
+                    p_division_recalculated = p_division*2.4 #fast growing cells divide twice as fast
+                else:
+                    p_division_recalculated = p_division #slow growing cells divide at normal rate
+                if 0 in neighbours_cellmatrix: #if there is an empty cell in the neihgbourhood
+                    cell_division=np.random.choice([1,0],p=[p_division_recalculated,1-p_division_recalculated]) #decide whether cell divides
+                    if cell_division==1: #if cell divides
                         #choose cell to divide to
                         index_nocells=np.where(np.array(neighbours_cellmatrix )== 0) #find empty cells
                         divided_cell_index = np.random.choice(range(len(index_nocells[0]))) #select empty cell to divide to
-                        index_newcell_y, index_newcell_x = (index_nocells[n][divided_cell_index] for n in range(2))
+                        index_newcell_y, index_newcell_x = (index_nocells[n][divided_cell_index] for n in range(2)) #get index of new cell
                         
                         #create mask
-                        cell_matrix_new[index_newcell_y+y_pos-1,index_newcell_x+x_pos-1]=1
-
+                        cell_matrix_new[index_newcell_y+y_pos-1,index_newcell_x+x_pos-1]=1 #create new cell in cell matrix
                         #create cellular tissue memory
-                        daughterToMotherDict[(index_newcell_y+y_pos-1,index_newcell_x+x_pos-1)] = (y_pos,x_pos)
-    return cell_matrix_new, daughterToMotherDict
+                        daughterToMotherDict[(index_newcell_y+y_pos-1,index_newcell_x+x_pos-1)] = (y_pos,x_pos) #create memory of mother cell
+                        # print('cell growth', cell_matrix_fastGrowth[y_pos, x_pos])
+                        if cell_matrix_fastGrowth[y_pos, x_pos]==1: #if mother cell is fast growing
+                            cell_matrix_fastGrowth_new[index_newcell_y+y_pos-1,index_newcell_x+x_pos-1]=1 #daughter cell is recorded as fast growing too
+                            # print(np.sum(cell_matrix_fastGrowth_new))
+                            # print('fast')
+    return cell_matrix_new, daughterToMotherDict, cell_matrix_fastGrowth_new
     
 # numba.jit(nopython=True)
-def adi_ca_twoColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
+def adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
     I=J
     print(f'dt{dt}')
 
@@ -63,9 +71,13 @@ def adi_ca_twoColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=Fa
     np.random.seed(seed)
 
     cell_matrix = np.zeros(shape=(I,J))
-    cell_matrix[int(I/3), int(J/3)] = 1
-    cell_matrix[int(2*I/3), int(2*J/3)] = 1
+    cell_matrix[int(I/2), int(J/2)] = 1
 
+    cell_matrix_fastGrowth = np.zeros(shape=(I,J))
+    cell_matrix_fastGrowth[int(I/3), int(J/3)] = 1
+    cell_matrix_fastGrowth[int(2*I/3), int(J/3)] = 1
+    # cell_matrix_fastGrowth[int(I/3), int(J/2)] = 1
+    cell_matrix_fastGrowth[int(I/3), int(2*J/3)] = 1
     # for index in range(n_species):
     #     U0.append(np.ones((I, J)))
     # U0 = U0*cell_matrix
@@ -96,9 +108,9 @@ def adi_ca_twoColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=Fa
         hour = ti / (N / T)
 
         if (ti%divisionTimeUnits==0):
-            cell_matrix_new ,daughterToMotherDict = cell_automata_colony( cell_matrix, p_division)
+            cell_matrix_new ,daughterToMotherDict ,cell_matrix_fastGrowth_new= cell_automata_colony( cell_matrix, p_division, cell_matrix_fastGrowth)
             cell_matrix = copy.deepcopy(cell_matrix_new)
-            
+            cell_matrix_fastGrowth = copy.deepcopy(cell_matrix_fastGrowth_new)
             # cell_matrix_record[:, :, divide_counter] = cell_matrix #issue in this line
             divide_counter+=1
         else:
@@ -111,7 +123,7 @@ def adi_ca_twoColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=Fa
     # print(np.shape(cell_matrix_record))
     return cell_matrix_record,memory_matrix_record, daughterToMotherDictList
 
-def maskFunction_twoColonies(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.5,seed=1,plot1D=False, plotScatter = False, plotVideo=False):
+def maskFunction_fastMotherMultiple(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.5,seed=1,plot1D=False, plotScatter = False, plotVideo=False):
         
     #execution parameters
     n_species=6
@@ -123,13 +135,13 @@ def maskFunction_twoColonies(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p
     print(f'suggested dt = {suggesteddt}')
     # p_division=float(sys.argv[5]);seed=1
 
-    cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca_twoColonies(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
+    cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
     print(np.shape(cell_matrix_record))
     print(np.shape(cell_matrix_record))
-    # pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-    # pickle.dump( memory_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-    # pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-    # # print(np.shape(cell_matrix_record))
+    pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( memory_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    # print(np.shape(cell_matrix_record))
     # for ti in range(N):
         # print(np.shape(memory_matrix_record[:,:,ti]))
         # print(memory_matrix_record[:,:,ti])
@@ -208,10 +220,11 @@ def maskFunction_twoColonies(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p
 
     return cell_matrix_record, memory_matrix_record, daughterToMotherDictList
 
-#%%
-# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction(L=40,dx=0.1, T=50 ,dt=0.02, divisionTimeHours=0.5, p_division=1, plot1D=True, plotScatter=True)
-# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction_twoColonies(L=25,dx=0.1, T=50 ,dt=0.5, divisionTimeHours=0.5, p_division=1, plot1D=True, plotScatter=True)
+
+# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction(L=20,dx=0.1, T=60 ,dt=0.5, divisionTimeHours=0.5, p_division=0.4, plot1D=True, plotScatter=True)
 # # %%
+# 
+# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction_fastMother(L=25,dx=0.1, T=100 ,dt=0.5, divisionTimeHours=0.5, p_division=0.4, plot1D=True, plotScatter=True)
 
 
-# %%
+

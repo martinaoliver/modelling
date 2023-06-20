@@ -9,6 +9,3 @@ create table if not exists public.model_param(
 -- create table if not exists analytical_result(
 --     "parID" int not null
 -- )
-
-
-

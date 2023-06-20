@@ -130,13 +130,6 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
             currentJ = int(newL*x_gridpoints)
             cellMatrix = cellMatrixFunction(currentJ)
 
-
-
-        # if currentJ != len(U[0]):
-        #     len_full_pad = currentJ - len(U[0])
-        #     for n in range(n_species):
-        #         U[n] = np.concatenate((U[n], [U[n][-1]]*len_full_pad))
-
         U_new = copy.deepcopy(U)
         f0 = f.dudt_growth(U_new, cellMatrix)
         

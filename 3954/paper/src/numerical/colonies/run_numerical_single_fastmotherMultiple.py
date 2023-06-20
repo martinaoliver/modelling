@@ -32,13 +32,13 @@ from numerical.adi_ca_function_openclosed_nodilution_preMask_numba import \
 from numerical.adi_square_function import adi
 from numerical.plotting_numerical import *
 from numerical.cn_plot import *
-from colonyMaskCreation_fastMother import *
+from colonyMaskCreation_fastMotherMultiple import *
 #%%
 #############
 ###execution parameters#####
 #############
 # %matplotlib inline
-shape = 'caFastMother'
+shape = 'caFastMotherMultiple'
 circuit_n=14;variant='2nd';n_species=6
 # circuit_n=14;variant='fitted2';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
@@ -81,7 +81,7 @@ except:
     FileNotFoundError
     print('fileCreation')
 
-    cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction_fastMother(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
+    cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction_fastMotherMultiple(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
     pickle.dump( cell_matrix_record,open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
     pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
 
