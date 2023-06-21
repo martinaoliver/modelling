@@ -28,25 +28,28 @@ import pickle
 
 
 circuit_n='circuit14'
-variant='fitted0'
-variant='2nd'
-balance = 'balanced'
-parID = 7 #takes the first parameter set of the dataframe... can choose any
+variant='fitted7'
+# variant='2nd'
+balance = 'balancedSemiBalanced'
+parID = 4187716 #takes the first parameter set of the dataframe... can choose any
 n_species=6 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
 
-n_samples = 1000000
+n_samples = 13700000
 # obtain a dictionary with some parameters to use in our analysis
-df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_%s_variant%s_%rparametersets_%s.pkl"%(circuit_n,variant,n_samples, balance), "rb"))
+# df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_%s_variant%s_%rparametersets_%s.pkl"%(circuit_n,variant,n_samples, balance), "rb"))
+df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
 # df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
-# df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
-n_analysed_samples = 10
-df = df.iloc[:n_analysed_samples]
-par_dict = df.loc[parID].to_dict()
+# n_analysed_samples = 10
+df = df.iloc[5077563:5077567]
+# par_dict = df.loc[parID].to_dict()
 #Run analysis on 1M parameter sets
 output_df = big_turing_analysis_df(df,circuit_n,variant,n_samples, n_species,print_parID=False, tqdm_disable=False)
-# out = detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5000,calculate_unstable=False,steadystate=False)
-# plot_all_dispersion(out[4][0],n_species, crop=30)
-# plot_highest_dispersion(out[4][0], crop=10000)
+# out = detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=100,calculate_unstable=False,steadystate=False)
+# plot_all_dispersion(out[4][0],n_species, crop=10, top=100)
+# plt.show()
+# plot_highest_dispersion(out[4][0], crop=10000, top=100)
+# plt.show()
 
 # print(out[3])
 
+output_df
