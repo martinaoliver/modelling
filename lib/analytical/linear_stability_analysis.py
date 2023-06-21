@@ -57,7 +57,7 @@ def big_turing_analysis_df(df,circuit_n,variant,n_samples,n_species,top_dispersi
                 par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['estimated_wvl'],par_dict['complex_dispersion'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,ss_class,system_class,maxeig,estimated_wvl,complex_dispersion,[parID,ss_n]
                 if system_class in instabilities_list:
                     print(system_class, parID)
-                    pickle.dump(par_dict, open('turing_output/par_dict_ID%s_%s_variant%s_%rparametersets_%s.pkl, '%(parID,circuit_n,variant,n_samples, system_class.replace(" ", "")), 'wb'))
+                    pickle.dump(par_dict, open('turing_output/par_dict_ID%s_%s_variant%s_%rparametersets_%s.pkl'%(parID,circuit_n,variant,n_samples, system_class.replace(" ", "")), 'wb'))
                     print(par_dict)
                 output_df = pd.concat([output_df,pd.DataFrame([par_dict], columns=par_dict.keys())], ignore_index=True)
                 
@@ -99,7 +99,7 @@ def detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5
     if number_steadystates > 0:
         for ss_n in range(number_steadystates): #perform linear stability analysis on all steady states found
             steadystate_values_ss_n = steadystatelist[ss_n]
-            ss_class, system_class, eigenvalues, maxeig,complex_dispersion= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n,top_dispersion)
+            ss_class, system_class, eigenvalues, maxeig,estimated_wvl, complex_dispersion= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n,top_dispersion)
             system_class_list.append(system_class)
             ss_class_list.append(system_class)
             eigenvalues_list.append(eigenvalues)

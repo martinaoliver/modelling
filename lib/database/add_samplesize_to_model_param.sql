@@ -7,3 +7,5 @@ ALTER TABLE model_param ADD PRIMARY KEY ("parID", "circuit_n", "variant", "n_sam
 
 ALTER table model_param
 ALTER column "n_samples" DROP default;
+
+
