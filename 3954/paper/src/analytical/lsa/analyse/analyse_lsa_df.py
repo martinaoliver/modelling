@@ -16,22 +16,28 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def pieChart_lsa(valueCounts_dict,title,log=True):
+def pieChart_lsa(valueCounts_dict,title,percentageCounts_dict,log=True):
     colors_dict={'simple stable':'grey','simple unstable':'grey','complex unstable':'grey','no steady state':'grey','hopf':'peachpuff','turing I hopf':'peachpuff','turing I':'coral','turing I oscillatory':'coral'}
     # colors=['grey','grey','grey','grey','peachpuff','peachpuff','peachpuff','coral','coral','coral']
     labels = []
     sizes = []
     colors= []
+    percentages = []
     for x, y in valueCounts_dict.items():
-        labels.append(x)
+        percentage = percentageCounts_dict[x]
+        
+        labels.append(f'{x} {np.round(percentage,4)} %')
         sizes.append(y)
         colors.append(colors_dict[x])
     if log==True:
         sizes = np.log(sizes)
-    plt.pie(sizes,colors=colors, labels=labels)
+    plt.pie(sizes,colors=colors, labels=labels )
     plt.axis('equal')
     plt.title(title)
-    plt.show()
+    plt.tight_layout()
+
+
+    # plt.show()
 #%%
 
 # Specify name of circuit and variant investigated
@@ -50,6 +56,16 @@ df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes
 
 print(df['system_class'].value_counts())
 
+# %%
+
+valueCounts_dict = dict(df['system_class'].value_counts())
+percentageCounts_dict= {k: v/len(df)*100 for k, v in valueCounts_dict.items()}
+title = f'{circuit_n} Variant {variant} {balance}'
+pieChart_lsa(valueCounts_dict,title,percentageCounts_dict )
+plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/piecharts/piechart_{circuit_n}_variant{variant}_nsamples{n_param_sets}.pdf')
+plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/piecharts/piechart_{circuit_n}_variant{variant}_nsamples{n_param_sets}.png')
+plt.show()
+dfunstable = df[df['system_class']=='simple unstable']
 
 #%%
 from tqdm import tqdm
@@ -68,12 +84,6 @@ for i in tqdm(range(1000000)):
     
 
 
-# %%
-
-valueCounts_dict = dict(df['system_class'].value_counts())
-title = f'{circuit_n} Variant {variant} {balance}'
-pieChart_lsa(valueCounts_dict,title)
-dfunstable = df[df['system_class']=='simple unstable']
 #%%
 if balanced == True:
     
