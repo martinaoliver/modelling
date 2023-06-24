@@ -37,17 +37,14 @@ print('Number of Threads set to ', Number_of_Threads)
 # Specify name of circuit and variant investigated
 
 circuit_n='circuit14'
-variant='fitted6'
-# variant='2nd'
+# variant='fitted7'
+variant='2nd'
 n_species=6
+# balance='notBalanced'
+balance=str(sys.argv[2])
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_samples =8000000
-n_analysed_param_sets = 1943846
-# n_samples = 10
-# balance = 'balanced'
-# df_lenght = 10
-# n_samples = 10
-
+n_samples =1000000
+n_analysed_param_sets = 1000000
 print(n_analysed_param_sets)
 # Specify date today
 date = date.today().strftime('%m_%d_%Y')
@@ -58,17 +55,16 @@ date = date.today().strftime('%m_%d_%Y')
 # batch_size = 2
 # batch_size =5
 # batch_size =int(n_samples/Number_of_Threads)
-batch_size =int(n_analysed_param_sets/Number_of_Threads)
 # print(f'batch_size: {batch_size}')
 
 
 # Define work to be done per batch of parameter sets
 def lsa_check(start_batch_index,n_samples,df,circuit_n=circuit_n, variant=variant, n_species=n_species):
     print('pool' + str(start_batch_index))
-    output_df = big_turing_analysis_df(df,circuit_n,n_species,print_parID=True)
+    output_df = big_turing_analysis_df(df,circuit_n,variant, n_samples, n_species,print_parID=False, saveInstability = False)
     print('calculated')
     
-    pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced_batch%r.pkl'%(circuit_n,variant,n_samples, start_batch_index), 'wb'))
+    pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_batch%r.pkl'%(circuit_n,variant,n_samples,balance, start_batch_index), 'wb'))
     # pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_batch%r.pkl'%(circuit_n,variant,n_samples,balance, start_batch_index), 'wb'))
     print('saved')
 # Runs if the module is the main program
@@ -78,19 +74,18 @@ start_time = time.perf_counter()
 start_parameter = int(0)
 # Load dataframe of parameter sets
 # df= pickle.load( open('../lhs_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb" ) )
-# df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_%s_variant%s_%rparametersets_%s.pkl"%(circuit_n,variant,n_samples, balance), "rb"))
+df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_%s_variant%s_%rparametersets_%s.pkl"%(circuit_n,variant,n_samples, balance), "rb"))
 
-df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl"%(circuit_n,variant,n_samples), "rb"))
+# df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_%s_variant%s_%rparametersets_%s.pkl"%(circuit_n,variant,n_samples,balance), "rb"))
 print(df)
 print('df_loaded')
 
+# n_analysed_param_sets = len(df)
+# print(n_analysed_param_sets)
 df = df.iloc[start_parameter:start_parameter+n_analysed_param_sets]
 
-# print('df_%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,n_samples))
-# df= pickle.load( open("../lhs_parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
-df_lenght = n_analysed_param_sets
-batch_indices = list(range(0+start_parameter, df_lenght + start_parameter, batch_size))
-# batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))
+batch_size =int(n_analysed_param_sets/Number_of_Threads)
+batch_indices = list(range(0+start_parameter, n_analysed_param_sets + start_parameter, batch_size))
 
 # Create a pool of workers
 pool = multiprocessing.Pool(Number_of_Threads)
@@ -124,7 +119,7 @@ my_data = {}
 # Load all batch dataframes
 for start_batch_index in batch_indices:
     try:
-        my_data[start_batch_index] = pickle.load(open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced_batch%r.pkl'%(circuit_n,variant,n_samples,start_batch_index), "rb" ) )
+        my_data[start_batch_index] = pickle.load(open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_batch%r.pkl'%(circuit_n,variant,n_samples,balance,start_batch_index), "rb" ) )
         print(start_batch_index)
     except FileNotFoundError:
         print(start_batch_index, 'not Found')
@@ -137,5 +132,5 @@ results_df = pd.concat(my_data.values(), ignore_index=False)
 tupled_index =  [tuple(l) for l in results_df.index]
 multi_index = pd.MultiIndex.from_tuples(tupled_index)
 results_df = results_df.set_index(multi_index)
-pickle.dump(results_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_samples), 'wb'))
-# pickle.dump(results_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_samples,balance), 'wb'))
+# pickle.dump(results_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_samples), 'wb'))
+pickle.dump(results_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_samples,balance), 'wb'))

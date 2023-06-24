@@ -33,7 +33,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 #Turing analysis carried out on a dataframe. The input is a df with every parameter set.
-def big_turing_analysis_df(df,circuit_n,variant,n_samples,n_species,top_dispersion=5000,print_parID=False, tqdm_disable=True):
+def big_turing_analysis_df(df,circuit_n,variant,n_samples,n_species,top_dispersion=5000,print_parID=False, tqdm_disable=True,saveInstability=False):
     len_df = len(df) #lenght of dataframe (number of parameter sets to analyse)
     output_df = pd.DataFrame(data=None, columns=df.columns)
     instabilities_list = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
@@ -55,10 +55,11 @@ def big_turing_analysis_df(df,circuit_n,variant,n_samples,n_species,top_dispersi
                 # maxeig, pattern_class, eigenvalues ,oscillations, eigenvalsteadystate= dispersionrelation(par_dict,steadystate_values_ss_n, circuit_n)
                 # par_dict['ss_n'],par_dict['ss_list'],par_dict['class'],par_dict['maxeig'],par_dict['oscillations'],par_dict['k0_eig'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,pattern_class,maxeig,oscillations,eigenvalsteadystate,[parID,ss_n]
                 par_dict['ss_n'],par_dict['ss_list'],par_dict['ss_class'],par_dict['system_class'],par_dict['maxeig'],par_dict['estimated_wvl'],par_dict['complex_dispersion'],par_dict['new_index'] = number_steadystates,steadystate_values_ss_n,ss_class,system_class,maxeig,estimated_wvl,complex_dispersion,[parID,ss_n]
-                if system_class in instabilities_list:
-                    print(system_class, parID)
-                    pickle.dump(par_dict, open('turing_output/par_dict_ID%s_%s_variant%s_%rparametersets_%s.pkl'%(parID,circuit_n,variant,n_samples, system_class.replace(" ", "")), 'wb'))
-                    print(par_dict)
+                if saveInstability==True:
+                    if system_class in instabilities_list:
+                        print(system_class, parID)
+                        pickle.dump(par_dict, open('turing_output/par_dict_ID%s_%s_variant%s_%rparametersets_%s.pkl'%(parID,circuit_n,variant,n_samples, system_class.replace(" ", "")), 'wb'))
+                        print(par_dict)
                 output_df = pd.concat([output_df,pd.DataFrame([par_dict], columns=par_dict.keys())], ignore_index=True)
                 
         else:

@@ -31,6 +31,7 @@ test=False
 circuit_n=14
 variant='fitted7'
 n_samples = 13700000
+# n_samples = 10
 if test==True:
     n_samples=100
 #############
@@ -187,10 +188,11 @@ sampled_parameters = np.hstack([sampled_parameters_subcircuit1,sampled_parameter
 
 #filter parameters for negative values
 print('Filtering parameters for negative values')
-filtered_parameters = [p for p in sampled_parameters if np.all(p>0)]
+filtered_parameters = [p for p in tqdm(sampled_parameters) if np.all(p>0)]
 print('Filtered!')
 if len(filtered_parameters) < n_samples:
     print('not enough fitted samples')
+
 if test==True:
     def steadystate_combined_subcircuits(OC14,Ve, Vf, Kvd, Kfe, Vc, Vd, Kda, Kce):
         F1 = gfp1_steadystate(OC14, Vf,Kvd)
