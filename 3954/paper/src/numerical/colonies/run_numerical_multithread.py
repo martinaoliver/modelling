@@ -45,19 +45,20 @@ circuit_n=14;variant='2nd';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 # balance = 'balanced'
 # folder = 'circuit14variantfitted1'
-folder = 'circuit14variant2ndBalancedTuring'
+folder = 'circuit14variant2ndBalancedKce100Turing'
 modelArgs = [circuit_n,variant,n_species,folder]
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 # nsamples = 2000000
 nsamples = 1000000
-
+Kce=100
 # specify dimensions of system
+
 L=20; dx =0.1; J = int(L/dx)
-T =35; dt = 0.02; N = int(T/dt)
-boundarycoeff = 2
-divisionTimeHours=0.1
-p_division=0.17;seed=1
+T =50; dt = 0.02; N = int(T/dt)
+boundarycoeff = 1
+divisionTimeHours=0.5
+p_division=1;seed=1
 
 
 
@@ -88,7 +89,7 @@ def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=sys
 
 
     if test==True:
-        T =1; dt = 0.025; N = int(T/dt)
+        T =1; dt = 0.5; N = int(T/dt)
         tqdm_disable = False
     else:
         tqdm_disable = True
@@ -106,7 +107,8 @@ def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=sys
         # par_dict['muLVA'] = par_dict['muLVA'] /degDiv
         # steadystates=par_dict['ss_list']
 
-        filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+        # filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+        filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsamples,Kce,boundarycoeff, shape,parID,L,J,T,N)
         savefig=False
         savefigpath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s/'%(folder)
 
@@ -120,10 +122,10 @@ def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=sys
             save = True
             if save == True:
                         
-                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
+                with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
                     pickle.dump(U_final, f)
                 # with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), "wb" ) as f:
-                with open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
+                with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
                     pickle.dump(U_record, f)
                 
             del U_record
@@ -156,9 +158,8 @@ start_time = time.perf_counter()
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
-with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
+with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
     df = pickle.load(f)
-    
 # turing_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 total_params=len(df)
 # total_params=10

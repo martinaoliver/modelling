@@ -36,7 +36,7 @@ def pieChart_lsa(valueCounts_dict,title,log=True):
 
 # Specify name of circuit and variant investigated
 circuit_n='circuit14'
-variant='1nd'
+variant='2nd'
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
 
@@ -50,12 +50,12 @@ print(df['system_class'].value_counts())
 from tqdm import tqdm
 def weightTuring(dfLoc):
     for i in range(10):
-        turing_lenght = len(dfLoc.loc[dfLoc['system_class'].isin(['turing I oscillatory','turing I'])])
+        turing_lenght = len(dfLoc.loc[dfLoc['system_class'].isin(['turing I oscillatory','turing I', 'turing I hopf'])])
         # turing_
         # lenght = len(dfLoc.loc[dfLoc['system_class'].isin(['simple stable','turing I'])])
         # print(turing_lenght/ len(dfLoc))
         return turing_lenght/ len(dfLoc)
-nsamples=int(sys.argv[1])
+nsamples=n_param_sets
 for i in tqdm(range(nsamples)):
     # print(df.loc[i]['system_class'])
     dfLoc = df.loc[i]

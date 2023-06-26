@@ -37,4 +37,4 @@ for Kce in kce_values_list:
     df['Kce'] = Kce
     plt.hist(df['Kce'])
     plt.show()
-    pickle.dump(df, open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%s_variant%s_%rparametersets_balanced_kce%s.pkl'%(circuit_n,variant,n_samples,Kce), 'wb'))
+    pickle.dump(df, open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%s_variant%s_%rparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,n_samples,Kce), 'wb'))

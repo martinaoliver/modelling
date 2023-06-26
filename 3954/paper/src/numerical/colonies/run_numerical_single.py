@@ -79,10 +79,10 @@ df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/d
 
 
 L=20; dx =0.1; J = int(L/dx)
-T =35; dt = 0.02; N = int(T/dt)
+T =50; dt = 0.02; N = int(T/dt)
 boundarycoeff = 1
-divisionTimeHours=0.1
-p_division=0.17;seed=1
+divisionTimeHours=0.5
+p_division=1;seed=1
 
 
 
