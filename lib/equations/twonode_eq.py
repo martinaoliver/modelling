@@ -87,8 +87,10 @@ class turinghill(hill_functions):
 
     def dudt_growth(self,U, cell_matrix):
         function_list = [self.dAdt_f(U),self.dBdt_f(U)]
+        # print('DA')
         dudt = [eq*cell_matrix for eq in function_list]
         return dudt
+        # return 1
 
     def getJacobian(self,x,wvn):
         A,B=x

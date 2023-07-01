@@ -1,3 +1,4 @@
+
 #%%#############
 ###paths#####
 #############
@@ -20,50 +21,9 @@ import matplotlib.pyplot as plt
 import time
 import numpy as np
 
-#system parameters
-circuit_n = 'turinghill'
-variant=9
-n_param_sets = 2000000
-
-# par_dicxt = {'c1':0.1, 'c2':1,'c3':0.9,'c4':1, 'd_A': 1, 'd_B':10}
-df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
-
-# df = multiple_df.xs(0, level=1)
-#solver parameters
-L=30; dx =0.1; J = int(L/dx)
-T =1000; dt = 0.02; N = int(T/dt)
-
-# T =20000; dt = 0.02; N = int(T/dt)
-boundaryCoeff=1;rate=L/T
-
-suggesteddt = float(dx*dx*2)
-
-print(f'suggested dt = {suggesteddt}, used dt = {dt}')
-
-suggesteddt = float(dx*dx*2)
-print(f'suggested dt = {suggesteddt}, used dt = {dt}')
-
-# parID= (14414,0) #parameter set to use
-parID= (3) #parameter set to use
-par_dict = df.iloc[parID].to_dict()
-print(par_dict)
-parameter_to_modify = ['ba', 'bb', 'Va', 'Vb', 'mua', 'mub']
-for parameter in parameter_to_modify:
-    par_dict[parameter] = par_dict[parameter] 
-print(par_dict)
-# par_dict = df.loc[parID].to_dict()
-print(f'estimated wavelenght = {par_dict["estimated_wvl"]}')
-
-
-print(par_dict)
-
-#%%
-#run
-
-growth = False
-if growth == True:
+def simulate_plot_growth(par_dict,L,J,T,N, circuit_n, rate, tqdm_disable=False):
     st = time.time()
-    U,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=2, tqdm_disable=True)
+    U_final,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=2, tqdm_disable=tqdm_disable)
     elapsed_time = time.time() - st
     print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
     plt.scatter(x_grid,cellMatrix)
@@ -71,18 +31,19 @@ if growth == True:
     
 
     #plot
-    plot1D(U, savefig=False,filename='')
+    plot1D(U_final, savefig=False,filename='')
     plt.show()
     surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
     surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
 
-#%%
-no_growth = True
-if no_growth == True:
+    return U_final, U_record
+
+
+def simulate_plot_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=False):
     st = time.time()
-    U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=False)
+    U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=tqdm_disable)
     elapsed_time = time.time() - st
     print('Execution time:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
     #plot
@@ -92,16 +53,12 @@ if no_growth == True:
     plt.show()
     surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
+    return U_final, U_record
 
 
-print(np.sum(U_final[0]))
-
-
-#%%
-no_growth_numba = False
-if no_growth_numba == True:
+def simulate_plot_nogrowth_numba(par_dict,L,J,T,N, circuit_n, tqdm_disable=False):
     st = time.time()
-    U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth_numba(par_dict,L,J,T,N, circuit_n, tqdm_disable=False)
+    U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth_numba(par_dict,L,J,T,N, circuit_n, tqdm_disable=tqdm_disable)
     elapsed_time = time.time() - st
     print('Execution time:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
     #plot
@@ -111,9 +68,5 @@ if no_growth_numba == True:
     plt.show()
     surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
+    return U_final, U_record
 
-
-print(np.sum(U_final[0]))
-
-
-# %%

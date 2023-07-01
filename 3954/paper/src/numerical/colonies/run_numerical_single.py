@@ -110,7 +110,7 @@ except:
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 # parID=12837401
-parID=6160552
+parID=12837401
 
 
 #%%

@@ -39,12 +39,13 @@ print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
 circuit_n='turinghill'
-variant= 10
+variant= 9
 n_species=2
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 2000000
-folder = 'turinghill_variant6_nogrowth'
+folder=  f'{circuit_n}_variant{variant}'
+
 
 # Specify date today
 date = date.today().strftime('%m_%d_%Y')
@@ -70,9 +71,11 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
         print('test')
     else:
         test=False
-    L=100; dx =0.1; J = int(L/dx)
-    T =20000; dt = 0.02; N = int(T/dt)
-    boundaryCoeff=1;rate=0.1
+    #solver parameters
+    L=50; dx =0.1; J = int(L/dx)
+    T =2000; dt = 0.02; N = int(T/dt)
+    boundaryCoeff=1;rate=L/T
+    suggesteddt = float(dx*dx*2)
 
 
 
@@ -80,6 +83,7 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
     if test == True:
         T =10; dt = 0.1; N = int(T/dt)
         tqdm_disable = False
+        boundaryCoeff=1;rate=L/T
 
     else:
         tqdm_disable = True
@@ -95,28 +99,26 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
 
         # steadystates=par_dict['ss_list']
 
-        simulateGrowth=False
+        simulateGrowth=True
         try:
             if simulateGrowth == True:
                 mechanism = 'edgegrowth2'
                 U_final,U_record, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=tqdm_disable)
 
-                with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
+                with open(modellingpath + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Dfinal_{filename(mechanism,parIDss)}.pkl', 'wb') as f:
                     pickle.dump(U_final, f)
-                
-                with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb') as f:
+
+                with open(modellingpath + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Drecord_{filename(mechanism,parIDss)}.pkl', 'wb') as f:
                     pickle.dump(U_record, f)
                 
             mechanism = 'nogrowth'
             U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, tqdm_disable=tqdm_disable)
-            with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,parIDss)), 'wb') as f:
+            with open(modellingpath + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Dfinal_{filename(mechanism,parIDss)}.pkl', 'wb') as f:
                 pickle.dump(U_final, f)
 
-            with open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/%s/2Drecord_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism,parIDss)), 'wb') as f:
+            with open(modellingpath + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Drecord_{filename(mechanism,parIDss)}.pkl', 'wb') as f:
                 pickle.dump(U_record, f)
-            # pickle.dump(U_final, open(modellingpath + '/growth/out/numerical/%s/%s/simulation/2Dfinal_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
-            # pickle.dump(U_record, open(modellingephemeral + '/growth/out/numerical/%s/%s/simulation/2Drecord_%s.pkl'%(circuit_n,mechanism,filename(mechanism,parIDss)), 'wb'))
-
+   
         except ValueError:
             print('!!!!!!!!!!!!!')
             print('ValueError --> unstable solution')

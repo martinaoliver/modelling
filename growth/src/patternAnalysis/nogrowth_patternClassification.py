@@ -99,10 +99,6 @@ def patternClassification(U_final, U_record, normalize=True):
         pattern = 'Non-Stationary irregular pattern'
     # if var[0]>0.1 and var[1]>0.1:
 
-
-
-
-
     return pattern, converged, flat, regular
 
 

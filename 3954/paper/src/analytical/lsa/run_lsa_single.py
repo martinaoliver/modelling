@@ -46,7 +46,7 @@ par_dict = df.loc[parID].to_dict()
 # output_df = big_turing_analysis_df(df,circuit_n,variant,n_samples, n_species,print_parID=False, tqdm_disable=False)
 out = detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=100,calculate_unstable=False,steadystate=False)
 plot_all_dispersion(out[4][0],n_species, crop=100, top=100)
-plt.show()
+plt.show()/rds/general/user/mo2016/home/Documents/modelling/3954/paper/out/analytical
 plot_highest_dispersion(out[4][0], crop=10000, top=100)
 plt.title(f'Turing instability: {circuit_n}, {variant}, parID {parID}')
 plt.show()
