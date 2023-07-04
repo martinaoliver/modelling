@@ -145,10 +145,12 @@ df = None
 # with open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
 with open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb") as f:
     df = pickle.load(f)
+
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 df.index.names = ['parID','ss']
 total_params=len(df)
 print(df)
+print(f'len(df) = {len(df)}')
 print('loadedd')
 batch_size = int(total_params/Number_of_Threads) + 1
 print(df.head())

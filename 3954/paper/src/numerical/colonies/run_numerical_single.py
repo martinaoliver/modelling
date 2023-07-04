@@ -78,12 +78,26 @@ df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/d
 # p_division=0.5;seed=1
 
 
-L=20; dx =0.1; J = int(L/dx)
-T =50; dt = 0.02; N = int(T/dt)
-boundarycoeff = 1
-divisionTimeHours=0.5
-p_division=1;seed=1
+# #slowgrowth
+# L=20; dx =0.1; J = int(L/dx)
+# T =100; dt = 0.02; N = int(T/dt)
+# boundarycoeff = 1
+# divisionTimeHours=0.5
+# p_division=0.38;seed=1
+# # 
+# #mediumgrowth
+# L=20; dx =0.1; J = int(L/dx)
+# T =50; dt = 0.02; N = int(T/dt)
+# boundarycoeff = 1
+# divisionTimeHours=0.5
+# p_division=1;seed=1
 
+# # fastgrowth
+L=20; dx =0.1; J = int(L/dx)
+T =25; dt = 0.02; N = int(T/dt)
+boundarycoeff = 1
+divisionTimeHours=0.2
+p_division=0.7;seed=1
 
 
 shape = 'ca'

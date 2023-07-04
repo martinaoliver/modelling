@@ -1,0 +1,1 @@
+ALTER TABLE simulation_output ALTER COLUMN "ssID" SET DEFAULT 0;
