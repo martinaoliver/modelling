@@ -8,18 +8,30 @@ sys.path.append(modellingpath + '/lib')
 from database.databaseFunctions import *
 import pickle
 #############
+#############
+###paths#####
+#############
+import sys
+import os
+import pickle
+
+def simulationOutput_df_to_sql(sim_dict,):
+    #query simulation_param_id using sim_dict
+    #query model_param_id using circuit, variant, nsamples, 
+    #query steadystate. default 0 for now
+    
+
+    return
 
 
-# #%%
-# Specify name of circuit and variant investigated
 
-circuit_n='turinghill'
-variant=9
+L=50; dx =0.1; J = int(L/dx)
+T =2000; dt = 0.02; N = int(T/dt)
+boundaryCoeff=1;rate=L/T
+suggesteddt = float(dx*dx*2)
 
-# Specifiy number of parameter sets in parameterset file to be loaded
-n_samples = 2000000
+sim_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 
+            'boundaryCoeff':boundaryCoeff, 
+            'growth':'nogrowth', 'growth rate': rate}
+simulationOutput_df_to_sql(sim_dict)
 
-print(f'Circuit:{circuit_n}, Variant:{variant}')
-lhs_df = pickle.load( open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
-lhs_df = lhs_df.iloc[:1000]
-modelParam_df_to_sql(lhs_df, circuit_n, variant, n_samples)

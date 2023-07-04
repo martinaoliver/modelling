@@ -95,7 +95,7 @@ def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoin
             print(parID)
 
         ax=plt.subplot(n_row,n_col, count+1)
-        U_final = pickle.load( open(modellingephemeral + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
+        U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
         rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure='LargeImage')
         # def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
 
@@ -111,9 +111,11 @@ def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoin
     if saveFig==True:
         if stop==len_fullDataset and start==0:
             plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s.png'%(folder,filename('x')),dpi=dpi)
+            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s.pdf'%(folder,filename('x')),dpi=dpi)
         
         else:
             plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s_%s-%s.png'%(folder,filename('x'),start,stop),dpi=dpi)
+            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s_%s-%s.pdf'%(folder,filename('x'),start,stop),dpi=dpi)
             print('not full')
             plt.close()
     # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)

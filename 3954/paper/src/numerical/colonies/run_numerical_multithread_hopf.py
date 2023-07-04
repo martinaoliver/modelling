@@ -54,20 +54,13 @@ nsamples = 1000000
 Kce=100
 # specify dimensions of system
 
-
-#slowgrowth
 L=20; dx =0.1; J = int(L/dx)
-T =100; dt = 0.02; N = int(T/dt)
+T =50; dt = 0.02; N = int(T/dt)
 boundarycoeff = 1
 divisionTimeHours=0.5
-p_division=0.38;seed=1
+p_division=1;seed=1
 
-# # fast
-# L=20; dx =0.1; J = int(L/dx)
-# T =25; dt = 0.02; N = int(T/dt)
-# boundarycoeff = 1
-# divisionTimeHours=0.2
-# p_division=0.7;seed=1
+
 
 systemArgs = [L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours]
 
@@ -84,7 +77,7 @@ with open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivi
     daughterToMotherDictList = pickle.load(f)
 
 
-def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder):
+def numerical_check(df, circuit_n,test=False,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder):
     # L=8; dx =0.02; J = int(L/dx)
     # T =125; dt = 0.05; N = int(T/dt)
     # boundarycoeff = 1.7
@@ -94,10 +87,6 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
     L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours = systemArgs
     df_index = np.unique(df.index.get_level_values(0))
 
-    if Number_of_Threads == 1:
-        test=True
-    else:
-        test = False
 
     if test==True:
         T =1; dt = 0.5; N = int(T/dt)
@@ -169,21 +158,19 @@ start_time = time.perf_counter()
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
-with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
-# with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
-# with open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
+# with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
+with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
     df = pickle.load(f)
-# df.index  = df.index.droplevel(-1)
 # turing_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 total_params=len(df)
-# total_params=1000
+total_params=100
 print(total_params)
 print('loaded')
 batch_size = int(total_params/Number_of_Threads) + 1
-instabilities_df = df.iloc[0:total_params]
+df = df.iloc[0:total_params]
 # df = df.iloc[85:total_params]
 print(df.head())
-batch_indices = list(range(0, total_params, batch_size))
+batch_indices = list(range(0, len(df), batch_size))
 # Create a pool of workers
 pool = multiprocessing.Pool(Number_of_Threads)
 
