@@ -38,7 +38,7 @@ n_param_sets = 1000000
 
 # folder = 'circuit14variantfitted1'
 # folder = 'circuit14variant2ndBalancedTuring'
-folder = 'circuit14variant2nd_turing'
+folder = 'circuit14variant2ndBalancedKce100'
 # folder = f'circuit14variant{variant}'
 
 modelArgs = [circuit_n,variant,n_species,folder]
@@ -49,10 +49,10 @@ nsamples =  1000000
 # specify dimensions of system
 
 L=20; dx =0.1; J = int(L/dx)
-T =35; dt = 0.02; N = int(T/dt)
-boundarycoeff = 2
-divisionTimeHours=0.1
-p_division=0.17;seed=1
+T =25; dt = 0.02; N = int(T/dt)
+boundarycoeff = 1
+divisionTimeHours=0.2
+p_division=0.7;seed=1
 
 shape = 'ca'
 x_gridpoints=int(1/dx)
@@ -61,14 +61,13 @@ x_gridpoints=int(1/dx)
 
 save_figure = False
 
-parID=816500
+parID=361095
 # parID=94
+
+
+
 #%%
-#load image
-# U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
-# filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
-# perturbation = 'Kda2'
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsamples,Kce,boundarycoeff, shape,parID,L,J,T,N)
 
 # filename= lambda parID: 'circuit%r_variant%snsr%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsr,boundarycoeff, shape,parID,L,J,T,N)
 
@@ -76,7 +75,54 @@ filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circ
 
 U_record = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
 U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
+import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib import animation
+# plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
+# plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
+rgb_timeseries = redgreen_contrast_timeseries(U_record)
+# show_rgbvideo(rgb_timeseries,parID)
+saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
 
+def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
+    fig = plt.figure()
+    ims = []
+    rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
+    im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
+
+    for i in range(len(rgb_timeseries)):
+        im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
+        plt.title(str(filename) + str(i))
+        plt.xlabel(f'Time: {i}h')
+        
+        ims.append([im])
+    ani = animation.ArtistAnimation(fig, ims,interval=50000000)
+    
+    # FOR GIF
+    writergif = animation.PillowWriter(fps=10)
+    ani.save(saveVideoPath + filename + '.gif',writer=writergif)
+    
+    # FOR MP4
+    # mywriter = animation.FFMpegWriter()
+    # ani.save(saveVideoPath + '/%s.mp4' %filename,writer=mywriter)
+    # print('Video saved', filename)
+
+save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
+print('Video saved', filename(parID))
+
+#%%
+#load image
+# U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
+# filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+# perturbation = 'Kda2'
+filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsamples,Kce,boundarycoeff, shape,parID,L,J,T,N)
+
+# filename= lambda parID: 'circuit%r_variant%snsr%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsr,boundarycoeff, shape,parID,L,J,T,N)
+
+
+
+U_record = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
+U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
 
 
 savefig_path  = ''

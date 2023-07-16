@@ -21,15 +21,13 @@ sys.path.append(modellingpath + '/lib')
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
 
-def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False, record_every_x_hours = 10):
+def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False, record_every_x_hours = 10,boundaryCoeff=1):
     #spatial variables
     dx = float(L)/float(J-1)
     x_grid = np.array([j*dx for j in range(J)])
     x_gridpoints = J/L
-    #temporal variables
-    dt = float(T)/float(N-1)
-    t_grid = np.array([n*dt for n in range(N)])
     
+    #temporal variables
     dt = float(T)/float(N-1)
     t_grid = np.array([n*dt for n in range(N)])
     t_gridpoints =  N/T 
@@ -54,15 +52,16 @@ def cn_nogrowth(par_dict,L,J,T,N, circuit_n, n_species=2, tqdm_disable=False, re
 
     def A(alphan,J):
         bottomdiag = [-alphan for j in range(J-1)]
-        centraldiag = [1.+alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+alphan]
+        centraldiag = [1.+boundaryCoeff*alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+boundaryCoeff*alphan]
         topdiag = [-alphan for j in range(J-1)]
         diagonals = [bottomdiag,centraldiag,topdiag]
         A = diags(diagonals, [ -1, 0,1]).toarray()
         return A
 
+
     def B(alphan,J):
         bottomdiag = [alphan for j in range(J-1)]
-        centraldiag = [1.-alphan]+[1.-2.*alphan for j in range(J-2)]+[1.-alphan]
+        centraldiag = [1.-boundaryCoeff*alphan]+[1.-2.*alphan for j in range(J-2)]+[1.-boundaryCoeff*alphan]
         topdiag = [alphan for j in range(J-1)]
         diagonals = [bottomdiag,centraldiag,topdiag]
         B = diags(diagonals, [ -1, 0,1]).toarray()

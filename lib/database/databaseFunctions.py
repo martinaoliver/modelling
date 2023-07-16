@@ -13,12 +13,16 @@ import random
 from datetime import datetime
 import string
 import pandas as pd
-# credentials=f"postgresql://moliver:{password}@ld-rendres07.bc.ic.ac.uk/moliver"
-credentials=f"postgresql://moliver:moliver@ld-rendres07.bc.ic.ac.uk/moliver"
-
+import math as math
 #user=moliver
 #server=ld-rendres07.bc.ic.ac.uk
 #database=moliver
+
+credentials=f"postgresql://moliver:moliver@ld-rendres07.bc.ic.ac.uk/moliver"
+
+
+
+    
 
 #this function allows us to "on conflict - update"
 def postgres_upsert(table, conn, keys, data_iter):
@@ -58,137 +62,152 @@ def modelParam_df_to_sql(df, circuit_n, variant, n_samples):
     df['circuit_n'] = circuit_n
     df['variant'] = variant
     df['n_samples'] = n_samples
-    conn = psycopg2.connect(credentials)
-    cursor= conn.cursor()
-    for column in df.columns:
-        # cur.execute("SELECT f_add_col('public.%s', '%s', 'numeric');"%('model_param',column))
-        # cur.execute('ALTER TABLE %s ADD COLUMN "%s" numeric' % ('model_param', column))
-        try:
-            cursor.execute('ALTER TABLE %s ADD COLUMN "%s" numeric' % ('model_param', column))
 
-            conn.commit()
-            print(f'New columns added: {column}')
-        except psycopg2.errors.DuplicateColumn:
-            conn.rollback()
-            # print('failed to commit: ')
-            
-    conn.close()
-    df.index.name = 'parID'
-    print('Preparing to insert data into database')
-    st = time.time()
-    rows = df.to_sql('model_param', con=credentials, if_exists='append', index=True, index_label='parID', method=postgres_upsert)
-    et = time.time()
-    # get the execution time
-    elapsed_time = et - st
-    print('Execution time:', elapsed_time, 'seconds')   
-    print('Inserted data into database')
-    return
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+            for column in df.columns:
+                # cur.execute("SELECT f_add_col('public.%s', '%s', 'numeric');"%('model_param',column))
+                # cur.execute('ALTER TABLE %s ADD COLUMN "%s" numeric' % ('model_param', column))
+                try:
+                    cursor.execute('ALTER TABLE %s ADD COLUMN "%s" numeric' % ('model_param', column))
+
+                    conn.commit()
+                    print(f'New columns added: {column}')
+                except psycopg2.errors.DuplicateColumn:
+                    conn.rollback()
+                    # print('failed to commit: ')
+                    
+            df.index.name = 'parID'
+            print('Preparing to insert data into database')
+            st = time.time()
+            rows = df.to_sql('model_param', con=credentials, if_exists='append', index=True, index_label='parID', method=postgres_upsert)
+            et = time.time()
+            # get the execution time
+            elapsed_time = et - st
+            print('Execution time:', elapsed_time, 'seconds')   
+            print('Inserted data into database')
 
 
-# df has:
-# - columns: parID, circuit_n, var, ...parameters, analyticalResult
 def analyticalOutput_df_to_sql(lsa_df, circuit_n, variant, n_samples):
-    # TODO remove modelParameters from df
-    # TODO will insert 
+
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+            lsa_df['circuit_n'] = circuit_n
+            lsa_df['variant'] = variant
+            lsa_df['n_samples'] = n_samples
+            lsa_df = lsa_df.rename_axis(['parID','ssID']).reset_index()
+
+            lsa_df['model_param_id'] = lsa_df.apply(lambda row: f"{row['parID']}_circuit:{row['circuit_n']}_variant:{row['variant']}_samples:{row['n_samples']}", axis=1)
+
+            lsa_df['maxeig'] = np.real(lsa_df['maxeig'] )
+            print('prelambda')
+            lsa_df['ss_list'] = lsa_df['ss_list'].apply(lambda x: x.tolist() if type(x) == 'numpy.ndarray' else [None])
 
 
-    lsa_df['circuit_n'] = circuit_n
-    lsa_df['variant'] = variant
-    lsa_df['n_samples'] = n_samples
+            cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'analytical_output';")
+            column_names = [row[0] for row in cursor]
+            lsa_df = lsa_df[column_names]
+            print(f'Preparing to insert analytical output data into database {circuit_n}, {variant}, {n_samples}')
+            st = time.time()
+            rows = lsa_df.to_sql('analytical_output', con=credentials, if_exists='append',  method=postgres_upsert,  index=False)
+            et = time.time()
+            elapsed_time = et - st
+            print('Execution time:', elapsed_time, 'seconds')   
+            print('Inserted data into database')
 
-    lsa_df['maxeig'] = np.real(lsa_df['maxeig'] )
-    lsa_df['ss_list'] = lsa_df['ss_list'].apply(lambda x: x.tolist())
-
-    conn = psycopg2.connect(credentials)
-    cursor= conn.cursor()
-    cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'model_param';")
-    column_names = [row[0] for row in cur]
-    [column_names.remove(x) for x in ['parID','circuit_n', 'variant', 'n_samples']]
-    lsa_df = lsa_df.rename_axis(['parID','ssID']).reset_index()
-    lsa_df = lsa_df.drop(columns = column_names)
-    print(lsa_df)
-    type_dict = {'parID':'numeric','circuit_n':'text','n_samples':'numeric','variant':'text','ssID': 'numeric', 'ss_n': 'numeric',  'ss_list': 'numeric[]', 'ss_class':'text', 'system_class':'text', 'maxeig':'numeric', 'estimated_wvl': 'numeric', 'complex_dispersion': 'bool'} 
-# serialized_data = pickle.dumps(my_object)
-    for column in lsa_df.columns:
-
-        try:
-            cursor.execute('ALTER TABLE %s ADD COLUMN "%s" %s' % ('analytical_output', column, type_dict[column]))
-            conn.commit()
-            print(f'New columns added: {column}')
-        except psycopg2.errors.DuplicateColumn:
-            conn.rollback()
-            # print('failed to commit: ')
-            
-    conn.close()
-    
-    lsa_df.index.name = 'parID'
-    print(lsa_df)
-    print('Preparing to insert data into database')
-    st = time.time()
-    rows = lsa_df.to_sql('analytical_output', con=credentials, if_exists='append',  method=postgres_upsert,  index=False)
-    et = time.time()
-    elapsed_time = et - st
-    print('Execution time:', elapsed_time, 'seconds')   
-    print('Inserted data into database')
-
-    return
-
-
+            return lsa_df
 
 
 
 
 def simulationParam_to_sql(sim_dict):
     print(sim_dict)
-    conn = psycopg2.connect(credentials)
-    cursor= conn.cursor()
-    table_name = 'simulation_param'
-    id = generate_insert_uuid('simID',table_name,cursor,conn)
-    sim_dict['simID'] = id
-    print(sim_dict)
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+            table_name = 'simulation_param'
+            id = generate_insert_uuid('simulation_param_id',table_name,cursor,conn)
+            sim_dict['simulation_param_id'] = id
+            print(sim_dict)
 
-    df = pd.DataFrame(sim_dict, index=[sim_dict['simID']])
-    df.index.name = 'simID'
-    df = df.drop(['simID'], axis=1)
-    
-    print('Preparing to insert data into database')
-    st = time.time()
-    df.to_sql(table_name, con=credentials, if_exists='append', index=True, index_label='simID', method=postgres_upsert)
+            df = pd.DataFrame(sim_dict, index=[sim_dict['simulation_param_id']])
+            df.index.name = 'simulation_param_id'
+            df = df.drop(['simulation_param_id'], axis=1)
+            
+            print('Preparing to insert data into database')
+            st = time.time()
+            df.to_sql(table_name, con=credentials, if_exists='append', index=True, index_label='simulation_param_id', method=postgres_upsert)
 
-    et = time.time()
-    # get the execution time
-    elapsed_time = et - st
-    print('Execution time:', elapsed_time, 'seconds')   
-    print('Inserted data into database')
+            et = time.time()
+            # get the execution time
+            elapsed_time = et - st
+            print('Execution time:', elapsed_time, 'seconds')   
+            print('Inserted data into database')
 
-    conn.commit()
+            conn.commit()
 
-    cursor.close()
-    conn.close()
-    
+            
+
+def simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final_1D,U_record_1D, ssID=0):
+    U_final_1D_list = np.array(U_final_1D).tolist()
+    U_record_1D_list = np.array(U_record_1D).tolist()
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:    
+            
+            table_name = "simulation_param"
+                        
+                        # Build the query dynamically
+            query = "SELECT simulation_param_id FROM {} WHERE ".format(table_name)
+            conditions = []
+            values = []
+            for key, value in sim_param_dict.items():
+                print(key,value)
+                conditions.append('"{0}" = %s'.format(key))
+                values.append(value)
+            print('---')
+            cursor.execute(query + ' AND '.join(conditions), values)
+
+            result = cursor.fetchall()
+            if len(result)>1:
+                print('error!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            else:
+                simulation_param_id = result[0]
+
+            print(f"simulation_param_id:{simulation_param_id}")
+            model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
+            print(f"model_param_id:{model_param_id}")
+            insert_query = 'INSERT INTO simulation_output ("simulation_param_id", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s) ON CONFLICT DO NOTHING'
+            values = (simulation_param_id, model_param_id, ssID, U_final_1D_list,U_record_1D_list)
+            cursor.execute(insert_query, values)
+            conn.commit()
+
+            print('simulation_output inserted')
+            return model_param_id
 
 
 
 
+def query_simulationOutput_from_sql(sim_param_dict,model_param_dict,query_column, ssID=0):
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute('SELECT "simulation_param_id" from simulation_param WHERE "L" = 50 and "dx" = 0.1;')
+            conn.commit()
+            simulation_param_id = cursor.fetchall()[0]
+            print(f"simulation_param_id:{simulation_param_id}")
+            model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
+            print(f"model_param_id:{model_param_id}")
+            
+            insert_query = 'SELECT "U_final_1D" from simulation_output where "model_param_id"=(%s) and "simulation_param_id"=(%s) and "ssID"=(%s)'
+            values = (model_param_id, simulation_param_id, ssID)
+            cursor.execute(insert_query, values)
+            simulationOutput = np.array(cursor.fetchall()[0][0],dtype=float)
+
+            conn.commit()
 
 
 
 
+            return simulationOutput
 
-def saveNumericalResult(parID, simID, var, circuit_n, snapshot, timeseries):
-    # TODO will insert 
-    return
-
-
-
-def queryAnalyticalResult(parID, circuit_n, var):
-    # TODO will query 
-    return df
-
-
-def queryNumericalResult(parID, simID, circuit_n, var):
-    # TODO will query 
-    return snapshot, timeseries
 
 
 

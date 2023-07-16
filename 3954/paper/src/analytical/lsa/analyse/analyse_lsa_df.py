@@ -38,6 +38,26 @@ def pieChart_lsa(valueCounts_dict,title,percentageCounts_dict,log=True):
     plt.title(title)
 
 
+def hist_lsa(valueCounts_dict,title,percentageCounts_dict,log=True):
+    colors_dict={'simple stable':'grey','simple unstable':'grey','complex unstable':'grey','no steady state':'grey','hopf':'peachpuff','turing I hopf':'peachpuff','turing I':'coral','turing I oscillatory':'coral'}
+    # colors=['grey','grey','grey','grey','peachpuff','peachpuff','peachpuff','coral','coral','coral']
+    labels = []
+    sizes = []
+    colors= []
+    percentages = []
+    for x, y in valueCounts_dict.items():
+        percentage = percentageCounts_dict[x]
+        
+        labels.append(f'{x} {np.round(percentage,4)} %')
+        sizes.append(y)
+        colors.append(colors_dict[x])
+    if log==True:
+        sizes = np.log(sizes)
+    plt.bar(sizes,colors=colors, labels=labels )
+    plt.tight_layout()
+
+    plt.axis('equal')
+    plt.title(title)
 
     # plt.show()
 #%%
@@ -64,12 +84,49 @@ print(df['system_class'].value_counts())
 valueCounts_dict = dict(df['system_class'].value_counts())
 percentageCounts_dict= {k: v/len(df)*100 for k, v in valueCounts_dict.items()}
 title = f'{circuit_n} Variant {variant} {balance}, Kce {Kce}'
+# plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/piechart_{circuit_n}_variant{variant}_nsamples{n_param_sets}_{balance}_Kce{Kce}.pdf')
+# plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/piechart_{circuit_n}_variant{variant}_nsamples{n_param_sets}_{balance}_Kce{Kce}.png')
+plt.bar(percentageCounts_dict.keys(), percentageCounts_dict.values()) 
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+
+plt.yscale('log')
+plt.show()
+# dfunstable = df[df['system_class']=='simple unstable']
+
+
+
+
+fig, ax = plt.subplots()
+bars = ax.barh(list(percentageCounts_dict.keys()), np.round(list(percentageCounts_dict.values()),3))
+
+ax.bar_label(bars)
+
+for bars in ax.containers:
+    ax.bar_label(bars)
+ax.set_xscale('log')
+plt.tight_layout()
+
+plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/barchart_{circuit_n}_variant{variant}_nsamples{n_param_sets}_{balance}_Kce{Kce}.pdf')
+plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/barchart_{circuit_n}_variant{variant}_nsamples{n_param_sets}_{balance}_Kce{Kce}.png')
+
+plt.show()
+
+
+
+#%%
+
+
+valueCounts_dict = dict(df['system_class'].value_counts())
+percentageCounts_dict= {k: v/len(df)*100 for k, v in valueCounts_dict.items()}
+title = f'{circuit_n} Variant {variant} {balance}, Kce {Kce}'
 pieChart_lsa(valueCounts_dict,title,percentageCounts_dict )
 plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/piechart_{circuit_n}_variant{variant}_nsamples{n_param_sets}_{balance}_Kce{Kce}.pdf')
 plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/piechart_{circuit_n}_variant{variant}_nsamples{n_param_sets}_{balance}_Kce{Kce}.png')
 plt.show()
 dfunstable = df[df['system_class']=='simple unstable']
 
+# %%
 #%%
 from tqdm import tqdm
 def weightTuring(dfLoc):
