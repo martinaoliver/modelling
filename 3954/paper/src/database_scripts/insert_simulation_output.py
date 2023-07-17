@@ -68,13 +68,13 @@ filename= lambda parID: f'circuit{circuit_n}_variant{variant}_{n_samples}paramet
 data_path = modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s'%(folder)
 parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 #%%
-for parID in parID_list:
+for parID in tqdm(parID_list):
     model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples, 'balance':balance}
     U_final_1D = pickle.load( open(modellingpath + f'/3954/paper/out/numerical/colonies/simulation/{folder}/2Dfinal_{filename(parID)}.pkl', 'rb'))
     U_record_1D = pickle.load( open(modellingpath + f'/3954/paper/out/numerical/colonies/simulation/{folder}/2Drecord_{filename(parID)}.pkl', 'rb'))
     U_final_1D_list = np.array(U_final_1D).tolist()
     U_record_1D_list = np.array(U_record_1D).tolist()
-    #%%
+
 
     query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D_list,U_record_1D_list, ssID=ssID)
     # %%

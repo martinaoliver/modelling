@@ -50,10 +50,12 @@ print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 suggesteddt = float(dx*dx*2)
 print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
+# for parID,ss in df.index:
 # parID= (14414,0) #parameter set to use
-parID= (3) #parameter set to use
-ssID=0
-par_dict = df.iloc[parID].to_dict()
+parID=1930331 ;ssID=2#parameter set to use
+par_dict = df.loc[parID,ssID].to_dict()
+# ssID=par_dict['']
+
 print(par_dict)
 parameter_to_modify = ['ba', 'bb', 'Va', 'Vb', 'mua', 'mub']
 for parameter in parameter_to_modify:
@@ -67,14 +69,14 @@ print(par_dict)
 model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
 #%%
 #run
-df
+
 growth = True
 if growth == True:
     growth = 'edgegrowth3'
     boundaryCoeff=2
     simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 'boundaryCoeff':boundaryCoeff, 'growth':growth, 'growth rate': rate}
     st = time.time()
-    U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth3(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=True)
+    U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth3(par_dict,L,J,T,N, circuit_n ,rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=True)
     elapsed_time = time.time() - st
     print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
     plt.scatter(x_grid,cellMatrix)
@@ -88,7 +90,7 @@ if growth == True:
     plt.show()
     surfpattern(U_record_1D, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
-    query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D)
+    query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D,ssID=ssID)
 
 
 #%%

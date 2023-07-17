@@ -160,10 +160,8 @@ def simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final_1D,U_record_
             conditions = []
             values = []
             for key, value in sim_param_dict.items():
-                print(key,value)
                 conditions.append('"{0}" = %s'.format(key))
                 values.append(value)
-            print('---')
             cursor.execute(query + ' AND '.join(conditions), values)
 
             result = cursor.fetchall()
