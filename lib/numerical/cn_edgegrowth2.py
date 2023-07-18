@@ -1,3 +1,5 @@
+#%%
+
 import numpy as np
 from scipy.sparse import spdiags, diags
 from tqdm import tqdm
@@ -19,8 +21,35 @@ sys.path.append(modellingpath + '/lib')
 
 from equations.class_circuit_eq import *
 from equations.twonode_eq import *
-#in edegrowth 2 we have a fixed field and we grow the tissue with a mask. there is diffusion outside the tissue
-def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2, perturbation=0.01,  boundaryCoeff=1, record_every_x_hours = 10,tqdm_disable=False):
+
+
+def inherit_concentration(U, cellMatrix, cellMatrixOld):
+    #inherit concentration from old cell. This function could be avoided as neighbouring concentrations next to cells already have the same concentration as the cell due to diffusion effects. 
+    U_new = copy.deepcopy(U)
+    new_cell_index = np.where(np.not_equal(cellMatrix,cellMatrixOld))
+
+    for index in new_cell_index:
+        if index<len(U[1])/2:
+            U_new[0][index] = U[0][index+1]
+            U_new[1][index] = U[1][index+1]
+        elif index>=len(U[0])/2:
+            U_new[0][index] = U[0][index-1]
+            U_new[1][index] = U[1][index-1]
+        
+    return U_new
+
+
+def cellMatrixFunction(currentJ,J):
+    len_half_pad = int((J - currentJ) / 2)
+    if (len_half_pad*2+currentJ)==J:
+        cellMatrix = np.concatenate((np.zeros(len_half_pad),np.ones(currentJ),np.zeros(len_half_pad)))
+    elif (len_half_pad*2+currentJ)<J:
+        cellMatrix = np.concatenate((np.zeros(len_half_pad),np.ones(currentJ),np.zeros(len_half_pad+1)))
+    else:
+        print('ERROR: cellMatrix too large')
+    return cellMatrix
+
+def cn_edgegrowth3(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',rate=1, n_species=2, perturbation=0.01,  boundaryCoeff=1, record_every_x_hours = 10,tqdm_disable=False):
     #spatial variables
     dx = float(L)/float(J)
     x_grid = np.array([j*dx for j in range(J)])
@@ -46,17 +75,9 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
     
     #create cell matrix
     
-    def cellMatrixFunction(currentJ,J=J):
-        len_half_pad = int((J - currentJ) / 2)
-        if (len_half_pad*2+currentJ)==J:
-            cellMatrix = np.concatenate((np.zeros(len_half_pad),np.ones(currentJ),np.zeros(len_half_pad)))
-        elif (len_half_pad*2+currentJ)<J:
-            cellMatrix = np.concatenate((np.zeros(len_half_pad),np.ones(currentJ),np.zeros(len_half_pad+1)))
-        else:
-            print('ERROR: cellMatrix too large')
-        return cellMatrix
+
     initialJ=1
-    cellMatrix=cellMatrixFunction(initialJ)
+    cellMatrix=cellMatrixFunction(initialJ, J)
 
     U0 = []
     for index in range(n_species):
@@ -116,21 +137,32 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
 
     newL = initialJ*dx
 
+    currentJ=1
     #for loop iterates over time recalculating the chemical concentrations at each timepoint (ti). 
     for ti in tqdm(range(N), disable = tqdm_disable): 
+        # print('U',np.round(U[1]))
         previousL = copy.deepcopy(newL)
+        previousJ = copy.deepcopy(currentJ)
         hour = ti / (N / T)
         if growth == 'exponential':
             newL = exponential_growth(hour,s=rate)
 
         if growth == 'linear':
             newL = linear_growth(hour,s=rate)
+            
 
-        if newL != previousL:
-            currentJ = int(newL*x_gridpoints)
-            cellMatrix = cellMatrixFunction(currentJ)
+        
+        currentJ = int(newL*x_gridpoints)
 
-        U_new = copy.deepcopy(U)
+        if currentJ != previousJ:
+            cellMatrixOld = copy.deepcopy(cellMatrix)
+            cellMatrix = cellMatrixFunction(currentJ,J)
+            U_new = inherit_concentration(U,cellMatrix,cellMatrixOld)
+        
+        else:
+            U_new = copy.deepcopy(U)
+
+
         f0 = f.dudt_growth(U_new, cellMatrix)
         
         #iterate over every chemical specie when calculating concentrations. 
@@ -139,7 +171,7 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
             # if any(x<0 for x in U_new[n]):
             #     print('negative')
             
-        
+
         hour = ti / (N / T)
         if hour % record_every_x_hours == 0 :  #only grow and record every 10 hours unit time (hour)
             for n in range(n_species):
@@ -150,7 +182,3 @@ def cn_edgegrowth2(par_dict,L,J,T,N, circuit_n, steadystate='',growth='linear',r
 
 
     return U,U_record, U0, x_grid, reduced_t_grid, cellMatrix
-
-
-
-

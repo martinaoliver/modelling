@@ -32,9 +32,11 @@ df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%
 
 # df = multiple_df.xs(0, level=1)
 #solver parameters
-L=30; dx =0.1; J = int(L/dx)
-T =100; dt = 0.02; N = int(T/dt)
+L=10; dx =0.1; J = int(L/dx)
+T =20; dt = 0.02; N = int(T/dt)
 
+# L=10; dx =1; J = int(L/dx)
+# T =30; dt = 0.5; N = int(T/dt)
 
 # L=50; dx =0.1; J = int(L/dx)
 # T =2000; dt = 0.02; N = int(T/dt)
@@ -67,6 +69,9 @@ print(f'estimated wavelenght = {par_dict["estimated_wvl"]}')
 
 print(par_dict)
 model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
+
+
+
 #%%
 #run
 
@@ -90,11 +95,11 @@ if growth == True:
     plt.show()
     surfpattern(U_record_1D, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
-    query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D,ssID=ssID)
+    # query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D,ssID=ssID)
 
 
 #%%
-no_growth = True
+no_growth = False
 if no_growth == True:
     growth='nogrowth'
     boundaryCoeff=1
@@ -118,7 +123,7 @@ if no_growth == True:
 
 
 #%%
-open_boundary = True
+open_boundary = False
 if open_boundary == True:
     growth='nogrowth'
     boundaryCoeff=1
@@ -139,7 +144,7 @@ if open_boundary == True:
 
     query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D)
 
-print(np.sum(U_final[0]))
+# print(np.sum(U_final[0]))
 
 
 # %%

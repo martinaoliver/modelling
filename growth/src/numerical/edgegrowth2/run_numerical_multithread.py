@@ -156,7 +156,7 @@ start_time = time.perf_counter()
 
 
 # Load dataframe of parameter sets
-df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
+# df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
 # multiple_df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
 # df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
 # df = multiple_df.xs(0, level=1)
@@ -165,8 +165,17 @@ df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa
 df = None
 # with open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb") as f:
 with open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb") as f:
-    df = pickle.load(f)
-    df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
+    df_general= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
+    # df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
+instabilities_list = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
+turing_list = ['turing I','turing I oscillatory']  
+hopf_list = ['hopf']
+simple_stable_list = ['simple_stable']
+simple_unstable_list = ['simple_unstable']
+complex_unstable_list = ['complex_unstable']
+
+df = df_general.loc[df_general['system_class'].isin(system_class_list)]
+
 df.index.names = ['parID','ss']
 total_params=len(df)
 print(df)
