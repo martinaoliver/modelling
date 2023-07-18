@@ -167,13 +167,20 @@ df = None
 with open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb") as f:
     df_general= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
     # df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
-instabilities_list = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
-turing_list = ['turing I','turing I oscillatory']  
-hopf_list = ['hopf']
-simple_stable_list = ['simple_stable']
-simple_unstable_list = ['simple_unstable']
-complex_unstable_list = ['complex_unstable']
-
+# instabilities_list = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
+system_class = str(sys.argv[2])
+print(system_class)
+if system_class=='turing':
+    system_class_list = ['turing I','turing I oscillatory']  
+elif system_class == 'hopf':
+    system_class_list = ['hopf']
+elif system_class == 'simple_stable':
+    system_class_list = ['simple stable']
+elif system_class == 'simple_unstable':
+    system_class_list = ['simple unstable']
+elif system_class == 'complex_unstable':
+    system_class_list = ['complex unstable']
+    
 df = df_general.loc[df_general['system_class'].isin(system_class_list)]
 
 df.index.names = ['parID','ss']
@@ -181,9 +188,12 @@ total_params=len(df)
 print(df)
 print(f'len(df) = {len(df)}')
 print('loadedd')
+if len(df)>100:
+    total_params=100
+print(f'total params {total_params}')
 batch_size = int(total_params/Number_of_Threads) + 1
 print(df.head())
-batch_indices = list(range(0, len(df), batch_size))
+batch_indices = list(range(0, total_params, batch_size))
 # Create a pool of workers
 pool = multiprocessing.Pool(Number_of_Threads)
 

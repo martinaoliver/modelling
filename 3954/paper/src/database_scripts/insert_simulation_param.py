@@ -19,29 +19,29 @@ import pickle
 
 
 
-# # slow
-# L=20; dx =0.1; J = int(L/dx)
-# T =100; dt = 0.02; N = int(T/dt)
-# boundaryCoeff = 1
-# divisionTimeHours=0.5
-# p_division=0.38;seed=1
-
-
-# medium
+# slow
 L=20; dx =0.1; J = int(L/dx)
-T =50; dt = 0.02; N = int(T/dt)
+T =100; dt = 0.02; N = int(T/dt)
 boundaryCoeff = 1
 divisionTimeHours=0.5
-p_division=1;seed=1
+p_division=0.38;seed=1
 
 
-
-# # fast
+# # medium
 # L=20; dx =0.1; J = int(L/dx)
-# T =25; dt = 0.02; N = int(T/dt)
+# T =50; dt = 0.02; N = int(T/dt)
 # boundaryCoeff = 1
-# divisionTimeHours=0.2
-# p_division=0.7;seed=1
+# divisionTimeHours=0.5
+# p_division=1;seed=1
+
+
+
+# fast
+L=20; dx =0.1; J = int(L/dx)
+T =25; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+divisionTimeHours=0.2
+p_division=0.7;seed=1
 
 shape='ca'
 sim_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 
