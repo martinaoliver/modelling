@@ -76,6 +76,8 @@ def plotAllFunction1D(parIDdict, circuit_n, mechanism, filename, round=True,star
 
 
 
+
+
 def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,start=0, stop=10,folder=None, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True, print_parID=False):
     len_fullDataset = len(parID_list)
     parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
@@ -123,3 +125,16 @@ def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoin
     # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s.png'%(filename,details), dpi=2000)
     x='x'
     print(f'Done plotting {filename(x)}')
+
+
+
+
+
+
+
+def plotAllFunctionColonies_fromDb():
+    #query database for rows with desired params
+
+    #plot all colonies in a grid
+    #save figure
+

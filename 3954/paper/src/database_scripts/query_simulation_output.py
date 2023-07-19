@@ -42,6 +42,12 @@ ssID = 0
 folder = f'{circuit_n}_variant{variant}'
 model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
 
+
+
+#%%
+
+
+
 #%%
 simulationOutput = query_simulationOutput_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_final_1D', ssID=ssID)
 plot1D(simulationOutput, savefig=False,filename='')

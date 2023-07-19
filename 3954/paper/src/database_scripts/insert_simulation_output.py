@@ -75,6 +75,7 @@ for parID in tqdm(parID_list):
     U_record_1D = pickle.load( open(modellingpath + f'/3954/paper/out/numerical/colonies/simulation/{folder}/2Drecord_{filename(parID)}.pkl', 'rb'))
     U_final_1D_list = np.array(U_final_1D).tolist()
     U_record_1D_list = np.array(U_record_1D).tolist()
+    print(np.sum(U_final_1D_list))
 
 
     query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D_list,U_record_1D_list, ssID=ssID)
