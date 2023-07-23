@@ -132,9 +132,3 @@ def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoin
 
 
 
-def plotAllFunctionColonies_fromDb():
-    #query database for rows with desired params
-
-    #plot all colonies in a grid
-    #save figure
-

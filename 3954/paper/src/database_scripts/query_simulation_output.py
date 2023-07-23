@@ -17,30 +17,54 @@ import pickle
 import psycopg2
 import matplotlib.pyplot as plt
 
-from numerical.cn_plot import plot1D, surfpattern
+from numerical.plotting_numerical import *
 
 
 #%%
 
+# # slow
+# L=20; dx =0.1; J = int(L/dx)
+# T =100; dt = 0.02; N = int(T/dt)
+# boundaryCoeff = 1
+# divisionTimeHours=0.5
+# p_division=0.38;seed=1
+
+
+# # medium
+# L=20; dx =0.1; J = int(L/dx)
+# T =50; dt = 0.02; N = int(T/dt)
+# boundaryCoeff = 1
+# divisionTimeHours=0.5
+# p_division=1;seed=1
 
 
 
-L=50; dx =0.1; J = int(L/dx)
-T =2000; dt = 0.02; N = int(T/dt)
-boundaryCoeff=1;rate=L/T
-suggesteddt = float(dx*dx*2)
-growth = 'edgegrowth2'
+# fast
+L=20; dx =0.1; J = int(L/dx)
+T =25; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+divisionTimeHours=0.2
+p_division=0.7;seed=1
+x_gridpoints=int(1/dx)
+
+
+shape='ca'
 simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 
             'boundaryCoeff':boundaryCoeff, 
-            'growth':growth, 'growth rate': rate}
+            'shape':'ca', 'p_division': p_division, 'seed':seed}
 
-parID = 1544038
-circuit_n='turinghill'
-variant= '9'
-n_samples=2000000
-ssID = 0
-folder = f'{circuit_n}_variant{variant}'
-model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
+
+
+
+
+ssID=0
+circuit_n='14' #circuit_n='circuit14'
+variant='2nd' #variant='fitted7'
+balance='Balanced'
+Kce=100
+n_samples = 1000000 #n_samples = 13700000
+folder = 'circuit14variant2ndBalancedKce100'
+model_param_dict = {'parID':1, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples, 'balance':balance}
 
 
 
@@ -50,6 +74,23 @@ model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_s
 
 #%%
 simulationOutput = query_simulationOutput_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_final_1D', ssID=ssID)
-plot1D(simulationOutput, savefig=False,filename='')
+plot_redgreen_contrast(simulationOutput,L)
+# %%ssID=0
+circuit_n='14' #circuit_n='circuit14'
+variant='2nd' #variant='fitted7'
+balance='Balanced'
+Kce=100
+n_samples = 1000000 #n_samples = 13700000
+folder = 'circuit14variant2ndBalancedKce100'
+model_param_dict = {'parID':1, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples, 'balance':balance}
 
+
+
+#%%
+
+
+
+#%%
+simulationOutput = query_simulationOutput_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_final_1D', ssID=ssID)
+plot_redgreen_contrast(simulationOutput,L)
 # %%

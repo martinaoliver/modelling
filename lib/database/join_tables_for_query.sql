@@ -75,10 +75,19 @@ with params_ss1 as (select p."model_param_id" from model_param p, analytical_out
                       AND p."n_samples" = 1000000
                       AND p."balance" = 'Balanced'),
      sim_params as (select "simulation_param_id" from simulation_param where shape='ca' and "T"=25)
-select  p."model_param_id"
+--      notnull_sim_output as (select * from simulation_output where "U_final_1D" is not null)
+
+
+-- select count(*)
+select  o."model_param_id"
 from simulation_output o,
      params_ss1,
-     sim_params, model_param p
+     sim_params , model_param p
 where o.model_param_id = params_ss1.model_param_id
   and o.simulation_param_id = sim_params.simulation_param_id
+;
 
+select count("U_final_1D") from simulation_output where model_param_id='0_circuit:14_variant:2nd_samples:1000000';
+select model_param_id from simulation_output limit 1;
+select model_param_id from simulation_output where "U_final_1D" is not null;
+select count(*) from simulation_output where  model_param_id='32211_circuit:14_variant:2nd_samples:1000000';

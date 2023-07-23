@@ -77,7 +77,7 @@ def matrix_rgb_normalisation(matrix):
         row_n += 1
     return NewMatrix, OldMin, OldMax
 
-def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, parID=0, scale_factor=10, save_figure=False):
+    def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, parID=0, scale_factor=10, save_figure=False):
     green = final_concentration[-1]
     red = final_concentration[-2]
     x_grid = np.linspace(0, mm, len(green))

@@ -18,7 +18,6 @@ import numpy as np
 import psycopg2
 import matplotlib.pyplot as plt
 from numerical.plotting_numerical import *
-from numerical.cn_plot import plot1D, surfpattern
 
 from tqdm import tqdm
 #############################
@@ -95,13 +94,13 @@ def getUFinal1D_fromDb(model_param_dict, sim_param_dict):
                       AND {0}),
     sim_params as (select "simulation_param_id" from simulation_param s where {1}  )
         
-    select o."U_final_1D", p."model_param_id"
+    select o."U_final_1D", o."model_param_id"
         from simulation_output o,
             params_ss1,
             sim_params,  model_param p
         where o.model_param_id = params_ss1.model_param_id
         and o.simulation_param_id = sim_params.simulation_param_id
-        limit 4
+        limit 51
         ;
         """
     param_conditions = " AND ".join([ f'p."{k}" = %s' for k in model_param_dict.keys()])
@@ -178,7 +177,7 @@ def plotAllFunctionColonies_fromDb(cursor,L, x_gridpoints, len_dataset=2):
     # print(f'Done plotting {filename(x)}')
 
 
-plotAllFunctionColonies_fromDb(cursor, L, x_gridpoints, len_dataset=5)
+plotAllFunctionColonies_fromDb(cursor, L, x_gridpoints, len_dataset=4)
 
 
 
