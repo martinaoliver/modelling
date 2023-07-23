@@ -165,7 +165,7 @@ start_time = time.perf_counter()
 df = None
 # with open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb") as f:
 with open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb") as f:
-    df_general= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
+    df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
     # df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
 # instabilities_list = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
 system_class = str(sys.argv[2])
@@ -181,7 +181,8 @@ elif system_class == 'simple_unstable':
 elif system_class == 'complex_unstable':
     system_class_list = ['complex unstable']
     
-df = df_general.loc[df_general['system_class'].isin(system_class_list)]
+# df = df_general.loc[df_general['system_class'].isin(system_class_list)]
+df = df.loc[df['system_class'].isin(system_class_list)]
 
 df.index.names = ['parID','ss']
 total_params=len(df)
