@@ -15,7 +15,7 @@ from numerical.adi_ca_function_openclosed_nodilution_preMask_numba import \
     adi_ca_openclosed_nodilution_preMask_numba
 from numerical.adi_square_function import adi
 from numerical.plotting_numerical import *
-
+from database.databaseFunctions import simulationOutput_to_sql
 from numerical.cn_plot import plot1D, surfpattern
 
 
@@ -41,35 +41,44 @@ print('Number of Threads set to ', Number_of_Threads)
 
 # Specify name of circuit and variant investigated
 # circuit_n=14;variant='fitted1';n_species=6
-circuit_n=14;variant='2nd';n_species=6
+# circuit_n=14;variant='2nd';n_species=6
+nsr = float(sys.argv[2])
+circuit_n=14;variant = f'fitted7_gaussian4187715_nsr{nsr}';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 # balance = 'balanced'
 # folder = 'circuit14variantfitted1'
-folder = 'circuit14variant2ndBalancedKce100'
+folder = f'circuit14variantfitted7_gaussian4187715'
 modelArgs = [circuit_n,variant,n_species,folder]
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 # nsamples = 2000000
-nsamples = 1000000
-Kce=100
+n_samples =2000
+# Kce=100
 # specify dimensions of system
 
 
-#slowgrowth
+# #slowgrowth
+# L=20; dx =0.1; J = int(L/dx)
+# T =100; dt = 0.02; N = int(T/dt)
+# boundaryCoeff = 1
+# division_time_hours=0.5
+# p_division=0.38;seed=1
+
+# medium
 L=20; dx =0.1; J = int(L/dx)
-T =100; dt = 0.02; N = int(T/dt)
-boundarycoeff = 1
-divisionTimeHours=0.5
-p_division=0.38;seed=1
+T =50; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+division_time_hours=0.5
+p_division=1;seed=1
 
 # # fast
 # L=20; dx =0.1; J = int(L/dx)
 # T =25; dt = 0.02; N = int(T/dt)
-# boundarycoeff = 1
-# divisionTimeHours=0.2
+# boundaryCoeff = 1
+# division_time_hours=0.2
 # p_division=0.7;seed=1
 
-systemArgs = [L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours]
+systemArgs = [L, dx, J, T, dt, N, boundaryCoeff, p_division, seed, division_time_hours]
 
 
 
@@ -87,11 +96,11 @@ with open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivi
 def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cell_matrix_record = cell_matrix_record,daughterToMotherDictList=daughterToMotherDictList, variant = variant, n_species=n_species, folder=folder):
     # L=8; dx =0.02; J = int(L/dx)
     # T =125; dt = 0.05; N = int(T/dt)
-    # boundarycoeff = 1.7
+    # boundaryCoeff = 1.7
     # p_division=0.7;seed=1
-    # divisionTimeHours = 0.5
+    # division_time_hours = 0.5
     circuit_n, variant, n_species, folder = modelArgs
-    L, dx, J, T, dt, N, boundarycoeff, p_division, seed, divisionTimeHours = systemArgs
+    L, dx, J, T, dt, N, boundaryCoeff, p_division, seed, division_time_hours = systemArgs
     df_index = np.unique(df.index.get_level_values(0))
 
     if Number_of_Threads == 1:
@@ -118,13 +127,17 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
         # par_dict['muLVA'] = par_dict['muLVA'] /degDiv
         # steadystates=par_dict['ss_list']
 
-        # filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
-        filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsamples,Kce,boundarycoeff, shape,parID,L,J,T,N)
+        filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
+        # filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsamples,Kce,boundaryCoeff, shape,parID,L,J,T,N)
         savefig=False
         savefigpath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s/'%(folder)
-
+        simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 
+                    'boundaryCoeff':boundaryCoeff, 
+                    'shape':shape, 'p_division': p_division,  'seed':seed, 'division_time_hours': division_time_hours}
+        model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
+        print(simulation_param_dict)
         try:
-            U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
+            U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,division_time_hours=division_time_hours, stochasticity=0, seed=1, boundaryCoeff=boundaryCoeff)
 
             # pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) )
             # pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), 'wb'))
@@ -139,6 +152,9 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
                 with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
                     pickle.dump(U_record, f)
                 
+
+                query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final,U_record)
+
             del U_record
             del U_final
             # print(np.shape(U_record))
@@ -169,9 +185,10 @@ start_time = time.perf_counter()
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
-with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
+# with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
 # with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
 # with open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,nsamples,Kce), "rb" ) as f:
+with open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%s_variant%s_%sparametersets.pkl'%(circuit_n,variant,n_samples), "rb" ) as f:
     df = pickle.load(f)
 # df.index  = df.index.droplevel(-1)
 # turing_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )

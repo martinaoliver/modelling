@@ -138,7 +138,6 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
                     pickle.dump(U_final_1D, f)
                 with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Drecord_{filename(mechanism,parIDss)}.pkl', 'wb') as f:
                     pickle.dump(U_record_1D, f)
-                query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D)
 
         except ValueError:
             print('!!!!!!!!!!!!!')

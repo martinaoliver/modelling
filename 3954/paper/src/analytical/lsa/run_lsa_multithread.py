@@ -11,7 +11,7 @@ sys.path.append(modellingpath + '/lib')
 #############
 
 from analytical.linear_stability_analysis import big_turing_analysis_df, detailed_turing_analysis_dict
-
+from database.databaseFunctions import *
 
 import pickle
 from datetime import date
@@ -36,16 +36,20 @@ print('Number of Threads set to ', Number_of_Threads)
 # Number_of_Threads=48
 # Specify name of circuit and variant investigated
 
+
 circuit_n='circuit14'
 # variant='fitted7'
-variant='2nd'
+# variant='2nd'
+nsr = float(sys.argv[2])
+variant = f'fitted7_gaussian4187715_nsr{nsr}'
 n_species=6
 # balance='notBalanced'
-balance='balanced'
-Kce = sys.argv[2]
+# balance='balanced'
+# Kce = sys.argv[2]
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_samples =1000000
-n_analysed_param_sets = 1000000
+# n_samples =1000000
+n_samples =2000
+n_analysed_param_sets = 2000
 print(n_analysed_param_sets)
 # Specify date today
 date = date.today().strftime('%m_%d_%Y')
@@ -62,11 +66,16 @@ date = date.today().strftime('%m_%d_%Y')
 # Define work to be done per batch of parameter sets
 def lsa_check(start_batch_index,n_samples,df,circuit_n=circuit_n, variant=variant, n_species=n_species):
     print('pool' + str(start_batch_index))
-    output_df = big_turing_analysis_df(df,circuit_n,variant, n_samples, n_species,print_parID=False, saveInstability = False)
+    print_parID=False
+    if Number_of_Threads==1:
+        print_parID=True
+        
+    output_df = big_turing_analysis_df(df,circuit_n,variant, n_samples, n_species,print_parID=print_parID, saveInstability = False)
     print('calculated')
-    
-    pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s_batch%r.pkl'%(circuit_n,variant,n_samples,balance, Kce,start_batch_index), 'wb'))
+
+    # pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s_batch%r.pkl'%(circuit_n,variant,n_samples,balance, Kce,start_batch_index), 'wb'))
     # pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_batch%r.pkl'%(circuit_n,variant,n_samples,balance, start_batch_index), 'wb'))
+    pickle.dump(output_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_batch%r.pkl'%(circuit_n,variant,n_samples, start_batch_index), 'wb'))
     print('saved')
 # Runs if the module is the main program
 # if __name__ == '__main__':
@@ -74,12 +83,13 @@ print('start_time')
 start_time = time.perf_counter()
 start_parameter = int(0)
 # Load dataframe of parameter sets
-# df= pickle.load( open('../lhs_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb" ) )
-df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_%s_variant%s_%rparametersets_%s_Kce%s.pkl"%(circuit_n,variant,n_samples, balance,Kce), "rb"))
+df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb" ) )
+# df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_circuit%s_variant%s_%rparametersets_%s_Kce%s.pkl"%(circuit_n,variant,n_samples, balance,Kce), "rb"))
 
 # df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_%s_variant%s_%rparametersets_%s.pkl"%(circuit_n,variant,n_samples,balance), "rb"))
 print(df)
-print("df_%s_variant%s_%rparametersets_%s_Kce%s.pkl"%(circuit_n,variant,n_samples, balance,Kce))
+# print("df_%s_variant%s_%rparametersets_%s_Kce%s.pkl"%(circuit_n,variant,n_samples, balance,Kce))
+print("df_%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_samples))
 print('df_loaded')
 
 # n_analysed_param_sets = len(df)
@@ -121,8 +131,9 @@ my_data = {}
 # Load all batch dataframes
 for start_batch_index in batch_indices:
     try:
-        my_data[start_batch_index] = pickle.load(open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s_batch%r.pkl'%(circuit_n,variant,n_samples,balance,Kce,start_batch_index), "rb" ) )
+        # my_data[start_batch_index] = pickle.load(open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s_batch%r.pkl'%(circuit_n,variant,n_samples,balance,Kce,start_batch_index), "rb" ) )
         # my_data[start_batch_index] = pickle.load(open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_batch%r.pkl'%(circuit_n,variant,n_samples,balance,start_batch_index), "rb" ) )
+        my_data[start_batch_index] = pickle.load(open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_batch%r.pkl'%(circuit_n,variant,n_samples,start_batch_index), "rb" ) )
         print(start_batch_index)
     except FileNotFoundError:
         print(start_batch_index, 'not Found')
@@ -137,4 +148,6 @@ multi_index = pd.MultiIndex.from_tuples(tupled_index)
 results_df = results_df.set_index(multi_index)
 # pickle.dump(results_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_samples), 'wb'))
 # pickle.dump(results_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_samples,balance), 'wb'))
-pickle.dump(results_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s.pkl'%(circuit_n,variant,n_samples,balance,Kce), 'wb'))
+# pickle.dump(results_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s.pkl'%(circuit_n,variant,n_samples,balance,Kce), 'wb'))
+pickle.dump(results_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), 'wb'))
+analyticalOutput_df_to_sql(results_df, 14, variant, n_samples)

@@ -21,7 +21,7 @@ import numba
 from numba import cuda, float32
 
 
-def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False,divisionTimeHours=1,stochasticity=0, seed=1, boundarycoeff=1.5):
+def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False,division_time_hours=1,stochasticity=0, seed=1, boundaryCoeff=1.5):
     
     parent_list = [circuit1, circuit2,circuit3,circuit4,circuit5,circuit6,circuit7,circuit8,circuit9, circuit10, circuit11, circuit12, circuit13, circuit14]
     f = parent_list[circuit_n-1](par_dict, stochasticity=stochasticity)
@@ -51,7 +51,7 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
     #A matrix (right-hand side of Ax=b)
     def A(alphan):
         bottomdiag = [-alphan for j in range(J-1)]
-        centraldiag = [1.+boundarycoeff*alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+boundarycoeff*alphan]
+        centraldiag = [1.+boundaryCoeff*alphan]+[1.+2.*alphan for j in range(J-2)]+[1.+boundaryCoeff*alphan]
         topdiag = [-alphan for j in range(J-1)]
         diagonals = [bottomdiag,centraldiag,topdiag]
         A = diags(diagonals, [ -1, 0,1]).toarray()
@@ -90,9 +90,9 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
     #b vector (left-hand side of Ax=b)
     @numba.jit(nopython=True)
     def b(axis,ij,alphan,Un):
-        b_t_stencil = np.array( [0] + [(1-boundarycoeff*alphan)] + [alphan])
+        b_t_stencil = np.array( [0] + [(1-boundaryCoeff*alphan)] + [alphan])
         b_c_stencil = np.array( [alphan] + [(1-2*alphan)] + [alphan])
-        b_b_stencil = np.array( [alphan] + [(1-boundarycoeff*alphan)] + [0])
+        b_b_stencil = np.array( [alphan] + [(1-boundaryCoeff*alphan)] + [0])
         
         b = np.zeros(J)
         if axis == 'y':
@@ -150,8 +150,8 @@ def adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_sp
 
 
     #define parameters for divisio frequency
-    divisionTimeHours=1 #cells consider division every x hours
-    divisionTimeUnits=int(divisionTimeHours/dt) #cells consider division every x timeunits. If dt=0.1, x=10
+    division_time_hours=1 #cells consider division every x hours
+    divisionTimeUnits=int(division_time_hours/dt) #cells consider division every x timeunits. If dt=0.1, x=10
     A_inv = [np.linalg.inv(a) for a in A_list]
 
     for ti in tqdm(range(0,N), disable = tqdm_disable):
