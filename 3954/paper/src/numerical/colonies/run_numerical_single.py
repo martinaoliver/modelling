@@ -50,7 +50,7 @@ folder = f'circuit{circuit_n}variant{variant}'
 # folder = 'circuit14fitted3balancedSemibalanced'
 save_figure = False
 tqdm_disable = False #disable tqdm
-# boundarycoeff = float(sys.argv[6])
+# boundaryCoeff = float(sys.argv[6])
 
 
 # open parameter dictionaries
@@ -63,8 +63,8 @@ df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/d
 # L=30; dx =0.2; J = int(L/dx)
 # T =200; dt = 0.1; N = int(T/dt)
 
-# boundarycoeff = 1
-# divisionTimeHours=1
+# boundaryCoeff = 1
+# division_time_hours=1
 # p_division=0.25;seed=1
 
 
@@ -73,31 +73,31 @@ df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/d
 
 # L=20; dx =0.1; J = int(L/dx)
 # T =50; dt = 0.3; N = int(T/dt)
-# boundarycoeff = 1
-# divisionTimeHours=0.3
+# boundaryCoeff = 1
+# division_time_hours=0.3
 # p_division=0.5;seed=1
 
 
 # #slowgrowth
 # L=20; dx =0.1; J = int(L/dx)
 # T =100; dt = 0.02; N = int(T/dt)
-# boundarycoeff = 1
-# divisionTimeHours=0.5
+# boundaryCoeff = 1
+# division_time_hours=0.5
 # p_division=0.38;seed=1
 # # 
-# #mediumgrowth
-# L=20; dx =0.1; J = int(L/dx)
-# T =50; dt = 0.02; N = int(T/dt)
-# boundarycoeff = 1
-# divisionTimeHours=0.5
-# p_division=1;seed=1
-
-# # fastgrowth
+#mediumgrowth
 L=20; dx =0.1; J = int(L/dx)
-T =25; dt = 0.02; N = int(T/dt)
-boundarycoeff = 1
-divisionTimeHours=0.2
-p_division=0.7;seed=1
+T =50; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+division_time_hours=0.5
+p_division=1;seed=1
+
+# # # fastgrowth
+# L=20; dx =0.1; J = int(L/dx)
+# T =25; dt = 0.02; N = int(T/dt)
+# boundaryCoeff = 1
+# division_time_hours=0.2
+# p_division=0.7;seed=1
 
 
 shape = 'ca'
@@ -113,16 +113,16 @@ except:
     FileNotFoundError
     print('fileCreation')
 
-    maskFunction(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
+    maskFunction(L=L,dx=dx, T=T, dt=dt, division_time_hours=division_time_hours, p_division=p_division, plot1D=True, plotScatter=True)
     cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     
 
-# maskFunction(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
+# maskFunction(L=L,dx=dx, T=T, dt=dt, division_time_hours=division_time_hours, p_division=p_division, plot1D=True, plotScatter=True)
 # cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 # daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
 # parID=12837401
 parID=12837401
 
@@ -159,11 +159,11 @@ D[:2] = [1,Dr ]
 print(par_dict)
 
 
-# U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=boundarycoeff)
+# U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundaryCoeff=boundaryCoeff)
 # U_record,U_final =  adi(par_dict,L,L,J,J,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0)
 # get the start time
 st = time.time()
-U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
+U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,division_time_hours=division_time_hours, stochasticity=0, seed=1, boundaryCoeff=boundaryCoeff)
 elapsed_time = time.time() - st
 print('Execution time numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
 # plt.imshow(U_final[-1])
