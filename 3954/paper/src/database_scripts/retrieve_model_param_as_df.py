@@ -8,26 +8,30 @@ sys.path.append(modellingpath + '/lib')
 
 from database.databaseFunctions import *
 import pickle
+
 #############
 
 
-# #%%
-# Specify name of circuit and variant investigated
-circuit_n='circuit14'
-variant='fitted7'
-# Specifiy number of parameter sets in parameterset file to be loaded
-n_samples = 13700000
 
-print(f'Circuit:{circuit_n}, Variant:{variant}')
-# lhs_df = pickle.load( open(modellingpath + '/3954/paper/input/lhs_parameterfiles/df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
-lhs_df = pickle.load( open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_samples), "rb"))
-# lhs_df = pickle.load( open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
-batch_size = int(len(lhs_df/100))+1
-lhs_df = lhs_df.iloc[:100000]
-print(lhs_df.columns)
-print('sgxjfh')
+
 
 #%%
-modelParam_df_to_sql(lhs_df, circuit_n, variant, n_samples)
+# Specify name of circuit and variant investigated
+circuit_n='14'
+parID=4187715
+nsr=0.01
+old_variant='fitted7'
+variant=f'{old_variant}_gaussian{parID}_nsr{nsr}' #variant='fitted7'
+# Specifiy number of parameter sets in parameterset file to be loaded
+n_samples = 2000 #n_samples = 13700000
 
-# %%
+
+model_param_dict = {'circuit_n': circuit_n, 'variant': variant, 'n_samples': n_samples}
+
+
+#%%
+result_df = query_modelParam_df_from_sql(model_param_dict)
+result_df
+pickle.dump(result_df, open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%r_variant%s_%sparametersets.pkl'%(circuit_n,variant,n_samples), "wb" ) )
+
+

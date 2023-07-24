@@ -180,6 +180,23 @@ def simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final_1D,U_record_
 
             print('simulation_output inserted')
             return model_param_id
+        
+def query_modelParam_df_from_sql( model_param_dict):
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+
+            # Build the SQL query
+            columns = ", ".join(model_param_dict.keys())
+            values = ", ".join([f"'{val}'" for val in model_param_dict.values()])
+            query = f"SELECT * FROM model_param WHERE ({columns}) = ({values});"
+
+            # Fetch the data into a pandas DataFrame
+            df = pd.read_sql_query(query, conn)
+    df = df.dropna(axis=1, how='all')
+    df = df.drop(['model_param_id'], axis=1)
+    df = df.drop(model_param_dict.keys(), axis=1)
+    df.set_index('parID', inplace=True)
+    return df
 
 
 
