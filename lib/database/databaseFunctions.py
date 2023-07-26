@@ -147,7 +147,7 @@ def simulationParam_to_sql(sim_dict):
 
             
 
-def simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final_1D,U_record_1D, ssID=0):
+def simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final_1D,U_record_1D, ssID=0, dimensions='2D'):
     U_final_1D_list = np.array(U_final_1D).tolist()
     U_record_1D_list = np.array(U_record_1D).tolist()
     with psycopg2.connect(credentials) as conn:
@@ -173,7 +173,12 @@ def simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final_1D,U_record_
             print(f"simulation_param_id:{simulation_param_id}")
             model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
             print(f"model_param_id:{model_param_id}")
-            insert_query = 'INSERT INTO simulation_output ("simulation_param_id", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s) ON CONFLICT DO NOTHING'
+            if dimensions=='1D':
+                print('1D')
+                insert_query = 'INSERT INTO simulation_output ("simulation_param_id", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s) ON CONFLICT DO NOTHING'
+            elif dimensions=='2D':
+                print('2D')
+                insert_query = 'INSERT INTO simulation_output ("simulation_param_id", "model_param_id", "ssID", "U_final_2D","U_record_2D") VALUES (%s, %s, %s,%s,%s) ON CONFLICT DO NOTHING'
             values = (simulation_param_id, model_param_id, ssID, U_final_1D_list,U_record_1D_list)
             cursor.execute(insert_query, values)
             conn.commit()

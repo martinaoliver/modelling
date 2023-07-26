@@ -42,7 +42,7 @@ print('Number of Threads set to ', Number_of_Threads)
 # Specify name of circuit and variant investigated
 # circuit_n=14;variant='fitted1';n_species=6
 # circuit_n=14;variant='2nd';n_species=6
-nsr = float(sys.argv[2])
+nsr = 0.01
 circuit_n=14;variant = f'fitted7_gaussian4187715_nsr{nsr}';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 # balance = 'balanced'
@@ -56,27 +56,30 @@ n_samples =2000
 # Kce=100
 # specify dimensions of system
 
+growth = str(sys.argv[2])
+if growth=='slow':
+    #slowgrowth
+    L=20; dx =0.1; J = int(L/dx)
+    T =100; dt = 0.02; N = int(T/dt)
+    boundaryCoeff = int(sys.argv[3])
+    division_time_hours=0.5
+    p_division=0.38;seed=1
 
-# #slowgrowth
-# L=20; dx =0.1; J = int(L/dx)
-# T =100; dt = 0.02; N = int(T/dt)
-# boundaryCoeff = 1
-# division_time_hours=0.5
-# p_division=0.38;seed=1
+elif growth=='medium':
+    # medium
+    L=20; dx =0.1; J = int(L/dx)
+    T =50; dt = 0.02; N = int(T/dt)
+    boundaryCoeff = int(sys.argv[3])
+    division_time_hours=0.5
+    p_division=1;seed=1
 
-# medium
-L=20; dx =0.1; J = int(L/dx)
-T =50; dt = 0.02; N = int(T/dt)
-boundaryCoeff = 1
-division_time_hours=0.5
-p_division=1;seed=1
-
-# # fast
-# L=20; dx =0.1; J = int(L/dx)
-# T =25; dt = 0.02; N = int(T/dt)
-# boundaryCoeff = 1
-# division_time_hours=0.2
-# p_division=0.7;seed=1
+elif growth=='fast':
+    # fast
+    L=20; dx =0.1; J = int(L/dx)
+    T =25; dt = 0.02; N = int(T/dt)
+    boundaryCoeff = int(sys.argv[3])
+    division_time_hours=0.2
+    p_division=0.7;seed=1
 
 systemArgs = [L, dx, J, T, dt, N, boundaryCoeff, p_division, seed, division_time_hours]
 
@@ -138,7 +141,8 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
         print(simulation_param_dict)
         try:
             U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,division_time_hours=division_time_hours, stochasticity=0, seed=1, boundaryCoeff=boundaryCoeff)
-
+            U_final = np.around(U_final,decimals=3)
+            U_record = np.around(U_record,decimals=3)
             # pickle.dump(U_final, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename), "wb" ) )
             # pickle.dump(U_record, open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename), 'wb'))
 
@@ -152,9 +156,10 @@ def numerical_check(df, circuit_n,modelArgs=modelArgs, systemArgs=systemArgs,cel
                 with open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), "wb" ) as f:
                     pickle.dump(U_record, f)
                 
-
-                query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final,U_record)
-
+                try:
+                    query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final,U_record)
+                except:
+                    print(f'issue with db upload in parID {parID}')
             del U_record
             del U_final
             # print(np.shape(U_record))
@@ -193,7 +198,7 @@ with open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%
 # df.index  = df.index.droplevel(-1)
 # turing_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 total_params=len(df)
-# total_params=1000
+total_params=100
 print(total_params)
 print('loaded')
 batch_size = int(total_params/Number_of_Threads) + 1

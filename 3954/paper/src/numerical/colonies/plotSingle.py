@@ -48,11 +48,19 @@ nsamples =  1000000
 
 # specify dimensions of system
 
+# L=20; dx =0.1; J = int(L/dx)
+# T =25; dt = 0.02; N = int(T/dt)
+# boundarycoeff = 1
+# divisionTimeHours=0.2
+# p_division=0.7;seed=1
+
+
+# medium
 L=20; dx =0.1; J = int(L/dx)
-T =25; dt = 0.02; N = int(T/dt)
-boundarycoeff = 1
-divisionTimeHours=0.2
-p_division=0.7;seed=1
+T =50; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+divisionTimeHours=0.5
+p_division=1;seed=1
 
 shape = 'ca'
 x_gridpoints=int(1/dx)
@@ -61,10 +69,10 @@ x_gridpoints=int(1/dx)
 
 save_figure = False
 
-parID=361095
+parID=252
 # parID=94
 
-
+df = pickle.load(open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit14_variant2nd_1000000parametersets_balanced_Kce100.pkl','rb'))
 
 #%%
 filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsamples,Kce,boundarycoeff, shape,parID,L,J,T,N)

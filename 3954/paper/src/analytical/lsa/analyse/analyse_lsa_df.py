@@ -63,20 +63,44 @@ def hist_lsa(valueCounts_dict,title,percentageCounts_dict,log=True):
     # plt.show()
 #%%
 
+#%%
+
 # Specify name of circuit and variant investigated
 circuit_n='circuit14'
-variant='fitted7'
-balance = 'balancedSemiBalanced'
+# variant='fitted7'
+variant='2nd'
+
+# balance = 'balancedSemiBalanced'
+balance = 'balanced'
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 13700000#1000000
-# Kce=100
+n_param_sets = 1000000#13700000#1000000
+Kce=100
 print(f'{circuit_n}, Variant:{variant}, {balance}')
 # lsa_df_circuit14_variantfitted7_13700000parametersets_balancedSemiBalanced.pkl
 # df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
 # df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,balance), "rb"))
-# df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s.pkl'%(circuit_n,variant,n_param_sets,balance,Kce), "rb"))
+# df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,balance), "rb"))
+print('/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s.pkl'%(circuit_n,variant,n_param_sets,balance,Kce))
+df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s.pkl'%(circuit_n,variant,n_param_sets,balance,Kce), "rb"))
 # df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_param_sets), 'rb'))
+print(df['system_class'].value_counts())
+df['system_class'] = df['system_class'].replace('turing I oscillatory', 'turing I')# print(df['system_class'].value_counts())
+# #%%
+
+# # Specify name of circuit and variant investigated
+# circuit_n='circuit14'
+# variant='fitted7'
+# balance = 'balancedSemiBalanced'
+# # Specifiy number of parameter sets in parameterset file to be loaded
+# n_param_sets = 13700000#1000000
+# # Kce=100
+# print(f'{circuit_n}, Variant:{variant}, {balance}')
+# # lsa_df_circuit14_variantfitted7_13700000parametersets_balancedSemiBalanced.pkl
+# # df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+# # df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_param_sets), "rb"))
+# df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,balance), "rb"))
+# # df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s_Kce%s.pkl'%(circuit_n,variant,n_param_sets,balance,Kce), "rb"))
+# # df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_balancedSemiBalanced.pkl'%(circuit_n,variant,n_param_sets), 'rb'))
 
 print(df['system_class'].value_counts())
 
