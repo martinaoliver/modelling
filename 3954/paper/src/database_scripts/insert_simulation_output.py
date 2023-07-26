@@ -94,6 +94,6 @@ for parID in tqdm(parID_list[:2]):
     print(np.sum(U_final_1D_list))
 
 
-    query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D_list,U_record_1D_list, ssID=ssID, dimensions='1D')
-    # %%
+    query = insert_simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D_list,U_record_1D_list, ssID=ssID, dimensions='1D')
+
 

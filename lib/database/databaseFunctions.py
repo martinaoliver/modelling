@@ -21,7 +21,6 @@ import math as math
 credentials=f"postgresql://moliver:moliver@ld-rendres07.bc.ic.ac.uk/moliver"
 
 
-
     
 
 #this function allows us to "on conflict - update"
@@ -120,43 +119,35 @@ def analyticalOutput_df_to_sql(lsa_df, circuit_n, variant, n_samples):
 
 
 
-def simulationParam_to_sql(sim_dict):
-    print(sim_dict)
+def insert_simulationParam_to_sql(model_param_dict, table_name='simulation_param'):
     with psycopg2.connect(credentials) as conn:
         with conn.cursor() as cursor:
-            table_name = 'simulation_param'
-            id = generate_insert_uuid('simulation_param_id',table_name,cursor,conn)
-            sim_dict['simulation_param_id'] = id
-            print(sim_dict)
-
-            df = pd.DataFrame(sim_dict, index=[sim_dict['simulation_param_id']])
-            df.index.name = 'simulation_param_id'
-            df = df.drop(['simulation_param_id'], axis=1)
-            
-            print('Preparing to insert data into database')
-            st = time.time()
-            df.to_sql(table_name, con=credentials, if_exists='append', index=True, index_label='simulation_param_id', method=postgres_upsert)
-
-            et = time.time()
-            # get the execution time
-            elapsed_time = et - st
-            print('Execution time:', elapsed_time, 'seconds')   
-            print('Inserted data into database')
-
-            conn.commit()
+            try: # Prepare the SQL query to insert data into the table
+                columns = ", ".join([f"\"{key}\"" for key in model_param_dict.keys()])
+                values = ", ".join([f"'{val}'" for val in model_param_dict.values()])
+                query = f"INSERT INTO {table_name} ({columns}) VALUES ({values}) ;"
+                print(query)
+        
+                cursor.execute(query)
+                conn.commit()
+                print("Data inserted successfully!")
+                
+            except (Exception, psycopg2.Error) as error:
+                print("Error while inserting data:", error)
 
             
 
-def simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final_1D,U_record_1D, ssID=0, dimensions='2D'):
-    U_final_1D_list = np.array(U_final_1D).tolist()
-    U_record_1D_list = np.array(U_record_1D).tolist()
+
+def insert_simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final,U_record, ssID=0, dimensions='2D'):
+    U_final_1D_list = np.array(U_final).tolist()
+    U_record_1D_list = np.array(U_record).tolist()
     with psycopg2.connect(credentials) as conn:
         with conn.cursor() as cursor:    
             
             table_name = "simulation_param"
                         
                         # Build the query dynamically
-            query = "SELECT simulation_param_id FROM {} WHERE ".format(table_name)
+            query = "SELECT simulation_param_uuid FROM {} WHERE ".format(table_name)
             conditions = []
             values = []
             for key, value in sim_param_dict.items():
@@ -167,24 +158,26 @@ def simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final_1D,U_record_
             result = cursor.fetchall()
             if len(result)>1:
                 print('error!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                return 'error'
             else:
-                simulation_param_id = result[0]
+                simulation_param_uuid = result[0]
 
-            print(f"simulation_param_id:{simulation_param_id}")
+            print(f"simulation_param_uuid:{simulation_param_uuid}")
             model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
             print(f"model_param_id:{model_param_id}")
             if dimensions=='1D':
                 print('1D')
-                insert_query = 'INSERT INTO simulation_output ("simulation_param_id", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s) ON CONFLICT DO NOTHING'
+                insert_query = 'INSERT INTO simulation_output ("simulation_param_uuid", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s)'
             elif dimensions=='2D':
                 print('2D')
-                insert_query = 'INSERT INTO simulation_output ("simulation_param_id", "model_param_id", "ssID", "U_final_2D","U_record_2D") VALUES (%s, %s, %s,%s,%s) ON CONFLICT DO NOTHING'
-            values = (simulation_param_id, model_param_id, ssID, U_final_1D_list,U_record_1D_list)
+                insert_query = 'INSERT INTO simulation_output ("simulation_param_uuid", "model_param_id", "ssID", "U_final_2D","U_record_2D") VALUES (%s, %s, %s,%s,%s)'
+            values = (simulation_param_uuid, model_param_id, ssID, U_final_1D_list,U_record_1D_list)
             cursor.execute(insert_query, values)
             conn.commit()
 
             print('simulation_output inserted')
             return model_param_id
+        
         
 def query_modelParam_df_from_sql( model_param_dict):
     with psycopg2.connect(credentials) as conn:
@@ -209,15 +202,15 @@ def query_modelParam_df_from_sql( model_param_dict):
 def query_simulationOutput_from_sql(sim_param_dict,model_param_dict,query_column, ssID=0):
     with psycopg2.connect(credentials) as conn:
         with conn.cursor() as cursor:
-            cursor.execute('SELECT "simulation_param_id" from simulation_param WHERE "L" = 50 and "dx" = 0.1;')
+            cursor.execute('SELECT "simulation_param_uuid" from simulation_param WHERE "L" = 50 and "dx" = 0.1;')
             conn.commit()
-            simulation_param_id = cursor.fetchall()[0]
-            print(f"simulation_param_id:{simulation_param_id}")
+            simulation_param_uuid = cursor.fetchall()[0]
+            print(f"simulation_param_uuid:{simulation_param_uuid}")
             model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
             print(f"model_param_id:{model_param_id}")
             
-            insert_query = 'SELECT "U_final_1D" from simulation_output where "model_param_id"=(%s) and "simulation_param_id"=(%s) and "ssID"=(%s)'
-            values = (model_param_id, simulation_param_id, ssID)
+            insert_query = 'SELECT "U_final_1D" from simulation_output where "model_param_id"=(%s) and "simulation_param_uuid"=(%s) and "ssID"=(%s)'
+            values = (model_param_id, simulation_param_uuid, ssID)
             cursor.execute(insert_query, values)
             simulationOutput = np.array(cursor.fetchall()[0][0],dtype=float)
 

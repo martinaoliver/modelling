@@ -19,6 +19,7 @@ import pickle
 
 circuit_n='turinghill'
 # mechanism='edgegrowth2'
+# mechanism='openboundary'
 mechanism='nogrowth'
 variant=9
 folder = f'turinghill_variant{variant}'
@@ -33,7 +34,7 @@ suggesteddt = float(dx*dx*2)
 
 filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
 print(filename(mechanism, 1))
-datafile= modellingpath + '/growth/out/numerical/%s/simulation/%s/2Dfinal_%s.pkl'%(mechanism,folder,filename(mechanism, '*'))
+datafile= modellingephemeral + '/growth/out/numerical/%s/simulation/%s/2Dfinal_%s.pkl'%(mechanism,folder,filename(mechanism, '*'))
 # print(modellingpath + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism, '*')))
 files = glob.glob(datafile)
 print(len(files))
@@ -46,7 +47,7 @@ print(parID_list[:10])
 print(len(parID_list))
 print( modellingpath + '/growth/out/numerical/%s/simulation/%s/parID_list_%s.pkl'%(mechanism,folder,filename(mechanism, 'x')))
 
-pickle.dump( parID_list, open( modellingpath + '/growth/out/numerical/%s/simulation/%s/parID_list_%s.pkl'%(mechanism,folder,filename(mechanism, 'x')), "wb" ) )
-print( modellingpath + '/growth/out/numerical/%s/simulation/%s/parID_list_%s.pkl'%(mechanism,folder,filename(mechanism, 'x')))
+pickle.dump( parID_list, open( modellingephemeral + '/growth/out/numerical/%s/simulation/%s/parID_list_%s.pkl'%(mechanism,folder,filename(mechanism, 'x')), "wb" ) )
+print( modellingephemeral + '/growth/out/numerical/%s/simulation/%s/parID_list_%s.pkl'%(mechanism,folder,filename(mechanism, 'x')))
 print('------')
 print(parID_list.count('47.0'))

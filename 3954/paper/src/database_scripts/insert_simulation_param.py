@@ -48,7 +48,7 @@ sim_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N,
             'boundaryCoeff':boundaryCoeff, 
             'shape':'ca', 'p_division': p_division,  'seed':seed, 'division_time_hours': division_time_hours}
 
-simulationParam_to_sql(sim_dict)
+insert_simulationParam_to_sql(sim_dict)
 
 
 
