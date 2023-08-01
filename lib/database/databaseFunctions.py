@@ -172,7 +172,7 @@ def insert_simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final,U_rec
             print(f"model_param_id:{model_param_id}")
             if dimensions=='1D':
                 print('1D')
-                insert_query = 'INSERT INTO simulation_output ("simulation_param_uuid", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s)'
+                insert_query = 'INSERT INTO simulation_output ("simulation_param_uuid", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s)  ON CONFLICT ("simulation_param_uuid", "model_param_id","ssID")  DO UPDATE SET "U_final_1D" = EXCLUDED."U_final_1D", "U_record_1D" = EXCLUDED."U_record_1D";'
             elif dimensions=='2D':
                 print('2D')
                 insert_query = 'INSERT INTO simulation_output ("simulation_param_uuid", "model_param_id", "ssID", "U_final_2D","U_record_2D") VALUES (%s, %s, %s,%s,%s)'
