@@ -108,6 +108,7 @@ print(df['system_class'].value_counts())
 
 valueCounts_dict = dict(df['system_class'].value_counts())
 percentageCounts_dict= {k: v/len(df)*100 for k, v in valueCounts_dict.items()}
+print(percentageCounts_dict)
 title = f'{circuit_n} Variant {variant} {balance}, Kce {Kce}'
 # plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/piechart_{circuit_n}_variant{variant}_nsamples{n_param_sets}_{balance}_Kce{Kce}.pdf')
 # plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/piechart_{circuit_n}_variant{variant}_nsamples{n_param_sets}_{balance}_Kce{Kce}.png')
@@ -152,25 +153,25 @@ plt.show()
 dfunstable = df[df['system_class']=='simple unstable']
 
 # %%
-#%%
-from tqdm import tqdm
-def weightTuring(dfLoc):
-    for i in range(10):
-        turing_lenght = len(dfLoc.loc[dfLoc['system_class'].isin(['turing I oscillatory','turing I','turing I hopf'])])
-        # print(turing_lenght/ len(dfLoc))
-        return turing_lenght/ len(dfLoc)
+# #%%
+# from tqdm import tqdm
+# def weightTuring(dfLoc):
+#     for i in range(10):
+#         turing_lenght = len(dfLoc.loc[dfLoc['system_class'].isin(['turing I oscillatory','turing I','turing I hopf'])])
+#         # print(turing_lenght/ len(dfLoc))
+#         return turing_lenght/ len(dfLoc)
 
-for i in tqdm(range(len(df))):
-    # print(df.loc[i]['system_class'])
-    dfLoc = df.loc[i]
-    weight = weightTuring(dfLoc)
-    df.at[i,'weightTuring']=weight
-    # print('----')
+# for i in tqdm(range(len(df))):
+#     # print(df.loc[i]['system_class'])
+#     dfLoc = df.loc[i]
+#     weight = weightTuring(dfLoc)
+#     df.at[i,'weightTuring']=weight
+#     # print('----')
     
 
 
 #%%
-if balanced == True:
+# if balanced == True:
     
 
 # #values for which complex dispersion = true
@@ -178,7 +179,7 @@ if balanced == True:
 # complex_df.index  = complex_df.index.droplevel(-1)
 #%%
 # #values that have instabilities
-saveInstabilities = True
+saveInstabilities = False
 if saveInstabilities ==True:
     instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
     instabilities_df = df.loc[df['system_class'].isin(instabilities)]
@@ -189,7 +190,7 @@ if saveInstabilities ==True:
 # instabilityComplex_df = pd.concat([complex_df, instabilities_df])
 # pickle.dump( instabilityComplex_df, open(modellingpath + '/growth/out/analytical/instabilityComplex/instabilityComplex_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
 # #values that have turing
-saveTuring = True
+saveTuring = False
 if saveTuring == True:
     turingStates = ['turing I','turing I oscillatory', 'turing I hopf']  
     turing_df = df.loc[df['system_class'].isin(turingStates)]
@@ -200,7 +201,7 @@ if saveTuring == True:
     # pickle.dump( turing_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "wb" ) )
     pickle.dump( turing_df, open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%s_%rparametersets_%s_Kce%s.pkl'%(circuit_n,variant,n_param_sets,balance,Kce), "wb" ) )
 #%%
-compare_balance_dfs_systemclass=True
+compare_balance_dfs_systemclass=False
 if compare_balance_dfs_systemclass == True:
     df0= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,'balanced'), "rb"))
     df1= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,'semiBalanced'), "rb"))
@@ -221,7 +222,7 @@ if compare_balance_dfs_systemclass == True:
 
 # %%
 #%%
-compare_balance_dfs_general=False
+compare_balance_dfs_general=True
 if compare_balance_dfs_general == True:
     df0= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,'balanced'), "rb"))
     df1= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_param_sets,'semiBalanced'), "rb"))
@@ -236,6 +237,7 @@ if compare_balance_dfs_general == True:
     robustness0 = len(df0_turing)/len(df0)*100
     robustness1 = len(df1_turing)/len(df1)*100
     robustness2 = len(df2_turing)/len(df2)*100
+    print(robustness0, robustness1, robustness2)
 
     plt.bar(['balanced', 'semiBalanced', 'notBalanced'],[robustness0, robustness1, robustness2])
     # graph_df = df0['system_class'].value_counts().rename('Original parameters (cir2var0)').to_frame()\
@@ -251,3 +253,4 @@ if compare_balance_dfs_general == True:
     plt.show()
 
 # %%
+
