@@ -236,7 +236,7 @@ def query_analyticalOutput_df_from_sql(model_param_dict,limit='None'):
             return df
 
 
-def query_simulationOutput_from_sql(sim_param_dict,model_param_dict,query_column, ssID=0):
+def query_simulationOutput_single_from_sql(sim_param_dict,model_param_dict,query_column, ssID=0):
     with psycopg2.connect(credentials) as conn:
         with conn.cursor() as cursor:
             table_name = "simulation_param"
@@ -273,4 +273,38 @@ def query_simulationOutput_from_sql(sim_param_dict,model_param_dict,query_column
 
 
             return simulationOutput
+
+
+def query_simulationOutput_multiple_from_sql(sim_param_dict,model_param_dict,query_column, ssID=0):
+    # with psycopg2.connect(credentials) as conn:
+    #     with conn.cursor() as cursor:
+    conn = psycopg2.connect(credentials)
+    cursor = conn.cursor()
+    table_name = "simulation_param"
+                
+                # Build the query dynamically
+    query = "SELECT simulation_param_uuid FROM {} WHERE ".format(table_name)
+    conditions = []
+    values = []
+    for key, value in sim_param_dict.items():
+        conditions.append('"{0}" = %s'.format(key))
+        values.append(value)
+    cursor.execute(query + ' AND '.join(conditions), values)
+
+    result = cursor.fetchall()
+    if len(result)>1:
+        print('error!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        simulation_param_uuid = result[0]
+
+    else:
+        simulation_param_uuid = result[0]
+    print(f"simulation_param_uuid:{simulation_param_uuid}")
+
+    
+    # if query_column == '
+    insert_query = f'SELECT "{query_column}" from simulation_output where "simulation_param_uuid"=(%s)'
+    values = (simulation_param_uuid)
+    cursor.execute(insert_query, values)
+
+    return cursor
 
