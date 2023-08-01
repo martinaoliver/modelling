@@ -39,12 +39,15 @@ from colonyMaskCreation import *
 # %matplotlib inline
 shape = 'ca'
 # circuit_n=14;variant='2nd';n_species=6
-circuit_n=14;variant='fitted7';n_species=6
+# circuit_n=14;variant='fitted7';n_species=6
+nsr = 0.01
+circuit_n=14;variant = f'fitted7_gaussian4187715_nsr{nsr}';n_species=6
+# circuit_n=14;variant='fitted2';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_samples = 13700000
+n_samples = 2000
 # balance = 'balanced'
 # folder = 'circuit14variant2ndBalancedTuring'
-folder = f'circuit{circuit_n}variant{variant}'
+folder = f'circuit14variantfitted7_gaussian4187715'
 
 # folder = 'circuit14variant2nd_turing'
 # folder = 'circuit14fitted3balancedSemibalanced'
@@ -54,7 +57,8 @@ tqdm_disable = False #disable tqdm
 
 
 # open parameter dictionaries
-df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
+# df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
+df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb" ) )
 
 # L=20; dx =0.1; J = int(L/dx)
 # T =50; dt = 0.1; N = int(T/dt)
@@ -78,19 +82,19 @@ df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/d
 # p_division=0.5;seed=1
 
 
-# #slowgrowth
-# L=20; dx =0.1; J = int(L/dx)
-# T =100; dt = 0.02; N = int(T/dt)
-# boundaryCoeff = 1
-# division_time_hours=0.5
-# p_division=0.38;seed=1
-# # 
-#mediumgrowth
+#slowgrowth
 L=20; dx =0.1; J = int(L/dx)
-T =50; dt = 0.02; N = int(T/dt)
+T =100; dt = 0.02; N = int(T/dt)
 boundaryCoeff = 1
 division_time_hours=0.5
-p_division=1;seed=1
+p_division=0.38;seed=1
+# # 
+# #mediumgrowth
+# L=20; dx =0.1; J = int(L/dx)
+# T =50; dt = 0.02; N = int(T/dt)
+# boundaryCoeff = 1
+# division_time_hours=0.5
+# p_division=1;seed=1
 
 # # # fastgrowth
 # L=20; dx =0.1; J = int(L/dx)
@@ -124,7 +128,7 @@ except:
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
 # parID=12837401
-parID=12837401
+parID=6
 
 
 #%%
@@ -188,7 +192,6 @@ rgb = plot_redgreen_contrast(U_final,L,parID=filename(parID),filename = filename
 # %%
 
 
-
 U_final = pickle.load(open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "rb" ) )
 U_record = pickle.load(open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
 import numpy as np
@@ -221,10 +224,14 @@ def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000)
     # FOR MP4
     mywriter = animation.FFMpegWriter()
     ani.save(saveVideoPath + '/%s.mp4' %filename,writer=mywriter)
+    # ani.save('/%s.mp4' %filename,writer=mywriter)
     print('Video saved', filename)
 
 save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 print('Video saved', filename(parID))
+
+
+
 # %%
 import seaborn as sns 
 # def black_to_green_palette(num_colors):

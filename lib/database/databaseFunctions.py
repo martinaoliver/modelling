@@ -20,6 +20,11 @@ import math as math
 
 credentials=f"postgresql://moliver:moliver@ld-rendres07.bc.ic.ac.uk/moliver"
 
+def general_query(query):
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(query)
+            return cursor
 
     
 
@@ -198,18 +203,66 @@ def query_modelParam_df_from_sql( model_param_dict):
 
 
 
+def query_analyticalOutput_df_from_sql(model_param_dict,limit='None'):
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+        # Build the SQL query dynamically based on the provided dictionaries
+            #measure time
+            query = """
+            SELECT *
+            FROM analytical_output ao
+            JOIN model_param mp on mp.model_param_id = ao.model_param_id
+            WHERE 1=1
+            """
+            
+            # Add filters for model_params
+            for key, value in model_param_dict.items():
+                query += f"AND mp.{key} = {value}\n"
+            if limit != 'None':
+                licensequery += f'LIMIT {limit}'
+
+            print('query',query)
+
+
+
+            df = pd.read_sql_query(query, conn)
+
+            df = df.dropna(axis=1, how='all')
+            df = df.drop(['model_param_id'], axis=1)
+            df = df.drop(model_param_dict.keys(), axis=1)
+            df.set_index('parID', inplace=True)
+
+
+            return df
+
 
 def query_simulationOutput_from_sql(sim_param_dict,model_param_dict,query_column, ssID=0):
     with psycopg2.connect(credentials) as conn:
         with conn.cursor() as cursor:
-            cursor.execute('SELECT "simulation_param_uuid" from simulation_param WHERE "L" = 50 and "dx" = 0.1;')
-            conn.commit()
-            simulation_param_uuid = cursor.fetchall()[0]
+            table_name = "simulation_param"
+                        
+                        # Build the query dynamically
+            query = "SELECT simulation_param_uuid FROM {} WHERE ".format(table_name)
+            conditions = []
+            values = []
+            for key, value in sim_param_dict.items():
+                conditions.append('"{0}" = %s'.format(key))
+                values.append(value)
+            cursor.execute(query + ' AND '.join(conditions), values)
+
+            result = cursor.fetchall()
+            if len(result)>1:
+                print('error!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                simulation_param_uuid = result[0]
+
+            else:
+                simulation_param_uuid = result[0]
             print(f"simulation_param_uuid:{simulation_param_uuid}")
             model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
             print(f"model_param_id:{model_param_id}")
             
-            insert_query = 'SELECT "U_final_1D" from simulation_output where "model_param_id"=(%s) and "simulation_param_uuid"=(%s) and "ssID"=(%s)'
+            # if query_column == '
+            insert_query = f'SELECT "{query_column}" from simulation_output where "model_param_id"=(%s) and "simulation_param_uuid"=(%s) and "ssID"=(%s)'
             values = (model_param_id, simulation_param_uuid, ssID)
             cursor.execute(insert_query, values)
             simulationOutput = np.array(cursor.fetchall()[0][0],dtype=float)
@@ -221,7 +274,3 @@ def query_simulationOutput_from_sql(sim_param_dict,model_param_dict,query_column
 
             return simulationOutput
 
-
-
-
-# %%

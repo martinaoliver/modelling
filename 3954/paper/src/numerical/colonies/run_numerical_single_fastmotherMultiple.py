@@ -39,22 +39,26 @@ from colonyMaskCreation_fastMotherMultiple import *
 #############
 # %matplotlib inline
 shape = 'caFastMotherMultiple'
-circuit_n=14;variant='2nd';n_species=6
+# circuit_n=14;variant='2nd';n_species=6
+nsr = 0.01
+circuit_n=14;variant = f'fitted7_gaussian4187715_nsr{nsr}';n_species=6
 # circuit_n=14;variant='fitted2';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 10
+n_samples = 2000
 # balance = 'balanced'
-folder = 'circuit14variant2ndBalancedTuring'
-nsamples =  1000000
+# folder = 'circuit14variant2ndBalancedTuring'
+folder = f'circuit14variantfitted7_gaussian4187715'
+
 save_figure = False
 tqdm_disable = False #disable tqdm
-# boundarycoeff = float(sys.argv[6])
+# boundaryCoeff = float(sys.argv[6])
 
 
 # open parameter dictionaries
 
 
-df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+# df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles/df_circuit%r_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) )
+df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb" ) )
 # df= pickle.load( open(modellingpath + '/3954/paper/input/fitted_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # instabilities_df= pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/instabilities_dataframes/instability_df_circuit%s_variant%s_%rparametersets.pkl'%(circuit_n,variant,nsamples), "rb" ) )
 # with open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%rparametersets_balanced.pkl'%(circuit_n,variant,nsamples), "rb" ) as f:
@@ -62,13 +66,28 @@ df= pickle.load( open(modellingpath + '/3954/paper/input/balanced_parameterfiles
 #solver parameters
 # specify dimensions of system
 
-L=25; dx =0.1; J = int(L/dx)
-T =100; dt = 0.02; N = int(T/dt)
-# T =100; dt = 0.5; N = int(T/dt)
-boundarycoeff = 1
-divisionTimeHours=0.5
-p_division=0.4;seed=1
+# L=25; dx =0.1; J = int(L/dx)
+# T =100; dt = 0.02; N = int(T/dt)
+# # T =100; dt = 0.5; N = int(T/dt)
+# boundaryCoeff = 1
+# division_time_hours=0.5
+# p_division=0.4;seed=1
 
+#slowgrowth
+L=25; dx =0.1; J = int(L/dx)
+T =110; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+division_time_hours=0.5
+p_division=0.38;seed=1
+
+# #slowgrowth
+# L=20; dx =0.1; J = int(L/dx)
+# T =100; dt = 0.02; N = int(T/dt)
+# boundaryCoeff = 1
+# division_time_hours=0.5
+# p_division=0.30;seed=1
+
+parID=6
 x_gridpoints=int(1/dx)
 
 try:
@@ -81,14 +100,14 @@ except:
     FileNotFoundError
     print('fileCreation')
 
-    cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction_fastMotherMultiple(L=L,dx=dx, T=T, dt=dt, divisionTimeHours=divisionTimeHours, p_division=p_division, plot1D=True, plotScatter=True)
+    cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction_fastMotherMultiple(L=L,dx=dx, T=T, dt=dt, division_time_hours=division_time_hours, p_division=p_division, plot1D=True, plotScatter=True)
     pickle.dump( cell_matrix_record,open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
     pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
 
     # cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     # daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
 
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
+filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
 #%%
 # test = bool(sys.argv[7])
 test = False
@@ -98,7 +117,6 @@ if test==True:
     T=1;N = int(T/dt); N=3
     tqdm_disable=False
 # parID=int(sys.argv[8])
-parID=195238
 print('parID = ' + str(parID))
 par_dict = df.loc[parID].to_dict()
 D = np.zeros(n_species)
@@ -107,11 +125,11 @@ D[:2] = [1,Dr ]
 
 print(par_dict)
 
-# U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundarycoeff=boundarycoeff)
+# U_record,U_final =  adi_ca_openclosed_nodilution_preMask(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=False, p_division=0.5,stochasticity=0, seed=1,growth='Slow', boundaryCoeff=boundaryCoeff)
 # U_record,U_final =  adi(par_dict,L,L,J,J,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0)
 # get the start time
 st = time.time()
-U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,divisionTimeHours=divisionTimeHours, stochasticity=0, seed=1, boundarycoeff=boundarycoeff)
+U_record,U_final =  adi_ca_openclosed_nodilution_preMask_numba(par_dict,L,dx,J,T,dt,N, circuit_n, n_species,D,cell_matrix_record, daughterToMotherDictList,tqdm_disable=tqdm_disable,division_time_hours=division_time_hours, stochasticity=0, seed=1, boundaryCoeff=boundaryCoeff)
 elapsed_time = time.time() - st
 print('Execution time numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
 plt.imshow(U_final[-1])
@@ -128,7 +146,7 @@ print('saved')
 rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure=False)
 # rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure=False)
 
-
+plt.show()
 # %%
 
 
@@ -165,9 +183,8 @@ def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000)
     # FOR MP4
     mywriter = animation.FFMpegWriter()
     ani.save(saveVideoPath + '/%s.mp4' %filename,writer=mywriter)
+    # ani.save('/%s.mp4' %filename,writer=mywriter)
     print('Video saved', filename)
 
 save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 print('Video saved', filename(parID))
-
-# %%

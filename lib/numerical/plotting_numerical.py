@@ -116,9 +116,20 @@ def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, par
 
 
 
-
+    
     return rgb
 
+def show_red_green_separately(U_final, savePath=None, filename=None, saveFig=False):
+    cm = sns.color_palette('blend:green,black', as_cmap=True)
+    plt.imshow(-U_final[-1], cmap=cm)
+    if saveFig==True:
+        plt.savefig(savePath + '/2Dgreen_%s.pdf' %filename,dpi=2000)
+    plt.show()
+    cm = sns.color_palette('blend:red,black', as_cmap=True)
+    plt.imshow(-U_final[-2], cmap=cm)
+    if saveFig==True:
+        plt.savefig(savePath + '/2Dred_%s.pdf' %filename,dpi=2000)
+    plt.show()
 
 def plot_redgreen_contrast_nonorm1(final_concentration, mm, mechanism, shape, filename, path, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
     print('gelo')
@@ -198,8 +209,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.animation as animation
 
-
-def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=100):
+def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
     fig = plt.figure()
     ims = []
     rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
@@ -209,55 +219,16 @@ def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=100):
         im=plt.imshow(rgb_timeseries[i].astype('uint8'), origin= 'lower')
         plt.title(str(filename) + str(i))
         plt.xlabel(f'Time: {i}h')
+        
         ims.append([im])
-    ani = animation.ArtistAnimation(fig, ims, interval=interval)
+    ani = animation.ArtistAnimation(fig, ims,interval=50000000)
     
-    ani.save(saveVideoPath + '/%s.mp4' %filename)
-    print('Video saved')
-    # plt.imshow(rgb_timeseries[-1].astype('uint8'), origin= 'lower')
-    # plt.show()
-# from celluloid import Camera
+    # FOR GIF
+    # writergif = animation.PillowWriter(fps=10)
+    # ani.save(saveVideoPath + filename + '.gif',writer=writergif)
+    
+    # FOR MP4
+    mywriter = animation.FFMpegWriter()
+    ani.save(saveVideoPath + '/%s.mp4' %filename,writer=mywriter)
+    print('Video saved', filename)
 
-# def save_rgbvideo(timeseries_unstacked):
-#     fig = plt.figure()
-#     camera = Camera(fig)
-
-#     rgb_timeseries=timeseries_unstacked # Read the numpy matrix with images in the rows
-#     # im=plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
-
-#     for i in range(len(rgb_timeseries)):
-#         plt.imshow(rgb_timeseries[0].astype('uint8'), origin= 'lower')
-#         camera.snap()
-#     animation = camera.animate()
-#     print('afdagdasghtrs')
-
-#     animation.save('dynamic_images.mp4')
-
-#     print('save')
-
-
-
-# fig = plt.figure()
-# camera = Camera(fig)
-# for i in range(10):
-#     plt.plot([i] * 10)
-#     camera.snap()
-# animation = camera.animate()
-# animation.save('output.gif')
-
-
-
-    # plt.show()
-
-
-
-# img = [] # some array of images
-# frames = [] # for storing the generated images
-# fig = plt.figure()
-# for i in xrange(6):
-#     frames.append([plt.imshow(img[i], cmap=cm.Greys_r,animated=True)])
-
-# ani = animation.ArtistAnimation(fig, frames, interval=50, blit=True,
-#                                 repeat_delay=1000)
-# # ani.save('movie.mp4')
-# plt.show()
