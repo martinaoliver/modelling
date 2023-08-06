@@ -22,10 +22,10 @@ import pickle
 
 
 circuit_n='turinghill'
-variant=2
+variant=9
 n_species=2 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
 
-n_param_sets = 100000
+n_param_sets = 1000000
 
 # obtain a dictionary with some parameters to use in our analysis
 df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))

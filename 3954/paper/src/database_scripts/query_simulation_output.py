@@ -1,3 +1,4 @@
+
 #%%
 import sys
 import os
@@ -42,25 +43,15 @@ p_division=0.38;seed=1
 
 
 
-# fast
-L=20; dx =0.1; J = int(L/dx)
-T =25; dt = 0.02; N = int(T/dt)
-boundaryCoeff = 1
-division_time_hours=0.2
-p_division=0.7;seed=1
-x_gridpoints=int(1/dx)
-# division_time_hours=0.5
-# p_division=1;seed=1
 
 
-
-# fast
-L=20; dx =0.1; J = int(L/dx)
-T =25; dt = 0.02; N = int(T/dt)
-boundaryCoeff = 1
-division_time_hours=0.2
-p_division=0.7;seed=1
-x_gridpoints=int(1/dx)
+# # fast
+# L=20; dx =0.1; J = int(L/dx)
+# T =25; dt = 0.02; N = int(T/dt)
+# boundaryCoeff = 1
+# division_time_hours=0.2
+# p_division=0.7;seed=1
+# x_gridpoints=int(1/dx)
 
 
 shape='ca'
@@ -74,16 +65,16 @@ simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N,
 ssID=0
 circuit_n=14
 #  circuit_n='circuit14'
-variant='2nd' #f'fitted7_gaussian4187715_nsr{0.01}'#'2nd' #variant='fitted7'
+variant=f'fitted7_gaussian4187715_nsr{0.01}'#'2nd' #variant='fitted7'
 balance='Balanced'
 Kce=100
-n_samples = 1000000#2000#1000000 #n_samples = 13700000
-folder = 'circuit14variant2ndBalancedKce100'
-# folder = f'circuit14variantfitted7_gaussian4187715'
+n_samples = 2000#1000000 #n_samples = 13700000
+# folder = 'circuit14variant2ndBalancedKce100'
+folder = f'circuit14variantfitted7_gaussian4187715'
 
 # model_param_dict = {'parID':1, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples, 'balance':balance}
-parID=832446
-parID=832446
+parID=45
+
 model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
@@ -92,7 +83,6 @@ filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circ
 
 
 #%%
-simulationOutput = query_simulationOutput_single_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_final_1D', ssID=ssID)
 simulationOutput = query_simulationOutput_single_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_final_1D', ssID=ssID)
 saveFigurePath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s/'%folder
 
@@ -103,7 +93,6 @@ plot_redgreen_contrast(simulationOutput,L, filename=filename(parID), save_figure
 
 
 #%%
-U_record = query_simulationOutput_single_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_record_1D', ssID=ssID)
 U_record = query_simulationOutput_single_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_record_1D', ssID=ssID)
 
 #%%
