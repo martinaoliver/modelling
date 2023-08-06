@@ -206,6 +206,7 @@ if test==True:
     ax2=ax.twinx()
     OC14_continuous = np.logspace(-3,2, 100)*HSLtransform
     best_fit_p = np.hstack([popt_subcircuit1, popt_subcircuit3])
+    fluorescenceFit_continuous_list = []
     for p in filtered_parameters:
         fluorescenceFit = steadystate_combined_subcircuits(OC14_continuous, *p)
         fluorescenceFit_continuous = steadystate_combined_subcircuits(OC14_continuous, *p)
@@ -219,6 +220,7 @@ if test==True:
         ax.scatter(OC14_list1_red,rfpExp_list1 , label='data', c='red')
         ax.errorbar(OC14_list1_red,rfpExp_list1,yerr=semRed1,c='red',fmt='o')
         plt.xscale('log')
+        fluorescenceFit_continuous_list.append(fluorescenceFit_continuous)
 
 
     # ax.legend(loc='center left') #upper right
@@ -262,6 +264,58 @@ if test==True:
     plt.show()
 
 df = pd.DataFrame(filtered_parameters, columns= np.hstack([ paramNames_subcircuit1 , paramNames_subcircuit3]))
+path = '/Users/mo2016/Documents/modelling/3954/paper/out/dose_response/dose_response_paper/'
+pkl.dump(fluorescenceFit_continuous_list, open(path+'fluorescenceFit_continuous_list.pkl', 'wb'))
+pkl.dump(OC14_continuous, open(path+'OC14_continuous.pkl', 'wb'))
+pkl.dump(OC14_list1_green, open(path+'OC14_green.pkl', 'wb'))
+pkl.dump(OC14_list1_red, open(path+'OC14_red.pkl', 'wb'))
+pkl.dump(gfpExp_list1, open(path+'gfpExp_list1.pkl', 'wb'))
+pkl.dump(rfpExp_list1, open(path+'rfpExp_list1.pkl', 'wb'))
+pkl.dump(semGreen1, open(path+'semGreen1.pkl', 'wb'))
+pkl.dump(semRed1, open(path+'semRed1.pkl', 'wb'))
+pkl.dump(gfpExp_list3, open(path+'gfpExp_list3.pkl', 'wb'))
+pkl.dump(rfpExp_list3, open(path+'rfpExp_list3.pkl', 'wb'))
+pkl.dump(semGreen3, open(path+'semGreen3.pkl', 'wb'))
+pkl.dump(semRed3, open(path+'semRed3.pkl', 'wb'))
+
+pkl.dump(gfpFit1_continuous_copy, open(path+'gfp_bestFit_subcircuit1_continous.pkl', 'wb'))
+pkl.dump(rfpFit1_continuous_copy, open(path+'rfp_bestFit_subcircuit1_continous.pkl', 'wb'))
+pkl.dump(gfpFit3_continuous_copy, open(path+'gfp_bestFit_subcircuit3_continous.pkl', 'wb'))
+pkl.dump(rfpFit3_continuous_copy, open(path+'rfp_bestFit_subcircuit3_continous.pkl', 'wb'))
+
+import numpy, scipy.io
+scipy.io.savemat(path + 'fluorescenceFit_continuous_list.mat', mdict={'fluorescenceFit_continuous_list': fluorescenceFit_continuous_list})
+scipy.io.savemat(path + 'OC14_continuous.mat', mdict={'OC14_continuous': OC14_continuous})
+scipy.io.savemat(path + 'OC14_green.mat', mdict={'OC14_green': OC14_list1_green})
+scipy.io.savemat(path + 'OC14_red.mat', mdict={'OC14_red': OC14_list1_red})
+scipy.io.savemat(path + 'gfpExp_list1.mat', mdict={'gfpExp_list1': gfpExp_list1})
+scipy.io.savemat(path + 'rfpExp_list1.mat', mdict={'rfpExp_list1': rfpExp_list1})
+scipy.io.savemat(path + 'semGreen1.mat', mdict={'semGreen1': semGreen1})
+scipy.io.savemat(path + 'semRed1.mat', mdict={'semRed1': semRed1})
+scipy.io.savemat(path + 'gfpExp_list3.mat', mdict={'gfpExp_list3': gfpExp_list3})
+scipy.io.savemat(path + 'rfpExp_list3.mat', mdict={'rfpExp_list3': rfpExp_list3})
+scipy.io.savemat(path + 'semGreen3.mat', mdict={'semGreen3': semGreen3})
+scipy.io.savemat(path + 'semRed3.mat', mdict={'semRed3': semRed3})
+
+scipy.io.savemat(path + 'gfp_bestFit_subcircuit1_continous.mat', mdict={'gfp_bestFit_subcircuit1_continous': gfpFit1_continuous_copy})
+scipy.io.savemat(path + 'rfp_bestFit_subcircuit1_continous.mat', mdict={'rfp_bestFit_subcircuit1_continous': rfpFit1_continuous_copy})
+scipy.io.savemat(path + 'gfp_bestFit_subcircuit3_continous.mat', mdict={'gfp_bestFit_subcircuit3_continous': gfpFit3_continuous_copy})
+scipy.io.savemat(path + 'rfp_bestFit_subcircuit3_continous.mat', mdict={'rfp_bestFit_subcircuit3_continous': rfpFit3_continuous_copy})
+
+
+fluorescenceFit_continuous_list
+OC14_continuous
+OC14_list1_green
+OC14_list1_red
+gfpExp_list1
+rfpExp_list1
+semGreen1
+semRed1
+gfpExp_list3
+rfpExp_list3
+semGreen3
+semRed3
+
 
 
 if test==True:
@@ -342,7 +396,7 @@ nfe = {'name':'nfe','distribution':'fixed', 'value':8}
 n_parameters = [nub,nee,neb,nvd,nda,nce,nfe]
 
 
-createParams=True
+createParams=False
 if createParams == True:
     parameterDictList = D_parameters  + V_parameters + K_parameters + mu_parameters + n_parameters
     stackedDistributions = preLhs(parameterDictList)
@@ -398,7 +452,7 @@ def checkBalance(par_dict):
         return 'Balanced'
     
 
-createBalancedParams=True
+createBalancedParams=False
 if createBalancedParams == True:
     balancedDf = pd.DataFrame()
     semiBalancedDf = pd.DataFrame()

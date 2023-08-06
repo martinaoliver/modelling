@@ -30,3 +30,5 @@ VALUES ('intermediate pattern' , 4 );
 INSERT INTO pattern_class_param("pattern_class", "n_peaks")
 VALUES ('strong pattern' , 5 );
 
+alter table pattern_class_param drop column regular;
+
