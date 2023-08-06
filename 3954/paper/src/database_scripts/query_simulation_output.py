@@ -69,7 +69,7 @@ folder = 'circuit14variant2ndBalancedKce100'
 # folder = f'circuit14variantfitted7_gaussian4187715'
 
 # model_param_dict = {'parID':1, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples, 'balance':balance}
-parID=100232
+parID=630
 model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
@@ -78,28 +78,28 @@ filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circ
 
 
 #%%
-simulationOutput = query_simulationOutput_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_final_1D', ssID=ssID)
+simulationOutput = query_simulationOutput_single_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_final_1D', ssID=ssID)
 saveFigurePath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s/'%folder
 
 plot_redgreen_contrast(simulationOutput,L, filename=filename(parID), save_figure=True, path=saveFigurePath)
-# %%ssID=0
-circuit_n=14 #circuit_n='circuit14'
-variant='2nd' #variant='fitted7'
-balance='Balanced'
-Kce=100
-n_samples = 1000000 #n_samples = 13700000
-folder = 'circuit14variant2ndBalancedKce100'
-# folder = f'circuit14variantfitted7_gaussian4187715'
-parID=824
-model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples, 'balance':balance}
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
+# # %%ssID=0
+# circuit_n=14 #circuit_n='circuit14'
+# variant='2nd' #variant='fitted7'
+# balance='Balanced'
+# Kce=100
+# n_samples = 1000000 #n_samples = 13700000
+# folder = 'circuit14variant2ndBalancedKce100'
+# # folder = f'circuit14variantfitted7_gaussian4187715'
+# parID=824
+# model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples, 'balance':balance}
+# filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
 
 
 
 
 
 #%%
-U_record = query_simulationOutput_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_record_1D', ssID=ssID)
+U_record = query_simulationOutput_single_from_sql(simulation_param_dict, model_param_dict,query_column = 'U_record_1D', ssID=ssID)
 
 #%%
 def kymograph_U_record(U_record, J, folder, filename, parID):

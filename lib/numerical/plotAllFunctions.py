@@ -132,3 +132,60 @@ def plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoin
 
 
 
+
+
+def plotAllFunctionColonies_differentSnapshot(parID_list, circuit_n, shape,snapshot, filename, L,x_gridpoints,start=0, stop=10,folder=None, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True, print_parID=False):
+    len_fullDataset = len(parID_list)
+    parID_list = [int(i) for i in parID_list[start:stop]] #turn string list into integer list
+    print(len(parID_list))
+    parID_list.sort() #sort from lower to higher values
+
+
+    num=len(parID_list)
+    n_col = int(np.sqrt(num))
+    n_row = int(np.floor(num/n_col)+1)    # number of rows in the figure of the cluster
+
+
+    fig = plt.figure(figsize=(n_col/10+12, n_row/10+12))
+
+    for count,parID in enumerate(tqdm(parID_list,disable=tqdm_disable)):
+        if print_parID == True:
+            print(parID)
+
+        ax=plt.subplot(n_row,n_col, count+1)
+        U_record = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
+        U_final = np.array(U_record)[:,:,:,snapshot]
+        rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure='LargeImage')
+        # def plot_redgreen_contrast(final_concentration, mm,filename=None, path=None, parID=0, scale_factor=10, save_figure=False, dimension='2D'):
+
+        ax.set(yticks=[],xticks=[],yticklabels=[],xticklabels=[])
+        # ax.imshow(rgb.astype('uint8'), origin= 'lower', norm=colors.LogNorm())
+        ax.imshow(rgb.astype('uint8'), origin= 'lower')
+        ax.set_ylabel(parID,size= 1,c='y', labelpad=0.35)
+
+
+    
+    if saveFig==False:
+        plt.show()
+    if saveFig==True:
+        if stop==len_fullDataset and start==0:
+            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s_snapshot%s.png'%(folder,filename('x'), snapshot),dpi=dpi)
+            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s_snapshot%s.pdf'%(folder,filename('x'), snapshot),dpi=dpi)
+        
+        else:
+            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s_%s-%s_snapshot%s.png'%(folder,filename('x'),start,stop, snapshot),dpi=dpi)
+            plt.savefig(modellingpath + '/3954/paper/out/numerical/colonies/largeFigs/%s/largeFig_%s_%s-%s_snapshot%s.pdf'%(folder,filename('x'),start,stop, snapshot),dpi=dpi)
+            print('not full')
+            plt.close()
+    # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/%s/large_images/%s_%s-%s.png'%(shape,filename,start,stop), dpi=2000)
+    # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s.png'%(filename,details), dpi=2000)
+    # plt.savefig(modelling_home + '/3954/numerical_confocal/results/figures/ca/large_images/%s_%s.png'%(filename,details), dpi=2000)
+    x='x'
+    print(f'Done plotting {filename(x)}')
+
+
+
+
+
+
+

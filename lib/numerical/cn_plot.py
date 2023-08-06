@@ -40,12 +40,17 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
         plt.show()
 
 
-def surfpattern(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
+def surfpattern(results,L,dx,J,T,record_every_x_hours=10,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
+    
+    
+    dx = float(L)/float(J-1)
+    x_grid = np.array([j*dx for j in range(J)])
+    t_grid = np.arange(0,T,10) 
+    
     if normalize == True:
         print('NEEDS NORMALIZATION')
     results = results[morphogen]
-    x_grid = grids[0] 
-    t_grid = grids[1]
+
     values = results.reshape(len(x_grid),len(t_grid))
     x, t = np.meshgrid(x_grid, t_grid)
 
