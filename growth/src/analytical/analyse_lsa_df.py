@@ -21,7 +21,7 @@ print('heehehe')
 
 
 circuit_n='turinghill'
-variant= 9
+variant= 8
 n_species=2
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 2000000
@@ -97,3 +97,4 @@ if saveTuring == True:
 
 
 # %%
+

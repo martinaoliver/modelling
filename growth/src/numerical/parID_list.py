@@ -18,10 +18,10 @@ import pickle
 
 
 circuit_n='turinghill'
-# mechanism='edgegrowth2'
+mechanism='edgegrowth2'
 # mechanism='openboundary'
-mechanism='nogrowth'
-variant=9
+# mechanism='nogrowth'
+variant=8
 folder = f'turinghill_variant{variant}'
 #solver parameters
 L=50; dx =0.1; J = int(L/dx)
@@ -51,3 +51,4 @@ pickle.dump( parID_list, open( modellingephemeral + '/growth/out/numerical/%s/si
 print( modellingephemeral + '/growth/out/numerical/%s/simulation/%s/parID_list_%s.pkl'%(mechanism,folder,filename(mechanism, 'x')))
 print('------')
 print(parID_list.count('47.0'))
+

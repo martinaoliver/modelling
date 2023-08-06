@@ -32,7 +32,7 @@ from tqdm import tqdm
 #######################
 
 circuit_n='turinghill'
-variant=10
+variant=2000000
 np.random.seed(1)
 
 

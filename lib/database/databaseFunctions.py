@@ -41,22 +41,25 @@ def postgres_upsert(table, conn, keys, data_iter):
     )
     conn.execute(upsert_statement)
 
-def generate_insert_uuid(id_name,table_name,cursor,conn):# Generate a unique key for simID
-    #generate random
-    random.seed(datetime.now().timestamp())
-    id = ''.join(random.choices(string.ascii_lowercase, k=20))
+def find_simulation_param_uuid(sim_param_dict, cursor):
+        table_name = "simulation_param"
+                    
+                    # Build the query dynamically
+        query = "SELECT simulation_param_uuid FROM {} WHERE ".format(table_name)
+        conditions = []
+        values = []
+        for key, value in sim_param_dict.items():
+            conditions.append('"{0}" = %s'.format(key))
+            values.append(value)
+        cursor.execute(query + ' AND '.join(conditions), values)
 
-    # Check if the simID already exists in Table3
-    check_unique_query = f'SELECT COUNT(*) FROM {table_name} WHERE {table_name}."{id_name}" = \'{id}\''
-    cursor.execute(check_unique_query)
-    existing_count = cursor.fetchone()[0]
-    # If the simID already exists, regenerate the key
-    while existing_count > 0:
-        id = ''.join(random.choices(string.ascii_lowercase, k=10))
-        cursor.execute(check_unique_query)
-        existing_count = cursor.fetchone()[0]
-
-    return id
+        result = cursor.fetchall()
+        if len(result)>1:
+            print('error!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            return 'error'
+        else:
+            simulation_param_uuid = result[0]
+            return simulation_param_uuid
 
 
 # df has:
@@ -143,36 +146,25 @@ def insert_simulationParam_to_sql(model_param_dict, table_name='simulation_param
             
 
 
-def insert_simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final,U_record, ssID=0, dimensions='2D'):
+def insert_simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final,U_record, ssID, dimensions='2D', allow_update=False):
     U_final_1D_list = np.array(U_final).tolist()
     U_record_1D_list = np.array(U_record).tolist()
     with psycopg2.connect(credentials) as conn:
         with conn.cursor() as cursor:    
             
-            table_name = "simulation_param"
-                        
-                        # Build the query dynamically
-            query = "SELECT simulation_param_uuid FROM {} WHERE ".format(table_name)
-            conditions = []
-            values = []
-            for key, value in sim_param_dict.items():
-                conditions.append('"{0}" = %s'.format(key))
-                values.append(value)
-            cursor.execute(query + ' AND '.join(conditions), values)
-
-            result = cursor.fetchall()
-            if len(result)>1:
-                print('error!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                return 'error'
-            else:
-                simulation_param_uuid = result[0]
-
+            simulation_param_uuid = find_simulation_param_uuid(sim_param_dict, cursor)
             print(f"simulation_param_uuid:{simulation_param_uuid}")
+            
+
+
             model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
             print(f"model_param_id:{model_param_id}")
             if dimensions=='1D':
                 print('1D')
-                insert_query = 'INSERT INTO simulation_output ("simulation_param_uuid", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s)  ON CONFLICT ("simulation_param_uuid", "model_param_id","ssID")  DO UPDATE SET "U_final_1D" = EXCLUDED."U_final_1D", "U_record_1D" = EXCLUDED."U_record_1D";'
+                if allow_update==True:
+                    insert_query = 'INSERT INTO simulation_output ("simulation_param_uuid", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s)  ON CONFLICT ("simulation_param_uuid", "model_param_id","ssID")  DO UPDATE SET "U_final_1D" = EXCLUDED."U_final_1D", "U_record_1D" = EXCLUDED."U_record_1D";'
+                elif allow_update==False:
+                    insert_query = 'INSERT INTO simulation_output ("simulation_param_uuid", "model_param_id", "ssID", "U_final_1D","U_record_1D") VALUES (%s, %s, %s,%s,%s);'
             elif dimensions=='2D':
                 print('2D')
                 insert_query = 'INSERT INTO simulation_output ("simulation_param_uuid", "model_param_id", "ssID", "U_final_2D","U_record_2D") VALUES (%s, %s, %s,%s,%s)'
@@ -183,6 +175,26 @@ def insert_simulationOutput_to_sql(sim_param_dict,model_param_dict,U_final,U_rec
             print('simulation_output inserted')
             return model_param_id
         
+
+def insert_patternClassOutput_to_sql(sim_param_dict,model_param_dict,ssID,pattern_class, pattern_class_type, allow_update=False):
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:    
+            
+            simulation_param_uuid = find_simulation_param_uuid(sim_param_dict, cursor)
+            print(f"simulation_param_uuid:{simulation_param_uuid}")
+
+            
+            model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
+            print(f"model_param_id:{model_param_id}")
+            if allow_update == True:    
+                insert_query = f'INSERT INTO pattern_class_output ("simulation_param_uuid", "model_param_id", "ssID", "{pattern_class_type}") VALUES (%s, %s, %s,%s) ON CONFLICT ("simulation_param_uuid", "model_param_id","ssID")  DO UPDATE SET  "{pattern_class_type}" = EXCLUDED.{pattern_class_type};'
+            if allow_update == False:
+                insert_query = f'INSERT INTO pattern_class_output ("simulation_param_uuid", "model_param_id", "ssID",  "{pattern_class_type}") VALUES (%s, %s, %s,%s);'
+
+            values = (simulation_param_uuid, model_param_id, ssID, pattern_class)
+            cursor.execute(insert_query, values)
+            conn.commit()
+
         
 def query_modelParam_df_from_sql( model_param_dict):
     with psycopg2.connect(credentials) as conn:

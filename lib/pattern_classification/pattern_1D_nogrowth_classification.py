@@ -29,7 +29,7 @@ def patternClassification(U_final, U_record, normalize=True):
     for count,Ux_record in enumerate(U_record):
         relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[-3:])]
     # if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
-    if np.amax(relRangeConverged[0])>0.01 or np.amax(relRangeConverged[1])>0.01:
+    if np.amax(relRangeConverged[0])>0.05 or np.amax(relRangeConverged[1])>0.05:
         converged=False
     else:
         converged=True
@@ -47,7 +47,8 @@ def patternClassification(U_final, U_record, normalize=True):
             std[count] = np.std(peak_dist)
         else:
             std[count] = 1
-    if std[0]<0.01 and std[1]<0.01:
+    print(std,peaks )
+    if std[0]<0.05 and std[1]<0.05:
         regular=True
     else:
         regular=False
