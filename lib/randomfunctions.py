@@ -162,7 +162,7 @@ def plot_highest_dispersion(eigenvalues,crop = 1000, top = 5000, L=100):
 
     plt.legend()
     plt.xlabel('Wavenumber')
-    plt.ylabel('Eigenvalue')
+    plt.ylabel('Highest eigenvalue')
     plt.axhline(y=0, color='k', linestyle='-', linewidth = 0.1)
     plt.grid()
     plt.tight_layout()

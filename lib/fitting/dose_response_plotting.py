@@ -68,8 +68,7 @@ def plotData_croppedGreen(inducerGreen, inducerRed, rfpExp_list, gfpExp_list, se
 
     plt.show()
 
-
-def plotFitvsData_croppedGreen(inducer_green, inducer_red,inducer_continuous, gfpExp_list, rfpExp_list, semGreen, semRed,doseResponseGreen,doseResponseRed,pad=0.01, inducerName='HSL'):
+def plotFitvsData_croppedGreen(inducer_green, inducer_red,inducer_continuous, gfpExp_list, rfpExp_list, semGreen, semRed,doseResponseGreen,doseResponseRed,pad=0.01, inducerName='HSL',save_figure=False, save_figure_name='dose_response.pdf'):
     fig,ax = plt.subplots()
 
     ax.plot(inducer_continuous,doseResponseRed,label='RFP', c='red')
@@ -88,8 +87,9 @@ def plotFitvsData_croppedGreen(inducer_green, inducer_red,inducer_continuous, gf
     ax2.set_ylabel('GFP / ($A_{600}$ $GFP_{basal})$')
     ax.set_xscale('log')
     ax.set_xlabel(f'{inducerName} concentration (dimensionless)')
+    if save_figure==True:
 
-
+        plt.savefig(save_figure_name, bbox_inches='tight')
 
     plt.show()
 

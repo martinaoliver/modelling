@@ -108,3 +108,4 @@ stop = len(parID_list)
 
 plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,folder=folder,start=start, stop=stop, tqdm_disable=False, saveFig=True)
 
+plotAllFunctionColonies_differentSnapshot(parID_list, circuit_n, shape,snapshot, filename, L,x_gridpoints,start=0, stop=10,folder=None, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True, print_parID=False):
