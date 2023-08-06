@@ -316,6 +316,12 @@ rfpExp_list3
 semGreen3
 semRed3
 
+gfp_bestFit_subcircuit1_continous
+rfp_bestFit_subcircuit1_continous
+gfp_bestFit_subcircuit3_continous
+rfp_bestFit_subcircuit3_continous
+
+
 
 
 if test==True:
