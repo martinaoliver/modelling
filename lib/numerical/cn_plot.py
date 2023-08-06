@@ -6,7 +6,7 @@ cmap=cm.coolwarm
 cmap = cm.magma
 # from sklearn import preprocessing
 
-def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False):
+def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False, L=1):
     if round==True:
         U = np.round(U,decimals=3)
     
@@ -19,28 +19,32 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
         ax.plot(U[0], label='U', color='blue')
         ax.set_ylim(np.amin(U[0])-pad, np.amax(U[0])+pad)
         ax.legend(loc=2) #upper left
-        ax.ticklabel_format(useOffset=False)
+        # ax.ticklabel_format(useOffset=False)
 
         ax2=ax.twinx()
         ax2.plot(U[1], label='V', color='red')
         ax2.set_ylim(np.amin(U[1])-pad, np.amax(U[1])+pad)
         ax2.legend(loc=1) #upper right
 
-        ax.ticklabel_format(useOffset=False)
+
+        # ax.ticklabel_format(useOffset=False)
+
+        locs, labels = plt.xticks()
+        new_labels=locs/20
+        plt.xticks(ticks=locs, labels=new_labels)
+        plt.xlim(0,len(U[0]))
         if plotPeaks==True:
             ax.plot(peaks[0],U[0][peaks[0]], 'o', color='blue')
             ax2.plot(peaks[1],U[1][peaks[1]], 'o', color='red')
 
 
-
-    plt.ticklabel_format(useOffset=False)
+    # plt.ticklabel_format(useOffset=False)
     plt.xlabel('Space')
     plt.ylabel('Concentration')
     if savefig==True:
         plt.savefig('%s%s.jpeg'%(savefigpath,filename))
     else:
         plt.show()
-
 
 
 def surfpattern(results,L,dx,J,T,record_every_x_hours=10,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False, cmap=cm.magma, space_crop=None):

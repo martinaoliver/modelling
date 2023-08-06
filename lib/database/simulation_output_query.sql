@@ -161,12 +161,20 @@ and ao.system_class='simple stable'
  ;
 
 
-select count(*) from simulation_output
+-- select mp."parID", so."ssID"  from simulation_output so
+select count(*) from simulation_output so
 
--- where simulation_param_uuid='b94c9e61-a717-4470-957b-a59ff727e948';
--- where simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37';
+inner join model_param mp on mp.model_param_id = so.model_param_id
+-- inner join analytical_output ao on (ao.model_param_id,ao."ssID") = (so.model_param_id, so."ssID")
 
-where simulation_param_uuid='6952d306-f619-4af1-963c-aa28acb132df';
+where simulation_param_uuid='6952d306-f619-4af1-963c-aa28acb132df'
+-- where ao.system_class = 'turing I oscillatory'
+-- where simulation_param_uuid='b94c9e61-a717-4470-957b-a59ff727e948'
+-- where simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
+
+
+and mp.variant='12';
+-- and n_samples=1000000;
 --
 
 

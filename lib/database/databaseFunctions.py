@@ -287,8 +287,7 @@ def query_simulationOutput_single_from_sql(sim_param_dict,model_param_dict,query
 
 
 def query_simulationOutput_multiple_from_sql(sim_param_dict,model_param_dict,query_column, ssID=0):
-    # with psycopg2.connect(credentials) as conn:
-    #     with conn.cursor() as cursor:
+
     conn = psycopg2.connect(credentials)
     cursor = conn.cursor()
     table_name = "simulation_param"
