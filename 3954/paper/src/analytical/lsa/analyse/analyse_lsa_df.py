@@ -67,11 +67,11 @@ def hist_lsa(valueCounts_dict,title,percentageCounts_dict,log=True):
 
 # Specify name of circuit and variant investigated
 circuit_n='circuit14'
-# variant='fitted7'
-variant='2nd'
+variant='fitted7'
+# variant='2nd'
 
-# balance = 'balancedSemiBalanced'
-balance = 'balanced'
+balance = 'balancedSemiBalanced'
+# balance = 'balanced'
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000#13700000#1000000
 Kce=100
