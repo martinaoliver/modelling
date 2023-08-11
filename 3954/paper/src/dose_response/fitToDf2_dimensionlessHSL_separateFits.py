@@ -38,6 +38,7 @@ if test==True:
 ###load dataset#####
 #############
 
+
 HSLtransform = 0.14*10**3
 filename = 'Jure_subcircuit1_circuit14_doseResponseOC14_0.5ATC.pkl'
 OC14_list1_red, gfpExp_list1, rfpExp_list1, semGreen1, semRed1 = load_dose_response(filename)
@@ -54,6 +55,29 @@ del gfpExp_list3[1:6]
 del semGreen3[1:6]
 OC14_list3_green = [OC14_list3_red[x] for x in [0,6,7,8,9]]
 plotData_croppedGreen(OC14_list3_green, OC14_list3_red, rfpExp_list3, gfpExp_list3, semRed3, semGreen3)
+
+
+
+
+
+HSLtransform = 0.14*10**3
+filename = 'Jure_subcircuit1_circuit14_doseResponseOC14_0.5ATC.pkl'
+OC14_list1_red, gfpExp_list1, rfpExp_list1, semGreen1, semRed1 = load_dose_response(filename)
+print(OC14_list1_red)
+del gfpExp_list1[1:6]
+del semGreen1[1:6]
+OC14_list1_green = [OC14_list1_red[x] for x in [0,6,7,8,9]]
+plotData_croppedGreen(OC14_list1_green, OC14_list1_red, rfpExp_list1, gfpExp_list1, semRed1, semGreen1)
+
+filename = 'Jure_subcircuit3_circuit14_doseResponseOC14_0.5ATC.pkl'
+OC14_list3_red, gfpExp_list3, rfpExp_list3, semGreen3, semRed3 = load_dose_response(filename)
+
+del gfpExp_list3[1:6]
+del semGreen3[1:6]
+OC14_list3_green = [OC14_list3_red[x] for x in [0,6,7,8,9]]
+plotData_croppedGreen(OC14_list3_green, OC14_list3_red, rfpExp_list3, gfpExp_list3, semRed3, semGreen3)
+
+
 
 
 #############

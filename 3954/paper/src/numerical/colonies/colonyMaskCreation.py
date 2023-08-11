@@ -140,6 +140,7 @@ def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.
         plt.xticks(tick_positions, tick_labels)
         plt.yticks(tick_positions, tick_labels)
         plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
+        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pdf"%(seed,p_division,L,J,T,N))
         plt.show()
         plt.close()
     #%%
@@ -176,6 +177,9 @@ def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.
         tick_labels = np.linspace(0, T , 4).round(decimals=2)
         plt.xticks(tick_positions, tick_labels,fontsize=15)
         plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
+        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pdf"%(seed,p_division,L,J,T,N))
+        
+        print('y')
         plt.show()
 
     return cell_matrix_record, memory_matrix_record, daughterToMotherDictList
@@ -207,7 +211,34 @@ def maskFunction(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.
     return cell_matrix_record, memory_matrix_record, daughterToMotherDictList
 
 
-# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction(L=20,dx=0.1, T=50 ,dt=0.02, divisionTimeHours=0.5, p_division=1, plot1D=True, plotScatter=True)
+
+#%%
+
+#slowgrowth
+L=20; dx =0.1; J = int(L/dx)
+T =100; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+division_time_hours=0.5
+p_division=0.38;seed=1
+# 
+# #mediumgrowth
+# L=20; dx =0.1; J = int(L/dx)
+# T =50; dt = 0.02; N = int(T/dt)
+# boundaryCoeff = 1
+# division_time_hours=0.5
+# p_division=1;seed=1
+
+# # fastgrowth
+L=20; dx =0.1; J = int(L/dx)
+T =25; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+division_time_hours=0.2
+p_division=0.7;seed=1
+
+dt = 0.2; N = int(T/dt)
+
+
+cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction(L=L,dx=dx, T=T ,dt=dt, divisionTimeHours=division_time_hours, p_division=p_division, plot1D=True, plotScatter=True)
 # # %%
 
 
