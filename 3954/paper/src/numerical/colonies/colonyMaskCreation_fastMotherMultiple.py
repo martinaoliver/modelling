@@ -59,7 +59,7 @@ def cell_automata_colony(cell_matrix, p_division, cell_matrix_fastGrowth):
     return cell_matrix_new, daughterToMotherDict, cell_matrix_fastGrowth_new
     
 # numba.jit(nopython=True)
-def adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
+def adi_ca(L,dx,J,T,dt,N,n_species,division_time_hours,tqdm_disable=False, p_division=0.3,stochasticity=0, seed=1, growth='Fast'):
     I=J
     print(f'dt{dt}')
 
@@ -84,9 +84,9 @@ def adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_divis
 
     # U = copy.deepcopy(U0)
 
-    divisionTimeUnits=divisionTimeHours/dt
-    print(f'divisionTimeUnits{divisionTimeHours}')
-    # cell_matrix_record = np.zeros([J, I, int(T/divisionTimeHours)])
+    divisionTimeUnits=division_time_hours/dt
+    print(f'divisionTimeUnits{division_time_hours}')
+    # cell_matrix_record = np.zeros([J, I, int(T/division_time_hours)])
     cell_matrix_record = np.zeros([J, I, N])
     memory_matrix_record = np.zeros([J, I, N], dtype='i,i')
     cell_matrix_record[:, :, 0] = cell_matrix #issue in this line
@@ -123,7 +123,7 @@ def adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False, p_divis
     # print(np.shape(cell_matrix_record))
     return cell_matrix_record,memory_matrix_record, daughterToMotherDictList
 
-def maskFunction_fastMotherMultiple(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHours=1, p_division=0.5,seed=1,plot1D=False, plotScatter = False, plotVideo=False):
+def maskFunction_fastMotherMultiple(L=9, dx=0.05, T=50, dt=0.05, division_time_hours=1, p_division=0.5,seed=1,plot1D=False, plotScatter = False, plotVideo=False):
         
     #execution parameters
     n_species=6
@@ -135,12 +135,12 @@ def maskFunction_fastMotherMultiple(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHou
     print(f'suggested dt = {suggesteddt}')
     # p_division=float(sys.argv[5]);seed=1
 
-    cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,divisionTimeHours,tqdm_disable=False,p_division=p_division,seed=seed)
+    cell_matrix_record,memory_matrix_record, daughterToMotherDictList = adi_ca(L,dx,J,T,dt,N,n_species,division_time_hours,tqdm_disable=False,p_division=p_division,seed=seed)
     print(np.shape(cell_matrix_record))
     print(np.shape(cell_matrix_record))
-    pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-    pickle.dump( memory_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-    pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( cell_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caFastMotherMultipleMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( memory_matrix_record, open(modellingpath + "/3954/paper/out/numerical/masks/caFastMotherMultipleMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caFastMotherMultipleMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
     # print(np.shape(cell_matrix_record))
     # for ti in range(N):
         # print(np.shape(memory_matrix_record[:,:,ti]))
@@ -153,7 +153,8 @@ def maskFunction_fastMotherMultiple(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHou
         tick_labels = np.linspace(0, L, 4).round(decimals=2)
         plt.xticks(tick_positions, tick_labels)
         plt.yticks(tick_positions, tick_labels)
-        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
+        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caFastMotherMultipleMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
+        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caFastMotherMultipleMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pdf"%(seed,p_division,L,J,T,N))
         plt.show()
         plt.close()
     #%%
@@ -189,7 +190,8 @@ def maskFunction_fastMotherMultiple(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHou
         tick_positions = np.linspace(0, T/dt, 4)
         tick_labels = np.linspace(0, T , 4).round(decimals=2)
         plt.xticks(tick_positions, tick_labels,fontsize=15)
-        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/growthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
+        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caFastMotherMultipleGrowthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.png"%(seed,p_division,L,J,T,N))
+        plt.savefig(modellingpath + "/3954/paper/out/numerical/masks/caFastMotherMultipleGrowthScatter_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pdf"%(seed,p_division,L,J,T,N))
         plt.show()
 
     return cell_matrix_record, memory_matrix_record, daughterToMotherDictList
@@ -221,10 +223,10 @@ def maskFunction_fastMotherMultiple(L=9, dx=0.05, T=50, dt=0.05, divisionTimeHou
     return cell_matrix_record, memory_matrix_record, daughterToMotherDictList
 
 
-# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction(L=20,dx=0.1, T=60 ,dt=0.5, divisionTimeHours=0.5, p_division=0.4, plot1D=True, plotScatter=True)
+# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction(L=20,dx=0.1, T=60 ,dt=0.5, division_time_hours=0.5, p_division=0.4, plot1D=True, plotScatter=True)
 # # %%
 # 
-# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction_fastMother(L=25,dx=0.1, T=100 ,dt=0.5, divisionTimeHours=0.5, p_division=0.4, plot1D=True, plotScatter=True)
+# cell_matrix_record,memory_matrix_record, daughterToMotherDictList = maskFunction_fastMotherMultiple(L=25,dx=0.1, T=100 ,dt=0.5, division_time_hours=0.5, p_division=0.4, plot1D=True, plotScatter=True)
 
 
 

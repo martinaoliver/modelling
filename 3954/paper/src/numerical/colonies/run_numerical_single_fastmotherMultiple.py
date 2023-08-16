@@ -79,6 +79,7 @@ T =110; dt = 0.02; N = int(T/dt)
 boundaryCoeff = 1
 division_time_hours=0.5
 p_division=0.38;seed=1
+T =110; dt =0.5; N = int(T/dt)
 
 # #slowgrowth
 # L=20; dx =0.1; J = int(L/dx)
@@ -91,8 +92,8 @@ parID=6
 x_gridpoints=int(1/dx)
 
 try:
-    cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
-    daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
+    cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/%sMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(shape,seed,p_division,L,J,T,N), "rb" ) )
+    daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/%sMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(shape,seed,p_division,L,J,T,N), "rb" ) )
     print('fileNotCreated')
 
 except:
@@ -101,8 +102,8 @@ except:
     print('fileCreation')
 
     cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction_fastMotherMultiple(L=L,dx=dx, T=T, dt=dt, division_time_hours=division_time_hours, p_division=p_division, plot1D=True, plotScatter=True)
-    pickle.dump( cell_matrix_record,open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
-    pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( cell_matrix_record,open(modellingpath + "/3954/paper/out/numerical/masks/%ssMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(shape,seed,p_division,L,J,T,N), "wb" ) )
+    pickle.dump( daughterToMotherDictList, open(modellingpath + "/3954/paper/out/numerical/masks/%sMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(shape,seed,p_division,L,J,T,N), "wb" ) )
 
     # cell_matrix_record = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMask_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )
     # daughterToMotherDictList = pickle.load( open(modellingpath + "/3954/paper/out/numerical/masks/caTwoColoniesMemory_seed%s_pdivision%s_L%s_J%s_T%s_N%s.pkl"%(seed,p_division,L,J,T,N), "rb" ) )

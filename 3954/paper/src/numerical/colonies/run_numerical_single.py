@@ -38,13 +38,13 @@ from colonyMaskCreation import *
 #############
 # %matplotlib inline
 shape = 'ca'
-# circuit_n=14;variant='2nd';n_species=6
+circuit_n=14;variant='2nd';n_species=6
 # circuit_n=14;variant='fitted7';n_species=6
-nsr = 0.01
-circuit_n=14;variant = f'fitted7_gaussian4187715_nsr{nsr}';n_species=6
+# nsr = 0.01
+# circuit_n=14;variant = f'fitted7_gaussian4187715_nsr{nsr}';n_species=6
 # circuit_n=14;variant='fitted2';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_samples = 2000
+n_samples = 1000000#2000
 # balance = 'balanced'
 # folder = 'circuit14variant2ndBalancedTuring'
 folder = f'circuit14variantfitted7_gaussian4187715'
@@ -96,12 +96,12 @@ p_division=0.38;seed=1
 # division_time_hours=0.5
 # p_division=1;seed=1
 
-# # # fastgrowth
-# L=20; dx =0.1; J = int(L/dx)
-# T =25; dt = 0.02; N = int(T/dt)
-# boundaryCoeff = 1
-# division_time_hours=0.2
-# p_division=0.7;seed=1
+# # fastgrowth
+L=20; dx =0.1; J = int(L/dx)
+T =25; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+division_time_hours=0.2
+p_division=0.7;seed=1
 
 
 shape = 'ca'
