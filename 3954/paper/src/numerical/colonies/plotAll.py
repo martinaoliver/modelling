@@ -11,7 +11,7 @@ modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/mod
 sys.path.append(modellingpath + '/lib')
 #############
 
-from numerical.plotAllFunctions import plotAllFunctionColonies
+from numerical.plotAllFunctions import plotAllFunctionColonies, plotAllFunctionColonies_differentSnapshot
 
 import pickle
 import numpy as np
@@ -96,16 +96,17 @@ x_gridpoints=int(1/dx)
 
 # filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundarycoeff, shape,parID,L,J,T,N)
 # filename= lambda parID: 'circuit%r_variant%snsr%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsr,boundarycoeff, shape,parID,L,J,T,N)
-# filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,n_samples,Kce,boundarycoeff, shape,parID,L,J,T,N)
+filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,n_samples,Kce,boundaryCoeff, shape,parID,L,J,T,N)
 data_path = modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s'%(folder)
 parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 
 start=0
 # start = 825
 
+
 stop = len(parID_list) 
-# stop = 10
 
-plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,folder=folder,start=start, stop=stop, tqdm_disable=False, saveFig=True)
 
-plotAllFunctionColonies_differentSnapshot(parID_list, circuit_n, shape,snapshot, filename, L,x_gridpoints,start=0, stop=10,folder=None, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=True, print_parID=False):
+# plotAllFunctionColonies(parID_list, circuit_n, shape, filename, L,x_gridpoints,folder=folder,start=start, stop=stop, tqdm_disable=False, saveFig=True)
+snapshot=20
+plotAllFunctionColonies_differentSnapshot(parID_list, circuit_n, shape,snapshot, filename, L,x_gridpoints,start=0, stop=stop,folder=folder, modellingpath=modellingpath, saveFig=True,dpi=2000, tqdm_disable=False, print_parID=False)

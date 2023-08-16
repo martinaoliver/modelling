@@ -45,11 +45,11 @@ p_division=0.38;seed=1
 
 
 # # fast
-# L=20; dx =0.1; J = int(L/dx)
-# T =25; dt = 0.02; N = int(T/dt)
-# boundaryCoeff = 1
-# division_time_hours=0.2
-# p_division=0.7;seed=1
+L=20; dx =0.1; J = int(L/dx)
+T =25; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+division_time_hours=0.2
+p_division=0.7;seed=1
 
 
 
@@ -69,17 +69,17 @@ n_samples = 1000000#2000 #n_samples = 13700000
 folder = 'circuit14variant2ndBalancedKce100'#'circuit14variantfitted7_gaussian4187715'
 
 
-ssID=0
-circuit_n=14 #circuit_n='circuit14'
-variant='fitted7_gaussian4187715_nsr0.01' #variant='fitted7'
-Kce=100
-n_samples =2000 #n_samples = 13700000
-folder ='circuit14variantfitted7_gaussian4187715'
+#ssID=0
+#circuit_n=14 #circuit_n='circuit14'
+#variant='fitted7_gaussian4187715_nsr0.01' #variant='fitted7'
+#Kce=100
+#n_samples =2000 #n_samples = 13700000
+#folder ='circuit14variantfitted7_gaussian4187715'
 
 
 model_param_dict = {'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
-filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
-# filename = lambda parID: f'circuit{circuit_n}_variant{variant}_{n_samples}parametersets_balanced_Kce{Kce}_bc{boundaryCoeff}_{shape}_ID{parID}_L{L}_J{J}_T{T}_N{N}'
+#filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
+filename = lambda parID: f'circuit{circuit_n}_variant{variant}_{n_samples}parametersets_balanced_Kce{Kce}_bc{boundaryCoeff}_{shape}_ID{parID}_L{L}_J{J}_T{T}_N{N}'
 
 
 
@@ -98,7 +98,7 @@ filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circ
 data_path = modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s'%(folder)
 parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 #%%
-parID_list = [45]
+parID_list = [141318]
 for parID in tqdm(parID_list[:2]):
     print(parID)
     
