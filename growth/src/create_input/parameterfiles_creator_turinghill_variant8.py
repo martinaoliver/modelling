@@ -32,8 +32,10 @@ from tqdm import tqdm
 #######################
 
 circuit_n='turinghill'
-variant=2000000
-np.random.seed(1)
+variant=8
+n_samples =int(sys.argv[1])
+seed = int(sys.argv[2])
+np.random.seed(seed)
 
 
 def loguniform(low=-3, high=3, size=None):
@@ -106,10 +108,10 @@ def parameterfile_creator_function(numbercombinations):
 
     # bx = np.full((numbercombinations, 1), 0.01)
     # cooperativity = np.full((numbercombinations, 1), 3)
-    d_A = np.full((numbercombinations, 1), 0.001)
-    d_B= np.full((numbercombinations, 1), 1)
+    d_A = np.full((numbercombinations, 1), 1)
+    d_B= np.full((numbercombinations, 1), 0.001)
     # d_B = np.full((numbercombinations, 1), 0.8)
-    parameterindex = np.arange(1, numbercombinations + 1, dtype=int).reshape(numbercombinations, 1)
+    parameterindex = np.arange(0, numbercombinations , dtype=int).reshape(numbercombinations, 1)
     points = np.concatenate((parameterindex, points, d_A, d_B), 1)
     parameternames = (
     'index', 'ba', 'bb', 'Va', 'Vb', 'kaa', 'kba', 'kab', 'kbb', 'mua', 'mub','n','d_A', 'd_B')
@@ -121,19 +123,13 @@ def parameterfile_creator_function(numbercombinations):
 
     return df
 
-# number_of_dataframes=64
-
-# n_param_sets = int(sys.argv[1]) # this number needs to be a multiple of 64
-n_param_sets = 2000000# this number needs to be a multiple of 64
-# n_param_sets = int(numbercombinations / number_of_dataframes)
-# count = 0
-# n_batches= 64
-# batch_size = int(n_param_sets/n_batches)
-
-# for n in tqdm(range(n_batches)):
 for n in range(1):
     # df = parameterfile_creator_function(batch_size)
-    df = parameterfile_creator_function(n_param_sets)
-    pickle.dump(df, open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), 'wb'))
+    df = parameterfile_creator_function(n_samples)
+    df.index += seed*n_samples
+
+    # pickle.dump(df, open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%r_%rparametersets_seed%s.pkl'%(circuit_n,variant,n_samples,seed), 'wb'))
     print ('Parameterfile a %r created' %n)
     print(df)
+
+

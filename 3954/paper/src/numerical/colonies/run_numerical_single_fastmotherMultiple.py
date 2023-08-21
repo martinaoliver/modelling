@@ -79,7 +79,7 @@ T =110; dt = 0.02; N = int(T/dt)
 boundaryCoeff = 1
 division_time_hours=0.5
 p_division=0.38;seed=1
-T =110; dt =0.5; N = int(T/dt)
+# T =110; dt =0.5; N = int(T/dt)
 
 # #slowgrowth
 # L=20; dx =0.1; J = int(L/dx)

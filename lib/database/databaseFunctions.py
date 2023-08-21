@@ -24,7 +24,7 @@ def general_query(query):
     with psycopg2.connect(credentials) as conn:
         with conn.cursor() as cursor:
             cursor.execute(query)
-            return cursor
+            return cursor.fetchall()
 
     
 

@@ -43,12 +43,20 @@ p_division=0.38;seed=1
 # division_time_hours=0.2
 # p_division=0.7;seed=1
 
-shape='ca'
-sim_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 
-            'boundaryCoeff':boundaryCoeff, 
-            'shape':'ca', 'p_division': p_division,  'seed':seed, 'division_time_hours': division_time_hours}
+#caFastMotherMultiple
+L=25; dx =0.1; J = int(L/dx)
+T =110; dt = 0.02; N = int(T/dt)
+boundaryCoeff = 1
+division_time_hours=0.5
+p_division=0.38;seed=1
 
-insert_simulationParam_to_sql(sim_dict)
+shape='caFastMotherMultiple'
+simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 
+            'boundaryCoeff':boundaryCoeff, 
+            'shape':shape, 'p_division': p_division, 'seed':seed, 'division_time_hours':division_time_hours}
+
+
+insert_simulationParam_to_sql(simulation_param_dict)
 
 
 

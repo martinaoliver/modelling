@@ -36,8 +36,8 @@ print(f'Circuit:{circuit_n}, Variant:{variant}')
 # lsa_df = pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit%s_variant%s_%rparametersets_%s_Kce%s.pkl'%(circuit_n,variant,n_samples,balance,Kce), "rb"))
 lsa_df = pickle.load( open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit%s_variant%s_%rparametersets_%s.pkl'%(circuit_n,variant,n_samples,balance), "rb"))
 #%%
-lsa_df_cropped = lsa_df.loc[12837401]
-analyticalOutput_df_to_sql(lsa_df_cropped, circuit_n, variant, n_samples)
+# lsa_df_cropped = lsa_df.loc[12837401, 13699996]
+# analyticalOutput_df_to_sql(lsa_df_cropped, circuit_n, variant, n_samples)
 # lsa_df_cropped = lsa_df.iloc[:10]
 # lsa_df = pickle.load(  open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/turing_dataframes/turing_df_circuit%s_variant%s_%sparametersets_balanced_Kce%s.pkl'%(circuit_n,variant,n_samples,Kce), "rb" ))
 
@@ -47,7 +47,7 @@ analyticalOutput_df_to_sql(lsa_df_cropped, circuit_n, variant, n_samples)
 #Insert in batches
 batch_insert=True
 if batch_insert==True:
-    batch_size=100
+    batch_size=10000
     batch_indices = list(range(0, len(lsa_df), batch_size))
 
     for n in tqdm(range(int(len(lsa_df)/batch_size))):

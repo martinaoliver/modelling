@@ -29,79 +29,78 @@ import multiprocessing
 
 # Set number of threads to 1 if no valid number provided
 if len(sys.argv) > 1:
-    Number_of_Threads = int(sys.argv[1])
+    number_of_cpus = int(sys.argv[1])
 else:
-    Number_of_Threads = 1
-print('Number of Threads set to ', Number_of_Threads)
+    Number_of_cpus = 1
+print('Number of Threads set to ', number_of_cpus)
+number_of_threads=100000
 # Number_of_Threads=48
 # Specify name of circuit and variant investigated
 circuit_n='turinghill'
 variant= int(sys.argv[2])
 n_species=2
-# Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 2000000
-df_lenght =n_param_sets
-
-# df_lenght = 10
-# n_param_sets = 10
+# Specifiy number of parameter sets to analyse
+n_param_sets = 25000000 #so you can find 1000 hopf if there is 8 hopf in 2 million 
+batch_size =int(n_param_sets/number_of_threads)
+print(batch_size)
 
 
 # Specify date today
 date = date.today().strftime('%m_%d_%Y')
 
-# Specify size of batches in which to complete computations
-# Does not need to be a factor of number of parameter sets
-# batch_size = 20000
-# batch_size = 41666
-batch_size =int(df_lenght/Number_of_Threads)
-print(batch_size)
+
+
 
 
 # Define work to be done per batch of parameter sets
-def lsa_check(start_batch_index,n_param_sets,df_batch,circuit_n=circuit_n, variant=variant, n_species=n_species):
-    print('pool' + str(start_batch_index))
-    output_df = big_turing_analysis_df(df_batch,circuit_n,n_species,print_parID=False)
-    print('calculated')
-    pickle.dump(output_df, open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets_batch%r.pkl'%(circuit_n,variant,n_param_sets,start_batch_index), 'wb'))
-    print('saved')
+def lsa_check(thread_number,n_param_sets=batch_size,circuit_n=circuit_n, variant=variant, n_species=n_species):
+    #call function to create df(seed)
+    df_batch = create_df_function(thread_number, n_param_sets)
+
+    #calculate df lsa
+    output_df = big_turing_analysis_df(df_batch,circuit_n,n_species,print_parID=False)  
+
+   
+    #query how many system class in db. 
+
+    if system_class_x_n < 1000:
+        #  add system_class_x_n results onto db 
+            #add general robustness results onto db 
+            #  pickle.dump('dict with results')
+        search_finished=False
+    
+    else:
+        search_finished = True
+
+
+    return search_finished
 # Runs if the module is the main program
 # if __name__ == '__main__':
 print('start_time')
 start_time = time.perf_counter()
-start_parameter = int(0)
-# Load dataframe of parameter sets
-print('df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets))
-# df= pickle.load( open('../parameterfiles/df_circuit%r_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb" ) )
-df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_param_sets), "rb"))
-print('df loaded')
-print(df)
-df = df.iloc[:df_lenght]
-print('df cropped')
-print(df)
-# df= pickle.load( open("../parameterfiles/df_circuit2_variant1_1954parametersets_rbslibrary0.pkl", "rb"))
-batch_indices = list(range(0+start_parameter, len(df) + start_parameter, batch_size))
-# batch_indices = list(range(0+start_parameter, 10 + start_parameter, batch_size))
+
 
 # Create a pool of workers
-pool = multiprocessing.Pool(Number_of_Threads)
+pool = multiprocessing.Pool(number_of_cpus)
 
 # Define jobs as different batches of parameter sets
 # Run lsa_check function in parallel across different threads
 pool_output = []
 print('start_loop')
-for start_batch_index in batch_indices:
+search_finished=False
+for thread_number in range(number_of_threads):
+    while search_finished==False:
+        print('main' + str(thread_number))
+        search_finished = pool_output.append(pool.apply_async(lsa_check, args=(thread_number)))
+        
 
-    print('main' + str(start_batch_index))
-    df_batch = df.iloc[start_batch_index:start_batch_index+batch_size]
-    # df_batch = df.iloc[start_batch_index:start_batch_index+2]
 
-    pool_output.append(pool.apply_async(lsa_check, args=(start_batch_index, n_param_sets,df_batch)))
 # Close the parallel processing job
 pool.close()
 pool.join()
 print('Run finished')
 
-for count,start_batch_index in enumerate(batch_indices):
+for count,start_batch_index in enumerate(number_of_threads):
     print('error' + str(start_batch_index))
     pool_output[count].get()
 # Report time taken
