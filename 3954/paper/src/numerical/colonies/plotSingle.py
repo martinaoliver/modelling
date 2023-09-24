@@ -28,8 +28,8 @@ from numerical.cn_plot import *
 # Specify name of circuit and variant investigated
 # circuit_n=14;variant='fitted1';n_species=6
 # circuit_n=14;variant='2nd';n_species=6
-circuit_n=14;variant='2nd';n_species=6
-# circuit_n=14;variant=195238;n_species=6;nsr=0.05
+# circuit_n=14;variant='2nd';n_species=6
+circuit_n=14;variant=195238;n_species=6;nsr=0.05
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
@@ -38,8 +38,8 @@ n_param_sets = 1000000
 
 # folder = 'circuit14variantfitted1'
 # folder = 'circuit14variant2ndBalancedTuring'
-folder = 'circuit14variant2ndBalancedKce100'
-# folder = f'circuit14variant{variant}'
+# folder = 'circuit14variant2ndBalancedKce100'
+folder = f'circuit14variant{variant}'
 
 modelArgs = [circuit_n,variant,n_species,folder]
 
@@ -69,7 +69,7 @@ x_gridpoints=int(1/dx)
 
 save_figure = False
 
-parID=252
+parID=6
 # parID=94
 
 df = pickle.load(open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit14_variant2nd_1000000parametersets_balanced_Kce100.pkl','rb'))
