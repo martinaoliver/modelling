@@ -238,7 +238,7 @@ p_division=0.7;seed=1
 dt = 0.2; N = int(T/dt)
 
 
-cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction(L=L,dx=dx, T=T ,dt=dt, divisionTimeHours=division_time_hours, p_division=p_division, plot1D=True, plotScatter=True)
+# cell_matrix_record, memory_matrix_record, daughterToMotherDictList = maskFunction(L=L,dx=dx, T=T ,dt=dt, divisionTimeHours=division_time_hours, p_division=p_division, plot1D=True, plotScatter=True)
 # # %%
 
 

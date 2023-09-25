@@ -38,10 +38,10 @@ from colonyMaskCreation import *
 #############
 # %matplotlib inline
 shape = 'ca'
-circuit_n=14;variant='2nd';n_species=6
+# circuit_n=14;variant='2nd';n_species=6
 # circuit_n=14;variant='fitted7';n_species=6
-# nsr = 0.01
-# circuit_n=14;variant = f'fitted7_gaussian4187715_nsr{nsr}';n_species=6
+nsr = 0.01
+circuit_n=14;variant = f'fitted7_gaussian4187715_nsr{nsr}';n_species=6
 # circuit_n=14;variant='fitted2';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_samples = 1000000#2000
@@ -58,7 +58,7 @@ tqdm_disable = False #disable tqdm
 
 # open parameter dictionaries
 # df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
-df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb" ) )
+# df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb" ) )
 
 # L=20; dx =0.1; J = int(L/dx)
 # T =50; dt = 0.1; N = int(T/dt)
@@ -85,7 +85,7 @@ df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles
 #slowgrowth
 L=20; dx =0.1; J = int(L/dx)
 T =100; dt = 0.02; N = int(T/dt)
-boundaryCoeff = 1
+boundaryCoeff = 2
 division_time_hours=0.5
 p_division=0.38;seed=1
 # # 
@@ -96,12 +96,12 @@ p_division=0.38;seed=1
 # division_time_hours=0.5
 # p_division=1;seed=1
 
-# # fastgrowth
-L=20; dx =0.1; J = int(L/dx)
-T =25; dt = 0.02; N = int(T/dt)
-boundaryCoeff = 1
-division_time_hours=0.2
-p_division=0.7;seed=1
+# # # fastgrowth
+# L=20; dx =0.1; J = int(L/dx)
+# T =25; dt = 0.02; N = int(T/dt)
+# boundaryCoeff = 1
+# division_time_hours=0.2
+# p_division=0.7;seed=1
 
 
 shape = 'ca'
@@ -194,6 +194,12 @@ rgb = plot_redgreen_contrast(U_final,L,parID=filename(parID),filename = filename
 
 U_final = pickle.load(open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "rb" ) )
 U_record = pickle.load(open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
+
+saveFigPath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s'%folder
+
+rgb = plot_redgreen_contrast(U_final,L,parID=filename(parID),filename = filename(parID), path = saveFigPath,scale_factor=x_gridpoints,save_figure=True)
+#%%
+
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import animation
@@ -201,7 +207,8 @@ from matplotlib import animation
 # plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/'
 rgb_timeseries = redgreen_contrast_timeseries(U_record)
 # show_rgbvideo(rgb_timeseries,parID)
-saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
+
+# saveVideoPath = modellingpath + '/3954/paper/out/numerical/colonies/videos/%s/'%folder
 
 def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000):
     fig = plt.figure()
@@ -239,9 +246,15 @@ import seaborn as sns
 #     return cmap
 cm = sns.color_palette('blend:green,black', as_cmap=True)
 plt.imshow(-U_final[-1], cmap=cm)
+plt.savefig(saveFigPath + f'/{filename(parID)}_green.pdf')
+plt.savefig(saveFigPath + f'/{filename(parID)}_green.png')
 plt.show()
+
 cm = sns.color_palette('blend:red,black', as_cmap=True)
 plt.imshow(-U_final[-2], cmap=cm)
+plt.savefig(saveFigPath + f'/{filename(parID)}_red.pdf')
+plt.savefig(saveFigPath + f'/{filename(parID)}_red.png')
+
 plt.show()
 
     # %%

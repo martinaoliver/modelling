@@ -21,7 +21,7 @@ from tqdm import tqdm
 # Specify name of circuit and variant investigated
 
 circuit_n='turinghill'
-variant=8
+variant=
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_samples = 2000000
@@ -51,4 +51,3 @@ if batch_insert==True:
         lhs_df_cropped = lsa_df.iloc[batch_indices[n]:batch_indices[n] + batch_size+1 ]
         analyticalOutput_df_to_sql(lsa_df, circuit_n, variant, n_samples)
 
-# %%

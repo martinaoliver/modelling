@@ -26,10 +26,11 @@ from numerical.cn_plot import *
 #############
 
 # Specify name of circuit and variant investigated
-# circuit_n=14;variant='fitted1';n_species=6
+# circuit_n=14;variant='fitted7_gaussian4187715';n_species=6
 # circuit_n=14;variant='2nd';n_species=6
 # circuit_n=14;variant='2nd';n_species=6
-circuit_n=14;variant=195238;n_species=6;nsr=0.05
+# circuit_n=14;variant=195238;n_species=6;nsr=0.05
+circuit_n=14;variant='fitted7_gaussian4187715';n_species=6;nsr=0.01
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_param_sets = 1000000
@@ -57,7 +58,7 @@ nsamples =  1000000
 
 # medium
 L=20; dx =0.1; J = int(L/dx)
-T =50; dt = 0.02; N = int(T/dt)
+T =100; dt = 0.02; N = int(T/dt)
 boundaryCoeff = 1
 divisionTimeHours=0.5
 p_division=1;seed=1
@@ -75,15 +76,16 @@ parID=6
 df = pickle.load(open(modellingpath + '/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit14_variant2nd_1000000parametersets_balanced_Kce100.pkl','rb'))
 
 #%%
-filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsamples,Kce,boundarycoeff, shape,parID,L,J,T,N)
+# filename= lambda parID: 'circuit%r_variant%s_%sparametersets_balanced_Kce%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsamples,Kce,boundarycoeff, shape,parID,L,J,T,N)
 
-# filename= lambda parID: 'circuit%r_variant%snsr%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsr,boundarycoeff, shape,parID,L,J,T,N)
+filename= lambda parID: 'circuit%r_variant%s_nsr%s_bc%s_%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,nsr,boundaryCoeff, shape,parID,L,J,T,N)
 
 
 
 U_record = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
 U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), 'rb'))
-import numpy as np
+
+#%%import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import animation
 # plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
@@ -134,7 +136,7 @@ U_final = pickle.load( open(modellingpath + '/3954/paper/out/numerical/colonies/
 
 
 savefig_path  = ''
-# rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure='LargeImage')
+rgb = plot_redgreen_contrast(U_final,L,parID=parID,scale_factor=x_gridpoints,save_figure='LargeImage')
 
 
 # plt.imshow(rgb.astype('uint8'), origin= 'lower')

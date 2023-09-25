@@ -16,17 +16,19 @@ where mp.variant='9'
     GROUP BY system_class'''
 
 
-query = '''SELECT system_class, COUNT(*) AS count
-FROM analytical_output 
-    GROUP BY system_class'''
+# query = '''SELECT system_class, COUNT(*) AS count
+# FROM analytical_output 
+#     GROUP BY system_class'''
+
+output = dict(general_query(query))
+#%%
 
 threshold = int(sys.argv[1])
-output = dict(general_query(query))
 
 if any([value < threshold for value in output.values()]):
-    print(True)
+    print('true')
 else:
-    print(False)
+    print('false')
 
 
 

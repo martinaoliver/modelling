@@ -1,8 +1,16 @@
-#!/bin/bash
+#!/bin/sh
+#PBS -l walltime=20:00:00
+#PBS -l select=1:ncpus=96:mem=96gb
 
-threshold=46
-n_samples=10
-n_cpus=1
+module load anaconda3/personal
+source activate env1
+cd $PBS_O_WORKDIR
+
+
+
+threshold=100
+n_samples=1000000
+n_cpus=96
 continue_search=true
 seed=0
 while $continue_search; do
@@ -13,12 +21,15 @@ while $continue_search; do
 
 
     # Call the Python function to create input/parameter files
-    python create_input/parameterfiles_creator_turinghill_variant9.py $n_samples $seed
+    python create_input/parameterfiles_creator_turinghill_variant8.py $n_samples $seed
 
 
     # Call the Python function lsa_df
-    python analytical/run_lsa_multithread_seed_dependent.py $n_cpus 9 $seed $n_samples 
+    python analytical/run_lsa_multithread_seed_dependent.py $n_cpus 8 $seed $n_samples 
 
+
+    #insert instabilities into df 
+    python database_scripts/insert_analytical_output_instabilities.py 8 $seed $n_samples
 
     seed=$((seed + 1)) 
     # else
@@ -28,3 +39,7 @@ while $continue_search; do
     # # Pause for a while before the next iteration
     # sleep 1  # Sleep for 30 seconds for db to recover when querying next
 done
+
+#!/bin/sh
+#PBS -l walltime=20:00:00
+#PBS -l select=1:ncpus=96:mem=96gb
