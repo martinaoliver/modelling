@@ -128,7 +128,7 @@ for n in range(1):
     df = parameterfile_creator_function(n_samples)
     df.index += seed*n_samples
 
-    # pickle.dump(df, open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%r_%rparametersets_seed%s.pkl'%(circuit_n,variant,n_samples,seed), 'wb'))
+    pickle.dump(df, open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%r_%rparametersets_seed%s.pkl'%(circuit_n,variant,n_samples,seed), 'wb'))
     print ('Parameterfile a %r created' %n)
     print(df)
 

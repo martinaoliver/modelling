@@ -129,7 +129,7 @@ def findsteadystates(par_dict, circuit_n, n_species, n_initial_conditions = 500)
     # - The initial conditions sampled are found using latin hypercube sampling (an efficient method  to cover a wide area of the
     #initial condition parameter space with less samples).
     initial_conditions = lhs_initial_conditions(n_initial_conditions,n_species)
-
+    
     # - Calls the function that evaluates the steady state of our system (with the parameters indicated in par_dict) for
     #every initial condition.
     # - It returns an array with all the 'unique' steady states obtained. From two different initial conditions you can reach

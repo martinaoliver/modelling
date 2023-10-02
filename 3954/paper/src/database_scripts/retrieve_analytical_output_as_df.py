@@ -43,46 +43,46 @@ model_param_dict = {'circuit_n': circuit_n, 'variant': variant, 'n_samples': n_s
 
 
 
-#%%
-import psycopg2 
-import pandas as pd
-credentials=f"postgresql://moliver:moliver@ld-rendres07.bc.ic.ac.uk/moliver"
+# #%%
+# import psycopg2 
+# import pandas as pd
+# credentials=f"postgresql://moliver:moliver@ld-rendres07.bc.ic.ac.uk/moliver"
 
-def query_analyticalOutput_df_from_sql(model_param_dict):
-    with psycopg2.connect(credentials) as conn:
-        with conn.cursor() as cursor:
-        # Build the SQL query dynamically based on the provided dictionaries
-            query = """
-            SELECT *
-            FROM analytical_output ao
-            JOIN model_param mp on mp.model_param_id = ao.model_param_id
-            WHERE 1=1
-            """
+# def query_analyticalOutput_df_from_sql(model_param_dict):
+#     with psycopg2.connect(credentials) as conn:
+#         with conn.cursor() as cursor:
+#         # Build the SQL query dynamically based on the provided dictionaries
+#             query = """
+#             SELECT *
+#             FROM analytical_output ao
+#             JOIN model_param mp on mp.model_param_id = ao.model_param_id
+#             WHERE 1=1
+#             """
             
-            # Add filters for model_params
-            for key, value in model_param_dict.items():
-                query += f"AND mp.{key} = {value}\n"
+#             # Add filters for model_params
+#             for key, value in model_param_dict.items():
+#                 query += f"AND mp.{key} = {value}\n"
             
 
-            print('query',query)
+#             print('query',query)
 
-            # # Execute the query
-            # cursor.execute(query)
+#             # # Execute the query
+#             # cursor.execute(query)
             
-            # # Fetch all the rows
-            # rows = cursor.fetchmany(2)
+#             # # Fetch all the rows
+#             # rows = cursor.fetchmany(2)
             
-            # # Print or process the rows as per your requirement
-            # for row in rows:
-            #     print(row)
+#             # # Print or process the rows as per your requirement
+#             # for row in rows:
+#             #     print(row)
 
-            df = pd.read_sql_query(query, conn)
+#             df = pd.read_sql_query(query, conn)
 
-            # Close the cursor and the connection
+#             # Close the cursor and the connection
 
 
 
-            return df
+#             return df
 
 
 

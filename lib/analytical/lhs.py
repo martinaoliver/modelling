@@ -1,12 +1,15 @@
 import numpy as np
-np.random.seed(1)
 #This function return a loguniform distribution with values from 10^low to 10^high
 def loguniform(low=-3, high=3, size=None):
     return (10)**(np.random.uniform(low, high, size))
 
 # - This function accepts an already existing distribution and a required number of samples
 # and outputs an array with samples distributed in a latin-hyper-cube sampling manner.
-def lhs_list(data,nsample):
+
+def lhs_list(data,nsample,seed=False):
+    if seed != False:
+        np.random.seed(seed)
+
     m,nvar = data.shape
     ran=np.random.uniform(size=(nsample,nvar))
     s=np.zeros((nsample,nvar))
@@ -20,5 +23,5 @@ def lhs_list(data,nsample):
 # initial conditions distributed in a lhs manner.
 def lhs_initial_conditions(n_initialconditions,n_species):
     data = np.column_stack(([loguniform(size=100000)]*n_species))
-    initial_conditions = lhs_list(data,n_initialconditions)
+    initial_conditions = lhs_list(data,n_initialconditions, seed=1)
     return initial_conditions

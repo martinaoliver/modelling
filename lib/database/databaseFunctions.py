@@ -94,11 +94,11 @@ def modelParam_df_to_sql(df, circuit_n, variant, n_samples):
             print('Execution time:', elapsed_time, 'seconds')   
             print('Inserted data into database')
 
-
 def analyticalOutput_df_to_sql(lsa_df, circuit_n, variant, n_samples):
 
     with psycopg2.connect(credentials) as conn:
         with conn.cursor() as cursor:
+            print('aaaaa')
             lsa_df['circuit_n'] = circuit_n
             lsa_df['variant'] = variant
             lsa_df['n_samples'] = n_samples
@@ -108,9 +108,7 @@ def analyticalOutput_df_to_sql(lsa_df, circuit_n, variant, n_samples):
 
             lsa_df['maxeig'] = np.real(lsa_df['maxeig'] )
             print('prelambda')
-            lsa_df['ss_list'] = lsa_df['ss_list'].apply(lambda x: x.tolist() if type(x) == 'numpy.ndarray' else [None])
-
-
+            lsa_df['ss_list'] = lsa_df['ss_list'].apply(lambda x: x.tolist() if type(x) is np.ndarray else [])
             cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'analytical_output';")
             column_names = [row[0] for row in cursor]
             lsa_df = lsa_df[column_names]
@@ -123,6 +121,7 @@ def analyticalOutput_df_to_sql(lsa_df, circuit_n, variant, n_samples):
             print('Inserted data into database')
 
             return lsa_df
+        
 
 
 
@@ -231,7 +230,7 @@ def query_analyticalOutput_df_from_sql(model_param_dict,limit='None'):
             for key, value in model_param_dict.items():
                 query += f"AND mp.{key} = {value}\n"
             if limit != 'None':
-                licensequery += f'LIMIT {limit}'
+                query += f'LIMIT {limit}'
 
             print('query',query)
 
@@ -241,7 +240,7 @@ def query_analyticalOutput_df_from_sql(model_param_dict,limit='None'):
 
             df = df.dropna(axis=1, how='all')
             df = df.drop(['model_param_id'], axis=1)
-            df = df.drop(model_param_dict.keys(), axis=1)
+            # df = df.drop(model_param_dict.keys(), axis=1)
             df.set_index('parID', inplace=True)
 
 

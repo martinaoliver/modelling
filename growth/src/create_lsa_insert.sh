@@ -1,3 +1,4 @@
+
 #!/bin/sh
 #PBS -l walltime=20:00:00
 #PBS -l select=1:ncpus=96:mem=96gb
@@ -8,15 +9,24 @@ cd $PBS_O_WORKDIR
 
 
 
+# threshold=100
+# n_samples=10
+# n_cpus=1
+# continue_search=true
+# seed=0
+
+
 threshold=100
 n_samples=1000000
 n_cpus=96
 continue_search=true
 seed=0
+
+
 while $continue_search; do
     
     # Query the database for counts and return whether to continue search 
-    continue_search=$(python database_scripts/system_class_counts_fromDb.py $threshold) #this function outputs wheather to continue simulation or not based on the counts of the system classes
+    continue_search=$(python database_scripts/system_class_counts_fromDb.py $threshold) #check variant inside that file!!!! #this function outputs wheather to continue simulation or not based on the counts of the system classes
     echo "Continue simulation: $continue_search"
 
 
@@ -39,6 +49,10 @@ while $continue_search; do
     # # Pause for a while before the next iteration
     # sleep 1  # Sleep for 30 seconds for db to recover when querying next
 done
+
+#!/bin/sh
+#PBS -l walltime=20:00:00
+#PBS -l select=1:ncpus=96:mem=96gb
 
 #!/bin/sh
 #PBS -l walltime=20:00:00

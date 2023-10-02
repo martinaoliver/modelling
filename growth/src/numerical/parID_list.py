@@ -7,7 +7,7 @@ import os
 
 pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
-modellingephemeral = '/rds/general/ephemeral/user/mo2016/ephemeral/Documents/modelling'
+modellingephemeral = '/rds/general/user/mo2016/ephemeral/Documents/modelling'
 sys.path.append(modellingpath + '/lib')
 #############
 
@@ -19,9 +19,9 @@ import pickle
 
 circuit_n='turinghill'
 mechanism='edgegrowth2'
-# mechanism='openboundary'
-# mechanism='nogrowth'
-variant=8
+mechanism='openboundary'
+mechanism='nogrowth'
+variant=9
 folder = f'turinghill_variant{variant}'
 #solver parameters
 L=50; dx =0.1; J = int(L/dx)
@@ -35,7 +35,7 @@ suggesteddt = float(dx*dx*2)
 filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
 print(filename(mechanism, 1))
 datafile= modellingephemeral + '/growth/out/numerical/%s/simulation/%s/2Dfinal_%s.pkl'%(mechanism,folder,filename(mechanism, '*'))
-# print(modellingpath + '/growth/out/numerical/%s/%s/simulation/%s/2Dfinal_%s.pkl'%(circuit_n,mechanism,folder,filename(mechanism, '*')))
+print(modellingephemeral + '/growth/out/numerical/%s/simulation/%s/2Dfinal_%s.pkl'%(mechanism,folder,filename(mechanism, '*')))
 files = glob.glob(datafile)
 print(len(files))
 parID_list = []

@@ -1,0 +1,1554 @@
+Continue simulation: true
+(1000000, 14) (14,)
+Parameterfile a 0 created
+                ba          bb          Va  ...         n  d_A    d_B
+index                                       ...                      
+0        33.255157  330.081651   29.702468  ...  2.115029  1.0  0.001
+1       346.522809  240.465418  618.349241  ...  3.143402  1.0  0.001
+2       209.031099   11.007835  209.644761  ...  2.326985  1.0  0.001
+3        29.974923   16.563770   85.020793  ...  2.410886  1.0  0.001
+4        28.940217  279.999535  651.500713  ...  2.880947  1.0  0.001
+...            ...         ...         ...  ...       ...  ...    ...
+999995  904.091913   21.556062   26.252107  ...  3.726517  1.0  0.001
+999996   89.029789   15.228453  169.243229  ...  3.796315  1.0  0.001
+999997   19.271630  531.931859   15.160726  ...  3.251795  1.0  0.001
+999998   82.282559  109.572976   24.445888  ...  2.606744  1.0  0.001
+999999   36.978285   12.732511   34.329876  ...  3.292174  1.0  0.001
+
+[1000000 rows x 13 columns]
+10416
+start_time
+main0
+main10416
+main20832
+main31248
+main41664
+main52080
+main62496
+main72912
+main83328
+main93744
+main104160
+main114576
+main124992
+main135408
+main145824
+main156240
+main166656
+main177072
+main187488
+main197904
+main208320
+main218736
+main229152
+main239568
+main249984
+main260400
+main270816
+main281232
+main291648
+main302064
+main312480
+main322896
+main333312
+main343728
+main354144
+main364560
+main374976
+main385392
+main395808
+main406224
+main416640
+main427056
+main437472
+main447888
+main458304
+main468720
+main479136
+main489552
+main499968
+main510384
+main520800
+main531216
+main541632
+main552048
+main562464
+main572880
+main583296
+main593712
+main604128
+main614544
+main624960
+main635376
+main645792
+main656208
+main666624
+main677040
+main687456
+main697872
+main708288
+main718704
+main729120
+main739536
+main749952
+main760368
+main770784
+main781200
+main791616
+main802032
+main812448
+main822864
+main833280
+main843696
+main854112
+main864528
+main874944
+main885360
+main895776
+main906192
+main916608
+main927024
+main937440
+main947856
+main958272
+main968688
+main979104
+main989520
+main999936
+error0
+error10416
+error20832
+error31248
+error41664
+error52080
+error62496
+error72912
+error83328
+error93744
+error104160
+error114576
+error124992
+error135408
+error145824
+error156240
+error166656
+error177072
+error187488
+error197904
+error208320
+error218736
+error229152
+error239568
+error249984
+error260400
+error270816
+error281232
+error291648
+error302064
+error312480
+error322896
+error333312
+error343728
+error354144
+error364560
+error374976
+error385392
+error395808
+error406224
+error416640
+error427056
+error437472
+error447888
+error458304
+error468720
+error479136
+error489552
+error499968
+error510384
+error520800
+error531216
+error541632
+error552048
+error562464
+error572880
+error583296
+error593712
+error604128
+error614544
+error624960
+error635376
+error645792
+error656208
+error666624
+error677040
+error687456
+error697872
+error708288
+error718704
+error729120
+error739536
+error749952
+error760368
+error770784
+error781200
+error791616
+error802032
+error812448
+error822864
+error833280
+error843696
+error854112
+error864528
+error874944
+error885360
+error895776
+error906192
+error916608
+error927024
+error937440
+error947856
+error958272
+error968688
+error979104
+error989520
+error999936
+Time taken: 6575.507025279105 s, 1.8265297292441958 h
+Preparing to insert data into database
+Execution time: 13.279340505599976 seconds
+Inserted data into database
+prelambda
+Preparing to insert analytical output data into database turinghill, 8, 1000000
+Execution time: 0.23614859580993652 seconds
+Inserted data into database
+Continue simulation: true
+(1000000, 14) (14,)
+Parameterfile a 0 created
+                 ba          bb          Va  ...         n  d_A    d_B
+index                                        ...                      
+1000000  175.697301   24.154924   17.272111  ...  2.295652  1.0  0.001
+1000001  123.413686  942.500941   12.950567  ...  2.129083  1.0  0.001
+1000002   24.111761  348.939661   76.893864  ...  3.149251  1.0  0.001
+1000003  382.934479  175.262494  754.478619  ...  2.094762  1.0  0.001
+1000004  378.772377   22.376003  528.390617  ...  2.464187  1.0  0.001
+...             ...         ...         ...  ...       ...  ...    ...
+1999995   28.675126  149.120438   19.694293  ...  3.006668  1.0  0.001
+1999996   52.445874   65.271229   10.907601  ...  3.059812  1.0  0.001
+1999997  157.919925   97.646783   15.838929  ...  2.437699  1.0  0.001
+1999998  119.745588  168.812584  149.547840  ...  2.430413  1.0  0.001
+1999999  624.318147   33.960447  893.206345  ...  2.989128  1.0  0.001
+
+[1000000 rows x 13 columns]
+10416
+start_time
+main0
+main10416
+main20832
+main31248
+main41664
+main52080
+main62496
+main72912
+main83328
+main93744
+main104160
+main114576
+main124992
+main135408
+main145824
+main156240
+main166656
+main177072
+main187488
+main197904
+main208320
+main218736
+main229152
+main239568
+main249984
+main260400
+main270816
+main281232
+main291648
+main302064
+main312480
+main322896
+main333312
+main343728
+main354144
+main364560
+main374976
+main385392
+main395808
+main406224
+main416640
+main427056
+main437472
+main447888
+main458304
+main468720
+main479136
+main489552
+main499968
+main510384
+main520800
+main531216
+main541632
+main552048
+main562464
+main572880
+main583296
+main593712
+main604128
+main614544
+main624960
+main635376
+main645792
+main656208
+main666624
+main677040
+main687456
+main697872
+main708288
+main718704
+main729120
+main739536
+main749952
+main760368
+main770784
+main781200
+main791616
+main802032
+main812448
+main822864
+main833280
+main843696
+main854112
+main864528
+main874944
+main885360
+main895776
+main906192
+main916608
+main927024
+main937440
+main947856
+main958272
+main968688
+main979104
+main989520
+main999936
+error0
+error10416
+error20832
+error31248
+error41664
+error52080
+error62496
+error72912
+error83328
+error93744
+error104160
+error114576
+error124992
+error135408
+error145824
+error156240
+error166656
+error177072
+error187488
+error197904
+error208320
+error218736
+error229152
+error239568
+error249984
+error260400
+error270816
+error281232
+error291648
+error302064
+error312480
+error322896
+error333312
+error343728
+error354144
+error364560
+error374976
+error385392
+error395808
+error406224
+error416640
+error427056
+error437472
+error447888
+error458304
+error468720
+error479136
+error489552
+error499968
+error510384
+error520800
+error531216
+error541632
+error552048
+error562464
+error572880
+error583296
+error593712
+error604128
+error614544
+error624960
+error635376
+error645792
+error656208
+error666624
+error677040
+error687456
+error697872
+error708288
+error718704
+error729120
+error739536
+error749952
+error760368
+error770784
+error781200
+error791616
+error802032
+error812448
+error822864
+error833280
+error843696
+error854112
+error864528
+error874944
+error885360
+error895776
+error906192
+error916608
+error927024
+error937440
+error947856
+error958272
+error968688
+error979104
+error989520
+error999936
+Time taken: 6865.152066171169 s, 1.906986685047547 h
+Preparing to insert data into database
+Execution time: 7.313854932785034 seconds
+Inserted data into database
+prelambda
+Preparing to insert analytical output data into database turinghill, 8, 1000000
+Execution time: 0.2346494197845459 seconds
+Inserted data into database
+Continue simulation: true
+(1000000, 14) (14,)
+Parameterfile a 0 created
+                 ba          bb          Va  ...         n  d_A    d_B
+index                                        ...                      
+2000000  349.272938  373.257380   17.871616  ...  2.175821  1.0  0.001
+2000001   13.073823   29.706582  212.242697  ...  3.095770  1.0  0.001
+2000002  223.774815   16.313991   10.940370  ...  3.493886  1.0  0.001
+2000003  821.658306   23.382216   31.080215  ...  2.573797  1.0  0.001
+2000004  628.529288   21.446416   27.022163  ...  3.466301  1.0  0.001
+...             ...         ...         ...  ...       ...  ...    ...
+2999995  231.254018  784.797413  880.176635  ...  2.260023  1.0  0.001
+2999996  220.968258   13.387283   34.372274  ...  3.023763  1.0  0.001
+2999997   32.761895   51.159542   17.173698  ...  3.844655  1.0  0.001
+2999998  109.072755  547.745429  962.994396  ...  3.822295  1.0  0.001
+2999999   85.043606  773.453669   13.276804  ...  2.619399  1.0  0.001
+
+[1000000 rows x 13 columns]
+10416
+start_time
+main0
+main10416
+main20832
+main31248
+main41664
+main52080
+main62496
+main72912
+main83328
+main93744
+main104160
+main114576
+main124992
+main135408
+main145824
+main156240
+main166656
+main177072
+main187488
+main197904
+main208320
+main218736
+main229152
+main239568
+main249984
+main260400
+main270816
+main281232
+main291648
+main302064
+main312480
+main322896
+main333312
+main343728
+main354144
+main364560
+main374976
+main385392
+main395808
+main406224
+main416640
+main427056
+main437472
+main447888
+main458304
+main468720
+main479136
+main489552
+main499968
+main510384
+main520800
+main531216
+main541632
+main552048
+main562464
+main572880
+main583296
+main593712
+main604128
+main614544
+main624960
+main635376
+main645792
+main656208
+main666624
+main677040
+main687456
+main697872
+main708288
+main718704
+main729120
+main739536
+main749952
+main760368
+main770784
+main781200
+main791616
+main802032
+main812448
+main822864
+main833280
+main843696
+main854112
+main864528
+main874944
+main885360
+main895776
+main906192
+main916608
+main927024
+main937440
+main947856
+main958272
+main968688
+main979104
+main989520
+main999936
+error0
+error10416
+error20832
+error31248
+error41664
+error52080
+error62496
+error72912
+error83328
+error93744
+error104160
+error114576
+error124992
+error135408
+error145824
+error156240
+error166656
+error177072
+error187488
+error197904
+error208320
+error218736
+error229152
+error239568
+error249984
+error260400
+error270816
+error281232
+error291648
+error302064
+error312480
+error322896
+error333312
+error343728
+error354144
+error364560
+error374976
+error385392
+error395808
+error406224
+error416640
+error427056
+error437472
+error447888
+error458304
+error468720
+error479136
+error489552
+error499968
+error510384
+error520800
+error531216
+error541632
+error552048
+error562464
+error572880
+error583296
+error593712
+error604128
+error614544
+error624960
+error635376
+error645792
+error656208
+error666624
+error677040
+error687456
+error697872
+error708288
+error718704
+error729120
+error739536
+error749952
+error760368
+error770784
+error781200
+error791616
+error802032
+error812448
+error822864
+error833280
+error843696
+error854112
+error864528
+error874944
+error885360
+error895776
+error906192
+error916608
+error927024
+error937440
+error947856
+error958272
+error968688
+error979104
+error989520
+error999936
+Time taken: 6743.183204010129 s, 1.8731064455583692 h
+Preparing to insert data into database
+Execution time: 4.061415195465088 seconds
+Inserted data into database
+prelambda
+Preparing to insert analytical output data into database turinghill, 8, 1000000
+Execution time: 0.22170305252075195 seconds
+Inserted data into database
+Continue simulation: true
+(1000000, 14) (14,)
+Parameterfile a 0 created
+                 ba          bb          Va  ...         n  d_A    d_B
+index                                        ...                      
+3000000  317.353044  813.623833  268.932656  ...  2.027541  1.0  0.001
+3000001  102.856400   44.186271  757.107158  ...  3.131022  1.0  0.001
+3000002   31.375655   27.835720  254.143985  ...  2.003961  1.0  0.001
+3000003   75.095414  270.850350  132.522873  ...  2.140472  1.0  0.001
+3000004   28.237126  120.403225  141.514576  ...  3.585705  1.0  0.001
+...             ...         ...         ...  ...       ...  ...    ...
+3999995   10.785609  656.400655  117.215487  ...  3.749719  1.0  0.001
+3999996  259.470492   10.755654   98.941287  ...  2.685561  1.0  0.001
+3999997  157.619689  961.610542  607.550044  ...  2.760528  1.0  0.001
+3999998  451.598668  222.207640  973.931648  ...  2.589726  1.0  0.001
+3999999   83.519141   16.302425  481.226380  ...  2.405888  1.0  0.001
+
+[1000000 rows x 13 columns]
+10416
+start_time
+main0
+main10416
+main20832
+main31248
+main41664
+main52080
+main62496
+main72912
+main83328
+main93744
+main104160
+main114576
+main124992
+main135408
+main145824
+main156240
+main166656
+main177072
+main187488
+main197904
+main208320
+main218736
+main229152
+main239568
+main249984
+main260400
+main270816
+main281232
+main291648
+main302064
+main312480
+main322896
+main333312
+main343728
+main354144
+main364560
+main374976
+main385392
+main395808
+main406224
+main416640
+main427056
+main437472
+main447888
+main458304
+main468720
+main479136
+main489552
+main499968
+main510384
+main520800
+main531216
+main541632
+main552048
+main562464
+main572880
+main583296
+main593712
+main604128
+main614544
+main624960
+main635376
+main645792
+main656208
+main666624
+main677040
+main687456
+main697872
+main708288
+main718704
+main729120
+main739536
+main749952
+main760368
+main770784
+main781200
+main791616
+main802032
+main812448
+main822864
+main833280
+main843696
+main854112
+main864528
+main874944
+main885360
+main895776
+main906192
+main916608
+main927024
+main937440
+main947856
+main958272
+main968688
+main979104
+main989520
+main999936
+error0
+error10416
+error20832
+error31248
+error41664
+error52080
+error62496
+error72912
+error83328
+error93744
+error104160
+error114576
+error124992
+error135408
+error145824
+error156240
+error166656
+error177072
+error187488
+error197904
+error208320
+error218736
+error229152
+error239568
+error249984
+error260400
+error270816
+error281232
+error291648
+error302064
+error312480
+error322896
+error333312
+error343728
+error354144
+error364560
+error374976
+error385392
+error395808
+error406224
+error416640
+error427056
+error437472
+error447888
+error458304
+error468720
+error479136
+error489552
+error499968
+error510384
+error520800
+error531216
+error541632
+error552048
+error562464
+error572880
+error583296
+error593712
+error604128
+error614544
+error624960
+error635376
+error645792
+error656208
+error666624
+error677040
+error687456
+error697872
+error708288
+error718704
+error729120
+error739536
+error749952
+error760368
+error770784
+error781200
+error791616
+error802032
+error812448
+error822864
+error833280
+error843696
+error854112
+error864528
+error874944
+error885360
+error895776
+error906192
+error916608
+error927024
+error937440
+error947856
+error958272
+error968688
+error979104
+error989520
+error999936
+Time taken: 6447.070486530662 s, 1.7908529129251838 h
+Preparing to insert data into database
+Execution time: 22.827553510665894 seconds
+Inserted data into database
+prelambda
+Preparing to insert analytical output data into database turinghill, 8, 1000000
+Execution time: 0.24950242042541504 seconds
+Inserted data into database
+Continue simulation: true
+(1000000, 14) (14,)
+Parameterfile a 0 created
+                 ba          bb          Va  ...         n  d_A    d_B
+index                                        ...                      
+4000000  488.938437  102.648176   13.646377  ...  2.595265  1.0  0.001
+4000001   40.055397   16.093355   32.013744  ...  3.087357  1.0  0.001
+4000002   16.645210   68.793340  939.247002  ...  3.062045  1.0  0.001
+4000003   53.231876  167.828848   36.786739  ...  2.083390  1.0  0.001
+4000004   40.849731   25.845943   14.016975  ...  3.716087  1.0  0.001
+...             ...         ...         ...  ...       ...  ...    ...
+4999995   17.337287   11.345330  970.830239  ...  2.363464  1.0  0.001
+4999996  554.060106  194.512842   14.227301  ...  2.555407  1.0  0.001
+4999997  206.489523  183.755859   27.277716  ...  2.265463  1.0  0.001
+4999998  295.052600  857.942761  901.168431  ...  2.282151  1.0  0.001
+4999999   17.150225  398.396522  274.250146  ...  3.444329  1.0  0.001
+
+[1000000 rows x 13 columns]
+10416
+start_time
+main0
+main10416
+main20832
+main31248
+main41664
+main52080
+main62496
+main72912
+main83328
+main93744
+main104160
+main114576
+main124992
+main135408
+main145824
+main156240
+main166656
+main177072
+main187488
+main197904
+main208320
+main218736
+main229152
+main239568
+main249984
+main260400
+main270816
+main281232
+main291648
+main302064
+main312480
+main322896
+main333312
+main343728
+main354144
+main364560
+main374976
+main385392
+main395808
+main406224
+main416640
+main427056
+main437472
+main447888
+main458304
+main468720
+main479136
+main489552
+main499968
+main510384
+main520800
+main531216
+main541632
+main552048
+main562464
+main572880
+main583296
+main593712
+main604128
+main614544
+main624960
+main635376
+main645792
+main656208
+main666624
+main677040
+main687456
+main697872
+main708288
+main718704
+main729120
+main739536
+main749952
+main760368
+main770784
+main781200
+main791616
+main802032
+main812448
+main822864
+main833280
+main843696
+main854112
+main864528
+main874944
+main885360
+main895776
+main906192
+main916608
+main927024
+main937440
+main947856
+main958272
+main968688
+main979104
+main989520
+main999936
+error0
+error10416
+error20832
+error31248
+error41664
+error52080
+error62496
+error72912
+error83328
+error93744
+error104160
+error114576
+error124992
+error135408
+error145824
+error156240
+error166656
+error177072
+error187488
+error197904
+error208320
+error218736
+error229152
+error239568
+error249984
+error260400
+error270816
+error281232
+error291648
+error302064
+error312480
+error322896
+error333312
+error343728
+error354144
+error364560
+error374976
+error385392
+error395808
+error406224
+error416640
+error427056
+error437472
+error447888
+error458304
+error468720
+error479136
+error489552
+error499968
+error510384
+error520800
+error531216
+error541632
+error552048
+error562464
+error572880
+error583296
+error593712
+error604128
+error614544
+error624960
+error635376
+error645792
+error656208
+error666624
+error677040
+error687456
+error697872
+error708288
+error718704
+error729120
+error739536
+error749952
+error760368
+error770784
+error781200
+error791616
+error802032
+error812448
+error822864
+error833280
+error843696
+error854112
+error864528
+error874944
+error885360
+error895776
+error906192
+error916608
+error927024
+error937440
+error947856
+error958272
+error968688
+error979104
+error989520
+error999936
+Time taken: 5876.389452978969 s, 1.632330403605269 h
+Preparing to insert data into database
+Execution time: 6.039952039718628 seconds
+Inserted data into database
+prelambda
+Preparing to insert analytical output data into database turinghill, 8, 1000000
+Execution time: 0.22130680084228516 seconds
+Inserted data into database
+Continue simulation: true
+(1000000, 14) (14,)
+Parameterfile a 0 created
+                 ba          bb          Va  ...         n  d_A    d_B
+index                                        ...                      
+5000000  470.683915   44.087479  351.985659  ...  2.289470  1.0  0.001
+5000001  495.599074   11.650486  122.650833  ...  2.565690  1.0  0.001
+5000002   18.983995   14.402795   42.776827  ...  2.931180  1.0  0.001
+5000003  223.660564  284.567764  629.517213  ...  2.099926  1.0  0.001
+5000004  141.005535   79.342499   26.009838  ...  3.688842  1.0  0.001
+...             ...         ...         ...  ...       ...  ...    ...
+5999995   27.722078  671.091153   39.702474  ...  2.343880  1.0  0.001
+5999996   44.695050   54.494792  575.495642  ...  3.920353  1.0  0.001
+5999997  153.906757   17.090037   25.054167  ...  2.957534  1.0  0.001
+5999998   33.329513  278.279709   39.457475  ...  2.970362  1.0  0.001
+5999999  489.964100  167.829754  762.585370  ...  3.682619  1.0  0.001
+
+[1000000 rows x 13 columns]
+10416
+start_time
+main0
+main10416
+main20832
+main31248
+main41664
+main52080
+main62496
+main72912
+main83328
+main93744
+main104160
+main114576
+main124992
+main135408
+main145824
+main156240
+main166656
+main177072
+main187488
+main197904
+main208320
+main218736
+main229152
+main239568
+main249984
+main260400
+main270816
+main281232
+main291648
+main302064
+main312480
+main322896
+main333312
+main343728
+main354144
+main364560
+main374976
+main385392
+main395808
+main406224
+main416640
+main427056
+main437472
+main447888
+main458304
+main468720
+main479136
+main489552
+main499968
+main510384
+main520800
+main531216
+main541632
+main552048
+main562464
+main572880
+main583296
+main593712
+main604128
+main614544
+main624960
+main635376
+main645792
+main656208
+main666624
+main677040
+main687456
+main697872
+main708288
+main718704
+main729120
+main739536
+main749952
+main760368
+main770784
+main781200
+main791616
+main802032
+main812448
+main822864
+main833280
+main843696
+main854112
+main864528
+main874944
+main885360
+main895776
+main906192
+main916608
+main927024
+main937440
+main947856
+main958272
+main968688
+main979104
+main989520
+main999936
+error0
+error10416
+error20832
+error31248
+error41664
+error52080
+error62496
+error72912
+error83328
+error93744
+error104160
+error114576
+error124992
+error135408
+error145824
+error156240
+error166656
+error177072
+error187488
+error197904
+error208320
+error218736
+error229152
+error239568
+error249984
+error260400
+error270816
+error281232
+error291648
+error302064
+error312480
+error322896
+error333312
+error343728
+error354144
+error364560
+error374976
+error385392
+error395808
+error406224
+error416640
+error427056
+error437472
+error447888
+error458304
+error468720
+error479136
+error489552
+error499968
+error510384
+error520800
+error531216
+error541632
+error552048
+error562464
+error572880
+error583296
+error593712
+error604128
+error614544
+error624960
+error635376
+error645792
+error656208
+error666624
+error677040
+error687456
+error697872
+error708288
+error718704
+error729120
+error739536
+error749952
+error760368
+error770784
+error781200
+error791616
+error802032
+error812448
+error822864
+error833280
+error843696
+error854112
+error864528
+error874944
+error885360
+error895776
+error906192
+error916608
+error927024
+error937440
+error947856
+error958272
+error968688
+error979104
+error989520
+error999936
+Time taken: 6137.137917660177 s, 1.7047605326833823 h
+Preparing to insert data into database
+Execution time: 6.213095426559448 seconds
+Inserted data into database
+prelambda
+Preparing to insert analytical output data into database turinghill, 8, 1000000
+Execution time: 0.2340378761291504 seconds
+Inserted data into database
+Continue simulation: false
+(1000000, 14) (14,)
+Parameterfile a 0 created
+                 ba          bb          Va  ...         n  d_A    d_B
+index                                        ...                      
+6000000  628.239633  198.682186  417.259519  ...  3.611753  1.0  0.001
+6000001  401.338376   63.787081  324.682511  ...  3.922518  1.0  0.001
+6000002  336.586468   40.260911   32.655296  ...  3.233861  1.0  0.001
+6000003  254.084779   29.778179  348.367835  ...  2.025544  1.0  0.001
+6000004   54.777647  138.269458   21.563976  ...  3.223944  1.0  0.001
+...             ...         ...         ...  ...       ...  ...    ...
+6999995   91.184090  387.823474   25.656707  ...  3.734854  1.0  0.001
+6999996   53.710168   51.463054  276.646264  ...  2.288087  1.0  0.001
+6999997  602.923466  751.001138  701.699851  ...  3.368239  1.0  0.001
+6999998   21.784538   68.314009   15.266346  ...  3.150627  1.0  0.001
+6999999  667.938482   59.653726  116.417380  ...  2.091068  1.0  0.001
+
+[1000000 rows x 13 columns]
+10416
+start_time
+main0
+main10416
+main20832
+main31248
+main41664
+main52080
+main62496
+main72912
+main83328
+main93744
+main104160
+main114576
+main124992
+main135408
+main145824
+main156240
+main166656
+main177072
+main187488
+main197904
+main208320
+main218736
+main229152
+main239568
+main249984
+main260400
+main270816
+main281232
+main291648
+main302064
+main312480
+main322896
+main333312
+main343728
+main354144
+main364560
+main374976
+main385392
+main395808
+main406224
+main416640
+main427056
+main437472
+main447888
+main458304
+main468720
+main479136
+main489552
+main499968
+main510384
+main520800
+main531216
+main541632
+main552048
+main562464
+main572880
+main583296
+main593712
+main604128
+main614544
+main624960
+main635376
+main645792
+main656208
+main666624
+main677040
+main687456
+main697872
+main708288
+main718704
+main729120
+main739536
+main749952
+main760368
+main770784
+main781200
+main791616
+main802032
+main812448
+main822864
+main833280
+main843696
+main854112
+main864528
+main874944
+main885360
+main895776
+main906192
+main916608
+main927024
+main937440
+main947856
+main958272
+main968688
+main979104
+main989520
+main999936
+error0
+error10416
+error20832
+error31248
+error41664
+error52080
+error62496
+error72912
+error83328
+error93744
+error104160
+error114576
+error124992
+error135408
+error145824
+error156240
+error166656
+error177072
+error187488
+error197904
+error208320
+error218736
+error229152
+error239568
+error249984
+error260400
+error270816
+error281232
+error291648
+error302064
+error312480
+error322896
+error333312
+error343728
+error354144
+error364560
+error374976
+error385392
+error395808
+error406224
+error416640
+error427056
+error437472
+error447888
+error458304
+error468720
+error479136
+error489552
+error499968
+error510384
+error520800
+error531216
+error541632
+error552048
+error562464
+error572880
+error583296
+error593712
+error604128
+error614544
+error624960
+error635376
+error645792
+error656208
+error666624
+error677040
+error687456
+error697872
+error708288
+error718704
+error729120
+error739536
+error749952
+error760368
+error770784
+error781200
+error791616
+error802032
+error812448
+error822864
+error833280
+error843696
+error854112
+error864528
+error874944
+error885360
+error895776
+error906192
+error916608
+error927024
+error937440
+error947856
+error958272
+error968688
+error979104
+error989520
+error999936
+Time taken: 5871.243401125073 s, 1.630900944756965 h
+Preparing to insert data into database
+Execution time: 72.06963849067688 seconds
+Inserted data into database
+prelambda
+Preparing to insert analytical output data into database turinghill, 8, 1000000
+Execution time: 0.2343614101409912 seconds
+Inserted data into database
