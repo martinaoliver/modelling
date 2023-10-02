@@ -154,7 +154,13 @@ plt.show()
 
 U_final = pickle.load(open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Dfinal_%s.pkl'%(folder,filename(parID)), "rb" ) )
 U_record = pickle.load(open(modellingpath + '/3954/paper/out/numerical/colonies/simulation/%s/2Drecord_%s.pkl'%(folder,filename(parID)), 'rb'))
-import numpy as np
+
+saveFigPath = modellingpath + '/3954/paper/out/numerical/colonies/figures/%s'%folder
+
+rgb = plot_redgreen_contrast(U_final,L,parID=filename(parID),filename = filename(parID), path = saveFigPath,scale_factor=x_gridpoints,save_figure=True)
+
+#%%
+# import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import animation
 # plt.rcParams['animation.ffmpeg_path'] = '~/Documents/virtualEnvironments/env1/lib/python3.8/site-packages/ffmpeg'
@@ -189,3 +195,5 @@ def save_rgbvideo(timeseries_unstacked, saveVideoPath, filename, interval=10000)
 
 save_rgbvideo(rgb_timeseries, saveVideoPath, filename(parID))
 print('Video saved', filename(parID))
+
+# %%
