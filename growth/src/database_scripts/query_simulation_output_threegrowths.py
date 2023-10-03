@@ -30,10 +30,10 @@ T =2000; dt = 0.02; N = int(T/dt)
 rate=L/T
 suggesteddt = float(dx*dx*2)
 
-parID = 1471198
+parID = 3071510
 circuit_n='turinghill'
 variant= '9'
-n_samples=2000000
+n_samples=1000000
 ssID = 0
 folder = f'{circuit_n}_variant{variant}'
 model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
@@ -49,7 +49,8 @@ for mechanism, boundaryCoeff in zip(['nogrowth', 'openboundary', 'edgegrowth2'],
 
 
 #%%
-lsa_df = pickle.load(open( modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_circuitturinghill_variant9_{n_samples}parametersets.pkl', "rb" ) )
+# lsa_df = pickle.load(open( modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_circuitturinghill_variant9_{n_samples}parametersets.pkl', "rb" ) )
+lsa_df = pickle.load(open( modellingpath + f'/growth/out/analytical/instability/instability_df_circuitturinghill_variant8-9_combinedparametersets.pkl', "rb" ) )
 lsa_df.loc[parID]
 
 #%%
@@ -57,10 +58,11 @@ lsa_df.loc[parID]
 from analytical.linear_stability_analysis import big_turing_analysis_df, detailed_turing_analysis_dict
 from randomfunctions import plot_all_dispersion
 
-par_dict = lsa_df.loc[parID].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
+par_dict = lsa_df.loc[parID].iloc[1].to_dict() #converts a dataframe row into a dictionary outputing a dictionary for a specific parameter set
 #Run analysis on 1M parameter sets
 out = detailed_turing_analysis_dict(par_dict, circuit_n, 2)
-plot_all_dispersion(out[4][0],2, crop=20)
+plot_all_dispersion(out[4][0],2, crop=10000)
+
 
 
     # %%
