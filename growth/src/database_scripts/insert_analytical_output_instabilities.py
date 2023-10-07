@@ -39,9 +39,11 @@ lsa_df = pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframe
 #values that have instabilities
 
 #%%
-instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
+# instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
+instabilities = ['complex unstable']  
 lsa_df_instabilities = lsa_df.loc[lsa_df['system_class'].isin(instabilities)]
-
+print('seed',seed)
+print(lsa_df_instabilities)
 lhs_df_instabilities = lhs_df.loc[lsa_df_instabilities.index.get_level_values(0)]
 lhs_df_instabilities = lhs_df_instabilities.drop_duplicates()
 
