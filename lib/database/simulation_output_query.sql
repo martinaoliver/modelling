@@ -110,8 +110,9 @@ with lsa_vs_numerical as
 join analytical_output ao on pco.model_param_id = ao.model_param_id
 join model_param mp on mp.model_param_id = ao.model_param_id
 where simulation_param_uuid = 'f557b922-67b0-4d93-aad1-4a6c362240c9'
---           and ss_n=1
+          and ss_n=1
 and( mp.variant='9' or mp.variant='8')
-and ao.system_class='complex unstable')
+and ao.system_class='complex unstable'
+and mp.n_samples=1000000)
 select  * from lsa_vs_numerical
 
