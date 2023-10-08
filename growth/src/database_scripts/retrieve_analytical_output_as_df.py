@@ -37,23 +37,25 @@ pickle.dump(result_df, open( modellingpath + f'/growth/out/analytical/lsa_datafr
 print(result_df.columns)
 
 #%%
-
+instability = 'simplestable'
 instabilities = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
+instabilities = ['simple stable']  
+
 result_df_instabilities = result_df.loc[result_df['system_class'].isin(instabilities)]
-pickle.dump(result_df_instabilities, open( modellingpath + f'/growth/out/analytical/instability/instability_df_circuitturinghill_variant8-9_combinedparametersets.pkl', "wb" ) )
+pickle.dump(result_df_instabilities, open( modellingpath + f'/growth/out/analytical/instability/{instability}_df_circuitturinghill_variant8-9_combinedparametersets.pkl', "wb" ) )
 
 result_df_instabilities_8 = result_df_8.loc[result_df_8['system_class'].isin(instabilities)]
-pickle.dump(result_df_instabilities_8, open( modellingpath + f'/growth/out/analytical/instability/instability_df_circuitturinghill_variant8_combinedparametersets.pkl', "wb" ) )
+pickle.dump(result_df_instabilities_8, open( modellingpath + f'/growth/out/analytical/instability/{instability}_df_circuitturinghill_variant8_combinedparametersets.pkl', "wb" ) )
 
 result_df_instabilities_9 = result_df_9.loc[result_df_9['system_class'].isin(instabilities)]
-pickle.dump(result_df_instabilities_9, open( modellingpath + f'/growth/out/analytical/instability/instability_df_circuitturinghill_variant9_combinedparametersets.pkl', "wb" ) )
+pickle.dump(result_df_instabilities_9, open( modellingpath + f'/growth/out/analytical/instability/{instability}_df_circuitturinghill_variant9_combinedparametersets.pkl', "wb" ) )
 
 
 # %%
 print(result_df_instabilities['system_class'].value_counts())
 
 # %%
-instabilities_df1= pickle.load( open(modellingpath + f'/growth/out/analytical/instability/instability_df_circuitturinghill_variant8-9_combinedparametersets.pkl', 'rb'))
+instabilities_df1= pickle.load( open(modellingpath + f'/growth/out/analytical/instability/{instability}_df_circuitturinghill_variant8-9_combinedparametersets.pkl', 'rb'))
 
 # %%
 print(instabilities_df1['system_class'].value_counts())

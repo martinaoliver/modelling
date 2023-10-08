@@ -19,15 +19,15 @@ import pickle
 
 circuit_n='turinghill'
 mechanism='edgegrowth2'
-mechanism='openboundary'
-mechanism='nogrowth'
+# mechanism='openboundary'
+# mechanism='nogrowth'
 variant=9
 folder = f'turinghill_variant{variant}'
 #solver parameters
 L=50; dx =0.1; J = int(L/dx)
 T =2000; dt = 0.02; N = int(T/dt)
 
-boundaryCoeff=1;rate=L/T
+boundaryCoeff=2;rate=L/T
 suggesteddt = float(dx*dx*2)
 
 
