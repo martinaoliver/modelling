@@ -21,7 +21,7 @@ circuit_n='turinghill'
 mechanism='edgegrowth2'
 # mechanism='openboundary'
 # mechanism='nogrowth'
-variant=9
+variant=8
 folder = f'turinghill_variant{variant}'
 #solver parameters
 L=50; dx =0.1; J = int(L/dx)
