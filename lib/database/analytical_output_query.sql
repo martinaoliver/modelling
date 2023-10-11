@@ -13,11 +13,11 @@ where (mp.variant='8' or mp.variant='9') and
 
 select * from analytical_output ao
 join model_param mp on mp.model_param_id = ao.model_param_id
-where  mp."parID"=5912403;
+where  mp."parID"=388372;
 
 select * from analytical_output ao
 join model_param mp on mp.model_param_id = ao.model_param_id
-where mp.circuit_n='turinghill' and mp.variant = '8' and mp.n_samples=1000000;
+where mp.circuit_n='turinghill' and mp.variant = '8' and mp.n_samples=1000000 and mp."parID"=388372;
 
 select * from (SELECT "ssID", "ss_list", "model_param_id"
                FROM analytical_output
@@ -26,3 +26,6 @@ select * from (SELECT "ssID", "ss_list", "model_param_id"
 ) as sub
     --as sub where sub.ss_list = '{null}'
 
+select * from model_param mp
+
+where "parID" = 5839900 and mp.circuit_n='turinghill' and mp.variant = '9' and mp.n_samples=1000000;

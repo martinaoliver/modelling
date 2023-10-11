@@ -110,9 +110,34 @@ with lsa_vs_numerical as
 join analytical_output ao on pco.model_param_id = ao.model_param_id
 join model_param mp on mp.model_param_id = ao.model_param_id
 where simulation_param_uuid = 'f557b922-67b0-4d93-aad1-4a6c362240c9'
+--           and ss_n=1
+and( mp.variant='9' or mp.variant='8')
+-- and ao.system_class='complex unstable'
+and mp.n_samples=1000000
+and mp."parID"=388372)
+select  * from lsa_vs_numerical;
+
+with lsa_vs_numerical as
+    (select ao.ss_n, mp.variant,simulation_param_uuid,  ao.model_param_id,ao.system_class,pco.pattern_class_nogrowth from pattern_class_output pco
+join analytical_output ao on pco.model_param_id = ao.model_param_id
+join model_param mp on mp.model_param_id = ao.model_param_id
+where simulation_param_uuid = '8627037d-356d-4489-9215-1cab9c82638a'
           and ss_n=1
 and( mp.variant='9' or mp.variant='8')
-and ao.system_class='complex unstable'
+-- and ao.system_class='complex unstable'
 and mp.n_samples=1000000)
-select  * from lsa_vs_numerical
+select lsa_vs_numerical.system_class, count(*) as count from lsa_vs_numerical
+group by lsa_vs_numerical.system_class;
 
+
+
+select ao.system_class, count(*)
+from simulation_output so
+join model_param mp on mp.model_param_id = so.model_param_id
+join analytical_output ao on so.model_param_id = ao.model_param_id
+where simulation_param_uuid = '8627037d-356d-4489-9215-1cab9c82638a'
+          and ss_n=1
+and( mp.variant='9' or mp.variant='8')
+-- and ao.system_class='complex unstable'
+and mp.n_samples=1000000
+group by ao.system_class ;
