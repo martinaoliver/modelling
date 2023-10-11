@@ -71,7 +71,7 @@ class turinghill(hill_functions):
 
     function_list = [dAdt_f,dBdt_f]
 
-    def dudt(self,U):
+    def dudt(self,U,t=0):
         dudt = [self.dAdt_f(U),self.dBdt_f(U)]
         return dudt
 
