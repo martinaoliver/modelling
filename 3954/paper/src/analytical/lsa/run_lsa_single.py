@@ -36,7 +36,7 @@ parID = 41 #takes the first parameter set of the dataframe... can choose any
 n_species=6 #number of molecular species in circuit_n (#Circuit2 has 6 molecular species)
 # #turing 995206
 # n_samples = 1000000#13700000
-# system_class='Stable'
+system_class='Stable'
 # obtain a dictionary with some parameters to use in our analysis
 # lsa_df= pickle.load( open(modellingpath + "/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_%s_variant%s_%rparametersets_%s.pkl"%(circuit_n,variant,n_samples, balance), "rb"))
 # df= pickle.load( open(modellingpath + "/3954/paper/input/balanced_parameterfiles/df_%s_variant%s_%rparametersets_%s.pkl"%(circuit_n,variant,n_samples, balance), "rb"))
@@ -55,10 +55,11 @@ out = detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion
 #%%
 
 
-plot_highest_dispersion_hopf(out[4][0],crop = 300, top = 2000)
-# plt.title(f'{system_class}')
-# plt.tight_layout()
-# plt.savefig(modellingpath + "/3954/paper/out/analytical/pyPlots/dispersion_relation/%s_dispersion.pdf"%system_class)
+# plot_highest_dispersion_hopf(out[4][0],crop = 300, top = 2000)
+plot_highest_dispersion(out[4][0],crop = 100, top = 2000)
+plt.title(f'{system_class}')
+plt.tight_layout()
+plt.savefig(modellingpath + "/3954/paper/out/analytical/pyPlots/dispersion_relation/%s_dispersion_circuit14_variantfitted7_gaussian4187715_nsr0.01_parID41.pdf"%system_class)
 # plt.show()
 
 # print(out[3])

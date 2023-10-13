@@ -114,7 +114,7 @@ parID=41
 
 #%%
 # test = bool(sys.argv[7])
-test = False
+test = True
 tqdm_disable=False
 if test==True:
     print('test')

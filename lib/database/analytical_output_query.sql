@@ -27,5 +27,7 @@ select * from (SELECT "ssID", "ss_list", "model_param_id"
     --as sub where sub.ss_list = '{null}'
 
 select * from model_param mp
+join analytical_output ao on mp.model_param_id = ao.model_param_id
+where "parID" = 41 and mp.circuit_n='14';
 
-where "parID" = 5839900 and mp.circuit_n='turinghill' and mp.variant = '9' and mp.n_samples=1000000;
+
