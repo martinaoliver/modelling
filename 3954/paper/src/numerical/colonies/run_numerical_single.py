@@ -42,12 +42,13 @@ shape = 'ca'
 # circuit_n=14;variant='fitted7';n_species=6
 nsr = 0.01
 circuit_n=14;variant = f'fitted7_gaussian4187715_nsr{nsr}';n_species=6
-# circuit_n=14;variant='fitted2';n_species=6
+# circuit_n=14;variant='fitted7';n_species=6
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_samples = 1000000#2000
 # balance = 'balanced'
 # folder = 'circuit14variant2ndBalancedTuring'
 folder = f'circuit14variantfitted7_gaussian4187715'
+# folder = f'circuit14variantfitted7'
 
 # folder = 'circuit14variant2nd_turing'
 # folder = 'circuit14fitted3balancedSemibalanced'
@@ -59,27 +60,7 @@ tqdm_disable = False #disable tqdm
 # open parameter dictionaries
 # df= pickle.load( open(modellingpath + "/3954/paper/input/fitted_parameterfiles/df_circuit%s_variant%s_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
 # df= pickle.load( open(modellingpath + '/3954/paper/input/gaussian_parameterfiles/df_circuit%r_variant%s_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb" ) )
-
-# L=20; dx =0.1; J = int(L/dx)
-# T =50; dt = 0.1; N = int(T/dt)
-# # T =50; dt = 0.1; N = int(T/dt)
-
-# L=30; dx =0.2; J = int(L/dx)
-# T =200; dt = 0.1; N = int(T/dt)
-
-# boundaryCoeff = 1
-# division_time_hours=1
-# p_division=0.25;seed=1
-
-
-
-
-
-# L=20; dx =0.1; J = int(L/dx)
-# T =50; dt = 0.3; N = int(T/dt)
-# boundaryCoeff = 1
-# division_time_hours=0.3
-# p_division=0.5;seed=1
+df= pickle.load( open(modellingpath + "/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit14_variantfitted7_gaussian4187715_nsr0.01_2000parametersets.pkl", "rb"))
 
 
 #slowgrowth
@@ -88,7 +69,7 @@ T =100; dt = 0.02; N = int(T/dt)
 boundaryCoeff = 2
 division_time_hours=0.5
 p_division=0.38;seed=1
-# # 
+# 
 # #mediumgrowth
 # L=20; dx =0.1; J = int(L/dx)
 # T =50; dt = 0.02; N = int(T/dt)
@@ -128,7 +109,7 @@ except:
 
 filename= lambda parID: 'circuit%r_variant%s_bc%s_%s_ID%r_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, shape,parID,L,J,T,N)
 # parID=12837401
-parID=6
+parID=41
 
 
 #%%
@@ -140,7 +121,6 @@ if test==True:
     T=1;N =1
     tqdm_disable=False
 
-
 # degDiv = 1
 # par_dict['muASV'] =par_dict['muASV']/degDiv
 # par_dict['muLVA'] = par_dict['muLVA'] /degDiv
@@ -149,10 +129,10 @@ if test==True:
 
 # 195238
 print('parID = ' + str(parID))
-par_dict = df.loc[parID].to_dict()
+par_dict = df.loc[41,0].to_dict()
 # paramList = [1,1.5,2]
 
-par_dict = df.loc[parID].to_dict()
+# par_dict = df.loc[parID].to_dict()
 # par_dict = df.loc[(parID,0)].to_dict()
 print(par_dict)
 
