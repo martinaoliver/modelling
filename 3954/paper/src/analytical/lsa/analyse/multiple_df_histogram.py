@@ -48,7 +48,8 @@ n_param_sets=2000
 
 
 turing_robustness = {}
-for nsr in [0.01, 0.05, 0.1, 0.2 ]:
+# for nsr in [0.01, 0.05, 0.1, 0.2 ]:
+for nsr in [0.01]:
     df= pickle.load( open(modellingpath + f'/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit14_variantfitted7_gaussian4187715_nsr{nsr}_{n_param_sets}parametersets.pkl', "rb"))
     turing_df = df.loc[df['system_class']=='turing I oscillatory']
     turing_robustness[nsr]=(len(turing_df)/len(df))*100
@@ -61,7 +62,7 @@ plt.xlabel('Relative uncertainty')
 plt.ylabel('Turing I probability')
 plt.title('Turing I robustness with respect to uncertainty \n Solutions around Turing fit')
 plt.tight_layout()
-plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/robustness_vs_uncertainty.pdf')
+# plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/robustness_vs_uncertainty.pdf')
 plt.show()
 
 df= pickle.load( open(modellingpath + f'/3954/paper/out/analytical/lsa_dataframes/all_dataframes/lsa_df_circuit14_variantfitted7_gaussian4187715_nsr{0.01}_{n_param_sets}parametersets.pkl', "rb"))
@@ -74,7 +75,7 @@ plt.xlabel('System Class')
 plt.ylabel('Probability')
 plt.title('Frequency of solutions with 0.01 relative uncertainty around Turing I')
 plt.tight_layout()
-plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/robustness_vs_uncertainty.pdf')
+# plt.savefig(modellingpath + f'/3954/paper/out/analytical/pyPlots/robustness_vs_uncertainty.pdf')
 plt.show()
 
 

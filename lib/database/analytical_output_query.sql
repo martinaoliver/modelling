@@ -28,6 +28,6 @@ select * from (SELECT "ssID", "ss_list", "model_param_id"
 
 select * from model_param mp
 join analytical_output ao on mp.model_param_id = ao.model_param_id
-where "parID" = 41 and mp.circuit_n='14';
-
+-- where "parID" = 41 and mp.circuit_n='14';
+where (mp.model_param_id = '55946_circuit:turinghill_variant:9_samples:2000000' or mp.model_param_id ='4892935_circuit:turinghill_variant:9_samples:1000000')
 

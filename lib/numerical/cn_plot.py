@@ -3,11 +3,14 @@ import numpy as np
 from matplotlib import cm
 cmap = cm.Spectral_r
 cmap=cm.coolwarm
+cmap = cm.magma
 # from sklearn import preprocessing
 
-def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False):
+def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False, space_crop = None):
     if round==True:
         U = np.round(U,decimals=3)
+    U = U[:,:space_crop]
+    
     if morphogen == 0:
         plt.plot(U[0], label='U')
     if morphogen ==1: 
@@ -40,7 +43,8 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
         plt.show()
 
 
-def surfpattern(results,L,dx,J,T,record_every_x_hours=10,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
+
+def surfpattern(results,L,dx,J,T,record_every_x_hours=10,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False, cmap=cm.magma, space_crop=None):
     
     
     dx = float(L)/float(J-1)

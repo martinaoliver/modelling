@@ -141,3 +141,21 @@ and( mp.variant='9' or mp.variant='8')
 -- and ao.system_class='complex unstable'
 and mp.n_samples=1000000
 group by ao.system_class ;
+
+
+select ao.system_class,  mp."parID", pco.pattern_class_nogrowth
+from pattern_class_output pco
+join model_param mp on mp.model_param_id = pco.model_param_id
+join analytical_output ao on ao.model_param_id = pco.model_param_id
+-- where pco.simulation_param_uuid = '8627037d-356d-4489-9215-1cab9c82638a' --edgegrowth2
+-- where pco.simulation_param_uuid = 'db183b7c-28dc-426f-9d3a-b4c7e6b3f260' --openboundary
+where pco.simulation_param_uuid = 'f557b922-67b0-4d93-aad1-4a6c362240c9' --nogrowth
+
+          and ss_n=1
+and( mp.variant='9' or mp.variant='8')
+-- and ao.system_class='complex unstable'
+and mp.n_samples=1000000
+and mp.circuit_n='turinghill'
+  and pco.pattern_class_nogrowth='Homogeneous'
+and ao.system_class='simple stable'
+ ;

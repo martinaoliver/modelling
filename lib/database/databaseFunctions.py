@@ -24,8 +24,8 @@ def general_query(query):
     with psycopg2.connect(credentials) as conn:
         with conn.cursor() as cursor:
             cursor.execute(query)
-            return cursor.fetchall()
-
+            column_names = [i[0] for i in cursor.description]
+            return cursor.fetchall(), column_names
     
 
 #this function allows us to "on conflict - update"
