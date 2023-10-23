@@ -12,27 +12,27 @@ import pickle
 #%%
 
 
-circuit_n='\'turinghill\'';variant='\'8\'';n_species=2;n_samples=1000000
+circuit_n='\'turinghill\'';variant='\'11\'';n_species=2;n_samples=1000000
 model_param_dict = {'circuit_n': circuit_n, 'variant': variant , 'n_samples':n_samples}
-result_df_8 = query_analyticalOutput_df_from_sql(model_param_dict)
-result_df_8
+result_df_turing = query_analyticalOutput_df_from_sql(model_param_dict)
+result_df_turing
 
 #%%
 
-circuit_n='\'turinghill\'';variant='\'9\'';n_species=2;n_samples=1000000
+circuit_n='\'turinghill\'';variant='\'12\'';n_species=2;n_samples=1000000
 model_param_dict = {'circuit_n': circuit_n, 'variant': variant , 'n_samples':n_samples}
-result_df_9 = query_analyticalOutput_df_from_sql(model_param_dict)
-result_df_9
+result_df_hopf= query_analyticalOutput_df_from_sql(model_param_dict)
+result_df_hopf
 # %%
-pickle.dump(result_df_8, open( modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_circuitturinghill_variant8_combinedparametersets.pkl', "wb" ) )
-pickle.dump(result_df_9, open( modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_circuitturinghill_variant9_combinedparametersets.pkl', "wb" ) )
+pickle.dump(result_df_turing, open( modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_circuitturinghill_variant11_combinedparametersets.pkl', "wb" ) )
+pickle.dump(result_df_hopf, open( modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_circuitturinghill_variant12_combinedparametersets.pkl', "wb" ) )
 
 #%%
 
 
-result_df = pd.concat([result_df_8,result_df_9])
+result_df = pd.concat([result_df_turing, result_df_hopf])
 
-pickle.dump(result_df, open( modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_circuitturinghill_variant8-9_combinedparametersets.pkl', "wb" ) )
+pickle.dump(result_df, open( modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_circuitturinghill_variant11-12_combinedparametersets.pkl', "wb" ) )
 
 print(result_df.columns)
 
