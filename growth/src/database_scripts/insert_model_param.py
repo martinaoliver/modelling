@@ -16,7 +16,7 @@ from tqdm import tqdm
 # Specify name of circuit and variant investigated
 
 circuit_n='turinghill'
-variant=8
+variant=int(sys.argv[1])
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_samples = 2000000

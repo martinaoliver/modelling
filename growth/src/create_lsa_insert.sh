@@ -16,7 +16,7 @@ cd $PBS_O_WORKDIR
 # seed=0
 
 
-threshold=100
+threshold=2000
 n_samples=1000000
 n_cpus=96
 continue_search=true
@@ -25,21 +25,22 @@ seed=0
 
 while $continue_search; do
     
-    # Query the database for counts and return whether to continue search 
-    continue_search=$(python database_scripts/system_class_counts_fromDb.py $threshold) #check variant inside that file!!!! #this function outputs wheather to continue simulation or not based on the counts of the system classes
+    # # Query the database for counts and return whether to continue search 
+    # continue_search=$(python database_scripts/system_class_counts_fromDb.py $threshold) #check variant inside that file!!!! #this function outputs wheather to continue simulation or not based on the counts of the system classes
     echo "Continue simulation: $continue_search"
 
 
     # Call the Python function to create input/parameter files
-    python create_input/parameterfiles_creator_turinghill_variant8.py $n_samples $seed
+    python create_input/parameterfiles_creator_turinghill_variant12.py $n_samples $seed
 
 
     # Call the Python function lsa_df
-    python analytical/run_lsa_multithread_seed_dependent.py $n_cpus 8 $seed $n_samples 
+    python analytical/run_lsa_multithread_seed_dependent.py $n_cpus 12 $seed $n_samples 
 
 
     #insert instabilities into df 
-    python database_scripts/insert_analytical_output_instabilities.py 8 $seed $n_samples
+    # python database_scripts/insert_analytical_output_instabilities.py 11 $seed $n_samples
+    python database_scripts/fill_system_classes.py 12 $seed $n_samples $threshold
 
     seed=$((seed + 1)) 
     # else
