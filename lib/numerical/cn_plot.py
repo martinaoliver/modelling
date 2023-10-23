@@ -6,10 +6,9 @@ cmap=cm.coolwarm
 cmap = cm.magma
 # from sklearn import preprocessing
 
-def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False, space_crop = None):
+def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False):
     if round==True:
         U = np.round(U,decimals=3)
-    U = U[:,:space_crop]
     
     if morphogen == 0:
         plt.plot(U[0], label='U')
