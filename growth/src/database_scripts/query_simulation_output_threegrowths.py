@@ -30,7 +30,7 @@ T =2000; dt = 0.02; N = int(T/dt)
 rate=L/T
 suggesteddt = float(dx*dx*2)
 
-parID = 7708974
+parID = 8248914
 circuit_n='turinghill'
 variant= '9'
 n_samples=1000000
