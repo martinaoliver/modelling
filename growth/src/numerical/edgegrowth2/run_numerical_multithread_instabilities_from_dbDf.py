@@ -41,11 +41,11 @@ print('Number of Threads set to ', Number_of_Threads)
 
 #df with only instabilities of 8 and 9
 circuit_n='turinghill'
-variant = 9
+variant = 11
 n_samples=1000000
 
 # df= pickle.load( open(modellingpath + f'/growth/out/analytical/instability/multiinstability_df_circuit{circuit_n}_variant{variant}_combinedparametersets.pkl', 'rb'))
-df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/multiinstability_lsa_df_circuitturinghill_variant{9}_combinedparametersets.pkl','rb'))
+df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/multiinstability_lsa_df_circuitturinghill_variant{variant}_combinedparametersets.pkl','rb'))
 
 #%%
 
@@ -77,13 +77,19 @@ def numerical_check(df,a):
         print('test')
     else:
         test=False
+
+
+    # #solver parameters
+    # L=50; dx =0.1; J = int(L/dx)
+    # T =2000; dt = 0.02; N = int(T/dt)
+    # rate=L/T
+    # suggesteddt = float(dx*dx*2)
+
     #solver parameters
-    L=50; dx =0.1; J = int(L/dx)
-    T =2000; dt = 0.02; N = int(T/dt)
+    L=50; dx =0.05; J = int(L/dx)
+    T =2000; dt = 0.005; N = int(T/dt)
     rate=L/T
     suggesteddt = float(dx*dx*2)
-
-
 
     if test == True:
         T =10; dt = 0.1; N = int(T/dt)

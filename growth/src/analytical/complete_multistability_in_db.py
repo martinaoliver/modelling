@@ -21,7 +21,8 @@ import numpy as np
 #########CODE##########
 #######################
 
-circuit_n='turinghill'; n_species=2; variant = '9'; n_samples=1000000
+circuit_n='turinghill'; n_species=2; n_samples=1000000
+variant ='12'# int(sys.argv[1])
 parameters_df= pickle.load( open(modellingpath + f'/growth/input/parameterfiles/df_turinghill_variant{variant}_2000000parametersets.pkl', 'rb'))
 # df= pickle.load( open(modellingpath + f'/growth/out/analytical/instability/instability_df_circuitturinghill_variant{variant}_combinedparametersets.pkl', 'rb'))
 df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_circuitturinghill_variant{variant}_combinedparametersets.pkl', "rb" ) )
@@ -36,7 +37,6 @@ df = df.reindex(columns=parameters_df.columns)
 
 # %%
 output_df = big_turing_analysis_df(df,circuit_n,n_species,print_parID=False, tqdm_disable=False)
-output_df
 # %%
 tupled_index =  [tuple(l) for l in output_df.index]
 multi_index = pd.MultiIndex.from_tuples(tupled_index)
