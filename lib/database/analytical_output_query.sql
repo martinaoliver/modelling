@@ -36,5 +36,6 @@ select count(*) from analytical_output
 join model_param mp on mp.model_param_id = analytical_output.model_param_id
 where circuit_n='turinghill'
 and variant='12'
-and n_samples=2000000;
+and n_samples=1000000;
+
 -- and system_class='simple stable';

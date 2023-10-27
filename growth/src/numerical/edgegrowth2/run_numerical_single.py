@@ -8,14 +8,11 @@ pwd = os.getcwd()
 modellingpath = pwd.rpartition("modelling")[0] + pwd.rpartition("modelling")[1] 
 sys.path.append(modellingpath + '/lib')
 #############
-
 from numerical.cn_edgegrowth2_numba import cn_edgegrowth2 as cn_edgegrowth2_numba
-from numerical.cn_edgegrowth2 import cn_edgegrowth2
 from numerical.cn_nogrowth import cn_nogrowth
-from numerical.cn_nogrowth_numba import cn_nogrowth_numba
+
 
 from numerical.cn_plot import plot1D, surfpattern
-from database.databaseFunctions import *
 
 import pickle
 import matplotlib.pyplot as plt
@@ -35,6 +32,10 @@ df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%
 L=10; dx =0.1; J = int(L/dx)
 T =20; dt = 0.02; N = int(T/dt)
 
+
+#solver parameters
+L=50; dx =0.05; J = int(L/dx)
+T =2000; dt = 0.005; N = int(T/dt)
 # L=10; dx =1; J = int(L/dx)
 # T =30; dt = 0.5; N = int(T/dt)
 
@@ -75,76 +76,63 @@ model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_s
 #%%
 #run
 
-growth = True
-if growth == True:
-    growth = 'edgegrowth3'
-    boundaryCoeff=2
-    simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 'boundaryCoeff':boundaryCoeff, 'growth':growth, 'growth rate': rate}
-    st = time.time()
-    U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth3(par_dict,L,J,T,N, circuit_n ,rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=True)
-    elapsed_time = time.time() - st
-    print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-    plt.scatter(x_grid,cellMatrix)
-    plt.show()
-    
-
-    #plot
-    plot1D(U_final_1D, savefig=False,filename='')
-    plt.show()
-    surfpattern(U_record_1D, [x_grid, reduced_t_grid], 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-    plt.show()
-    surfpattern(U_record_1D, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-    plt.show()
-    # query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D,ssID=ssID)
-
-
-#%%
-no_growth = False
-if no_growth == True:
-    growth='nogrowth'
+nogrowth = False
+if nogrowth == True:
+    growth = 'nogrowth'
     boundaryCoeff=1
     simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 'boundaryCoeff':boundaryCoeff, 'growth':growth, 'growth rate': rate}
-    print(simulation_param_dict)
 
+
+    U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n,boundaryCoeff=1, tqdm_disable=False)
     st = time.time()
-    U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n,boundaryCoeff=boundaryCoeff, tqdm_disable=False)
+    plot1D(U_final_1D, savefig=False,filename='')
+    plt.show()
     elapsed_time = time.time() - st
-    print('Execution time:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-    #plot
-    plot1D(U_final, savefig=False,filename='')
+    print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+    surfpattern(U_record_1D, L,dx,J,T, 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
-    surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-    plt.show()
-    surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-    plt.show()
-
-    query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D)
 
 
 
 #%%
 open_boundary = False
 if open_boundary == True:
-    growth='nogrowth'
-    boundaryCoeff=1
+    growth='openboundary'
+    boundaryCoeff=2
+    simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 'boundaryCoeff':boundaryCoeff, 'growth':growth, 'growth rate': rate}
+    print(simulation_param_dict)
+
+
+    U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n,boundaryCoeff=1, tqdm_disable=False)
+    st = time.time()
+    plot1D(U_final_1D, savefig=False,filename='')
+    plt.show()
+    elapsed_time = time.time() - st
+    print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+    surfpattern(U_record_1D, L,dx,J,T, 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+    plt.show()
+
+
+#%%
+edgegrowth2 = True
+if edgegrowth2 == True:
+    growth='edgegrowth2'
+    boundaryCoeff=2
     
     simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 'boundaryCoeff':boundaryCoeff, 'growth':growth, 'growth rate': rate}
-    
+
+   
+    mechanism = 'edgegrowth2'
+    boundaryCoeff=2
     st = time.time()
-    U_final,U_record, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n, boundaryCoeff=2,tqdm_disable=False)
+    U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid, cellMatrix= cn_edgegrowth2_numba(par_dict,L,J,T,N, circuit_n, rate=rate, boundaryCoeff=boundaryCoeff, tqdm_disable=False)
     elapsed_time = time.time() - st
     print('Execution time:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-    #plot
-    plot1D(U_final, savefig=False,filename='')
+    plot1D(U_final_1D, savefig=False,filename='')
     plt.show()
-    surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+    elapsed_time = time.time() - st
+    print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
+    surfpattern(U_record_1D, L,dx,J,T, 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
-    surfpattern(U_record, [x_grid, reduced_t_grid], 'linear',  morphogen=1, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-    plt.show()
-
-    query = simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D)
-
-# print(np.sum(U_final[0]))
-
 
 # %%

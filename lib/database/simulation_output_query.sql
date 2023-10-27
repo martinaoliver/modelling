@@ -159,3 +159,14 @@ and mp.circuit_n='turinghill'
   and pco.pattern_class_nogrowth='Homogeneous'
 and ao.system_class='simple stable'
  ;
+
+
+select count(*) from simulation_output
+
+-- where simulation_param_uuid='b94c9e61-a717-4470-957b-a59ff727e948';
+-- where simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37';
+
+where simulation_param_uuid='6952d306-f619-4af1-963c-aa28acb132df';
+--
+
+
