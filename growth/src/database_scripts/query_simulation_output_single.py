@@ -18,7 +18,7 @@ import psycopg2
 import matplotlib.pyplot as plt
 
 from numerical.cn_plot import plot1D, surfpattern
-
+from database.databaseFunctions import *
 
 #%%
 
@@ -34,10 +34,10 @@ simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N,
             'boundaryCoeff':boundaryCoeff, 
             'mechanism':growth, 'growth_rate': rate}
 
-parID = 0
+parID = 2951771
 circuit_n='turinghill'
-variant= '9'
-n_samples=2000000
+variant= '11'
+n_samples=1000000
 ssID = 0
 folder = f'{circuit_n}_variant{variant}'
 model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}

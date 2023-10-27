@@ -16,7 +16,7 @@ from numerical.cn_edgegrowth2_numba import cn_edgegrowth2 as cn_edgegrowth2_numb
 from numerical.cn_nogrowth import cn_nogrowth
 
 from numerical.cn_plot import plot1D, surfpattern
-from database.databaseFunctions import insert_simulationOutput_to_sql
+from database.databaseFunctions import insert_simulationOutput_to_sql, general_query
 
 
 import pickle
@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 ====================================================
     Code
 ====================================================
-'''
+# '''
 # Set number of threads to 1 if no valid number provided
 if len(sys.argv) > 1:
     Number_of_Threads = int(sys.argv[1])
@@ -41,11 +41,20 @@ print('Number of Threads set to ', Number_of_Threads)
 
 #df with only instabilities of 8 and 9
 circuit_n='turinghill'
-variant = 11
+variant = int(sys.argv[2])
 n_samples=1000000
 
 # df= pickle.load( open(modellingpath + f'/growth/out/analytical/instability/multiinstability_df_circuit{circuit_n}_variant{variant}_combinedparametersets.pkl', 'rb'))
 df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/multiinstability_lsa_df_circuitturinghill_variant{variant}_combinedparametersets.pkl','rb'))
+
+query = f'''select mp."parID", so."ssID"  from simulation_output so
+join model_param mp on mp.model_param_id = so.model_param_id
+where simulation_param_uuid='6952d306-f619-4af1-963c-aa28acb132df'
+and mp.variant='{variant}'
+and mp.n_samples={n_samples};'''
+simulated_parID_ss = general_query(query)
+
+df = df.drop(simulated_parID_ss[0])
 
 #%%
 
@@ -86,7 +95,7 @@ def numerical_check(df,a):
     # suggesteddt = float(dx*dx*2)
 
     #solver parameters
-    L=50; dx =0.05; J = int(L/dx)
+    L=25; dx =0.05; J = int(L/dx)
     T =2000; dt = 0.005; N = int(T/dt)
     rate=L/T
     suggesteddt = float(dx*dx*2)

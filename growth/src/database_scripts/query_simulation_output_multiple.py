@@ -34,15 +34,18 @@ simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N,
             'boundaryCoeff':boundaryCoeff, 
             'mechanism':mechanism, 'growth_rate': rate}
 print(simulation_param_dict.keys(), simulation_param_dict.values())
-parID = 104782
+parID = 2951771
 circuit_n='turinghill'
-variant= '9'
-n_samples=2000000
+variant= '11'
+n_samples=1000000
 ssID = 0
 folder = f'{circuit_n}_variant{variant}'
 model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
 
 
 
-U_final_1D = query_simulationOutput_multiple_from_sql(simulation_param_dict,model_param_dict,'U_final_1D', ssID=0,fetch=2)
-U_final_1D = query_simulationOutput_multiple_from_sql(simulation_param_dict,model_param_dict,'U_record_1D', ssID=0,fetch=2)
+# U_final_1D = query_simulationOutput_multiple_from_sql(simulation_param_dict,model_param_dict,'U_final_1D', ssID=0,fetch=2)
+U_final_1D = query_simulationOutput_multiple_from_sql(simulation_param_dict,model_param_dict,'U_record_1D', ssID=)
+plot1D(U_final_1D, savefig=False,filename='')
+
+# %%
