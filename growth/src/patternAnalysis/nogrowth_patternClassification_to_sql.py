@@ -31,8 +31,8 @@ from tqdm import tqdm
 
 
 #%%
-L=50; dx =0.1; J = int(L/dx)
-T =2000; dt = 0.02; N = int(T/dt)
+L=25; dx =0.05; J = int(L/dx)
+T =2000; dt = 0.005; N = int(T/dt)
 boundaryCoeff=1;rate=L/T
 suggesteddt = float(dx*dx*2)
 mechanism = 'nogrowth'
@@ -42,7 +42,7 @@ simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N,
 
 parID = 'x'
 circuit_n='turinghill'
-variant= 9
+variant= 11
 n_samples=1000000
 folder = f'{circuit_n}_variant{variant}'
 filename= lambda parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
