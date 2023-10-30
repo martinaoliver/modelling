@@ -19,20 +19,20 @@ def countPeaks(U, showPlot1D=True):
 def patternClassification_nogrowth_noRegularity(U_final, U_record, normalize=True):
     #check if flat
     relRangeFlat = [(np.amax(U) - np.amin(U))/(np.amax(U)+1e-8) for U in U_final]
-    if any(i<0.01 for i in relRangeFlat):
-        flat=True
-    else:
+    if any(i>0.01 for i in relRangeFlat):
         flat=False
+    else:
+        flat=True
 
     #check if converged
     relRangeConverged=[0,0]
     for count,Ux_record in enumerate(U_record):
         relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[-3:])]
     # if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
-    if np.amax(relRangeConverged[0])>0.05 or np.amax(relRangeConverged[1])>0.05:
-        converged=False
-    else:
+    if np.amax(relRangeConverged[0])<0.05 or np.amax(relRangeConverged[1])<0.05:
         converged=True
+    else:
+        converged=False
 
 
     if flat==True and converged==True:

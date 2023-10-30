@@ -17,6 +17,7 @@ from numerical.generalFunctions import round_it
 from analytical.linear_stability_analysis import detailed_turing_analysis_dict
 from randomfunctions import plot_all_dispersion, plot_highest_dispersion
 from pattern_classification.pattern_1D_nogrowth_classification_noRegularity import patternClassification_nogrowth_noRegularity, countPeaks
+from pattern_classification.pattern_analysis_functions import *
 from database.databaseFunctions import *
 import pickle
 import numpy as np
@@ -33,6 +34,8 @@ from tqdm import tqdm
 #%%
 L=25; dx =0.05; J = int(L/dx)
 T =2000; dt = 0.005; N = int(T/dt)
+x_grid = np.array([j*dx for j in range(J)])
+
 boundaryCoeff=1;rate=L/T
 suggesteddt = float(dx*dx*2)
 mechanism = 'nogrowth'
@@ -54,19 +57,91 @@ data_path = modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/
 
 parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 
+#%%
 
-for count,parIDss in enumerate(tqdm(parID_list, disable=False)):
-    print(parIDss)
+query = f'''select mp."parID", so."ssID"  from simulation_output so
+inner join model_param mp on so.model_param_id = mp.model_param_id
+inner join analytical_output ao on (ao.model_param_id,ao."ssID") = (so.model_param_id, so."ssID")
 
+where ao.system_class in ('turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf', 'turing semi-hopf')
+-- where ao.system_class in ('hopf')
+and mp.variant='{variant}'
+and so.simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
+and mp.n_samples={n_samples}'''
+parIDssID = general_query(query)
+#%%
+# for count,parIDss in enumerate(tqdm(parID_list[:3], disable=False)):
+#     print(parIDss)
+
+#     #model param dict
+#     parID,ssID = parIDss.split('.')
+#     parID,ssID = int(parID),int(ssID)
+def find_wavelenght(U,x_grid,showplot1D=True):
+    peaks = [0, 0]
+    prominence=0.05
+
+    peaks[0], _ = find_peaks(U[0], prominence=prominence)
+    peaks[1], _ = find_peaks(U[1], prominence=prominence)
+
+    # Calculate the wavelength
+    wavelength_x = np.mean(np.diff(x_grid[peaks[0]]))
+    wavelength_y = np.mean(np.diff(x_grid[peaks[1]]))
+    list_of_wavelength = np.array([wavelength_x, wavelength_y])
+    avg_wavelength = np.mean([wavelength_x, wavelength_y])
+    
+    # Plot the 1D signal and peaks
+    if showplot1D:
+        plot1D(U, peaks=peaks)
+    # if  one wavelength is not found, the other one will be picked up instead of the average
+    if math.isnan(avg_wavelength):
+        list_of_wavelength = list_of_wavelength[~np.isnan(list_of_wavelength)]
+        if len(list_of_wavelength)>0:
+            return list_of_wavelength[0]
+        else: 
+            return np.nan
+    else:
+        return  avg_wavelength
+
+
+def find_convergence(U_record):
+    #check if converged
+    relRangeConverged=[0,0]
+    for time in np.arange(2,199,1):
+        for count,Ux_record in enumerate(U_record):
+            relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[time:time+3])]
+        # if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
+        if np.amax(relRangeConverged[0])>0.05 or np.amax(relRangeConverged[1])>0.05:
+            converged=False
+        else:
+            converged=True
+            return time*10
+    return np.nan
+
+def insert_wavelength_convergence_to_sql(sim_param_dict,model_param_dict,ssID,wavelength, convergence_time):
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:    
+            
+            simulation_param_uuid = find_simulation_param_uuid(sim_param_dict, cursor)[0]
+            print(f"simulation_param_uuid:{simulation_param_uuid}")
+
+            
+            model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
+            print(f"model_param_id:{model_param_id}")
+            update_query = f'''UPDATE pattern_class_output SET "wavelength"='{wavelength}', "convergence_time"='{convergence_time}' WHERE "simulation_param_uuid"='{simulation_param_uuid}' and "model_param_id"='{model_param_id}' and "ssID" = {ssID};'''
+            cursor.execute(update_query)
+            conn.commit()
+
+
+
+ #%%
+for parID,ssID in tqdm(parIDssID[0][:10]):
     #model param dict
-    parID,ssID = parIDss.split('.')
-    parID,ssID = int(parID),int(ssID)
     model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
-
+    parIDdotssID =f'{parID}.{ssID}'
     #load simulations
-    U_final = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%(filename(parIDss)), 'rb'))
+    U_final = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%(filename(parIDdotssID)), 'rb'))
     U_final = np.round(U_final,decimals=4)
-    U_record = pickle.load( open(data_path + '/2Drecord_%s.pkl'%(filename(parIDss)), 'rb'))
+    U_record = pickle.load( open(data_path + '/2Drecord_%s.pkl'%(filename(parIDdotssID)), 'rb'))
     peaks = countPeaks(U_final, showPlot1D=False)
 
     #show simulations
@@ -84,11 +159,21 @@ for count,parIDss in enumerate(tqdm(parID_list, disable=False)):
     #insert classification into psql 
     insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_nogrowth',allow_update=True)
 
+    numerical_wavelength = find_wavelenght(U_final, x_grid,showplot1D=False)
+    print('wvl', numerical_wavelength)
 
+    convergence_time = find_convergence(U_record)
+    print('time', convergence_time)
+
+    insert_wavelength_convergence_to_sql(simulation_param_dict,model_param_dict,ssID, numerical_wavelength, convergence_time)
+
+    
     
 
 
     
+
+
 
 
 

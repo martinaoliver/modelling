@@ -26,7 +26,11 @@ def general_query(query):
             cursor.execute(query)
             column_names = [i[0] for i in cursor.description]
             return cursor.fetchall(), column_names
-    
+
+def df_from_general_query(query):
+    with psycopg2.connect(credentials) as conn:
+            df = pd.read_sql_query(query,con=conn)
+            return df 
 
 #this function allows us to "on conflict - update"
 def postgres_upsert(table, conn, keys, data_iter):

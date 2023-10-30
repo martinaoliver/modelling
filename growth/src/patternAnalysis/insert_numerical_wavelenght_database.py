@@ -102,7 +102,7 @@ for parID,ssID in simulated_parID_ss[:20]:
     def find_convergence(U_record):
         #check if converged
         relRangeConverged=[0,0]
-        for time in np.arange(2,200,1):
+        for time in np.arange(200, 2,-1):
             for count,Ux_record in enumerate(U_record):
                 relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[time:time+3])]
             # if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
