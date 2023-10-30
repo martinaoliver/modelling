@@ -31,17 +31,17 @@ import matplotlib.pyplot as plt
     Code
 ====================================================
 # '''
-# # Set number of threads to 1 if no valid number provided
-# if len(sys.argv) > 1:
-#     Number_of_Threads = int(sys.argv[1])
-# else:
-#     Number_of_Threads = 1
-# print('Number of Threads set to ', Number_of_Threads)
+# Set number of threads to 1 if no valid number provided
+if len(sys.argv) > 1:
+    Number_of_Threads = int(sys.argv[1])
+else:
+    Number_of_Threads = 1
+print('Number of Threads set to ', Number_of_Threads)
 
 
 #df with only instabilities of 8 and 9
 circuit_n='turinghill'
-variant = 12#int(sys.argv[2])
+variant = int(sys.argv[2])
 n_samples=1000000
 
 # df= pickle.load( open(modellingpath + f'/growth/out/analytical/instability/multiinstability_df_circuit{circuit_n}_variant{variant}_combinedparametersets.pkl', 'rb'))

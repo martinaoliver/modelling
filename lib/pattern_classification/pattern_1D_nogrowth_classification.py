@@ -19,7 +19,7 @@ def countPeaks(U, showPlot1D=True):
 def patternClassification(U_final, U_record, normalize=True):
     #check if flat
     relRangeFlat = [(np.amax(U) - np.amin(U))/(np.amax(U)+1e-8) for U in U_final]
-    if any(i<0.001 for i in relRangeFlat):
+    if any(i<0.01 for i in relRangeFlat):
         flat=True
     else:
         flat=False
