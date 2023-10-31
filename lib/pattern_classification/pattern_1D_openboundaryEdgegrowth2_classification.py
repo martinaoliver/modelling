@@ -17,11 +17,11 @@ def countPeaks(U, showPlot1D=True):
 
     return peaks
 
-def patternClassification_openboundaryEdgegrowth2(U_final):
+def patternClassification_openboundaryEdgegrowth2(U_final, showPlot1D=False):
     #check if regular
     # U_final_cropped = [U[50:-50] for U in U_final]
     U_final_cropped_norm = [NormalizeData(U) for U in U_final]
-    peaks = countPeaks(U_final_cropped_norm, showPlot1D=True)
+    peaks = countPeaks(U_final_cropped_norm, showPlot1D=showPlot1D)
 
     max_n_peaks = np.amax([len(morphogen_peaks) for morphogen_peaks in peaks])
 

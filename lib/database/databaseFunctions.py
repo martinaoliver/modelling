@@ -198,6 +198,19 @@ def insert_patternClassOutput_to_sql(sim_param_dict,model_param_dict,ssID,patter
             cursor.execute(insert_query, values)
             conn.commit()
 
+def insert_wavelength_convergence_to_sql(sim_param_dict,model_param_dict,ssID,wavelength, convergence_time):
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:    
+            
+            simulation_param_uuid = find_simulation_param_uuid(sim_param_dict, cursor)[0]
+            print(f"simulation_param_uuid:{simulation_param_uuid}")
+
+            
+            model_param_id =  f"{model_param_dict['parID']}_circuit:{model_param_dict['circuit_n']}_variant:{model_param_dict['variant']}_samples:{model_param_dict['n_samples']}"
+            print(f"model_param_id:{model_param_id}")
+            update_query = f'''UPDATE pattern_class_output SET "wavelength"='{wavelength}', "convergence_time"='{convergence_time}' WHERE "simulation_param_uuid"='{simulation_param_uuid}' and "model_param_id"='{model_param_id}' and "ssID" = {ssID};'''
+            cursor.execute(update_query)
+            conn.commit()
         
 def query_modelParam_df_from_sql( model_param_dict):
     with psycopg2.connect(credentials) as conn:

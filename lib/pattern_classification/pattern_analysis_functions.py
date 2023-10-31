@@ -12,7 +12,7 @@ sys.path.append(modellingpath + '/lib')
 from numerical.cn_plot import plot1D, surfpattern
 from scipy.signal import find_peaks
 import numpy as np
-
+import math
 
 
 
@@ -46,12 +46,13 @@ def find_wavelenght(U,x_grid,showplot1D=True):
 def find_convergence(U_record):
     #check if converged
     relRangeConverged=[0,0]
-    for time in np.arange(199,0,-1):
+    for time in np.arange(2,199,1):
         for count,Ux_record in enumerate(U_record):
             relRangeConverged[count] = [(np.amax(x) - np.amin(x))/(np.amax(x)+1e-8) for x in np.transpose(Ux_record[time:time+3])]
         # if np.amax(relRangeConverged[0])>0.001 or np.amax(relRangeConverged[1])>0.001:
         if np.amax(relRangeConverged[0])>0.05 or np.amax(relRangeConverged[1])>0.05:
             converged=False
-            return time*10
         else:
             converged=True
+            return time*10
+    return np.nan
