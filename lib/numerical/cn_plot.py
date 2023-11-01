@@ -42,12 +42,14 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
     plt.xlabel('Space')
     plt.ylabel('Concentration')
     if savefig==True:
-        plt.savefig('%s%s.jpeg'%(savefigpath,filename))
+        plt.savefig('%s%s.pdf'%(savefigpath,filename))
+        plt.show()
+        plt.close()
     else:
         plt.show()
 
 
-def surfpattern(results,L,dx,J,T,record_every_x_hours=10,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False, cmap=cm.magma, space_crop=None):
+def surfpattern(results,L,dx,J,T, record_every_x_hours=10,growth='linear', rate=0, morphogen = 0,savefig=False,filename='',savefigpath='',logResults=False, normalize=False, cmap=cm.magma, space_crop=None):
     
     
     dx = float(L)/float(J-1)
@@ -73,8 +75,12 @@ def surfpattern(results,L,dx,J,T,record_every_x_hours=10,growth='linear', rate=0
     plt.ylabel('Time')
     plt.xlabel('Space')
     if savefig==True:
-        plt.savefig('%s_overtime.png'%filename)
-    # plt.show()
+        plt.savefig('%s%s.pdf'%(savefigpath,filename))
+        plt.show()
+        plt.close()
+
+    else:
+        plt.show()
     
 def surfpattern1(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
     fig,ax = plt.subplots(1,len(morphogen))

@@ -109,4 +109,4 @@ def detailed_turing_analysis_dict(par_dict, circuit_n,n_species,top_dispersion=5
 
     else:
         eigenvalues=[]
-    return steadystatelist, number_steadystates, ss_class_list, system_class_list, eigenvalues_list, maxeig_list, complex_dispersion_list
+    return steadystatelist, number_steadystates, ss_class_list, system_class_list, eigenvalues_list, maxeig_list, complex_dispersion_list, estimated_wvl
