@@ -45,7 +45,7 @@ simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N,
 
 parID = 'x'
 circuit_n='turinghill'
-variant= 11
+variant= 12
 n_samples=1000000
 folder = f'{circuit_n}_variant{variant}'
 filename= lambda parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
@@ -55,7 +55,7 @@ print(filename(parID), 'filename')
 
 data_path = modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}'
 
-parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
+# parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 
 #%%
 
@@ -63,7 +63,7 @@ query = f'''select mp."parID", so."ssID"  from simulation_output so
 inner join model_param mp on so.model_param_id = mp.model_param_id
 inner join analytical_output ao on (ao.model_param_id,ao."ssID") = (so.model_param_id, so."ssID")
 
-where ao.system_class not in ('turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf', 'turing semi-hopf')
+-- where ao.system_class not in ('turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf', 'turing semi-hopf')
 -- where ao.system_class in ('hopf')
 and mp.variant='{variant}'
 and so.simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'

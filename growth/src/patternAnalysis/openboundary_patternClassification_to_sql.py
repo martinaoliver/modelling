@@ -47,7 +47,7 @@ simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N,
 
 parID = 'x'
 circuit_n='turinghill'
-variant= 11
+variant= 12
 n_samples=1000000
 folder = f'{circuit_n}_variant{variant}'
 filename= lambda parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
@@ -87,7 +87,7 @@ for parID,ssID in tqdm(parIDssID[0]):
     U_final = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%(filename(parIDdotssID)), 'rb'))
     U_final = np.round(U_final,decimals=4)
     U_record = pickle.load( open(data_path + '/2Drecord_%s.pkl'%(filename(parIDdotssID)), 'rb'))
-    # peaks = countPeaks(U_final, showPlot1D=False)
+    peaks = countPeaks(U_final, showPlot1D=False)
 
     #show simulations
     plot=False
