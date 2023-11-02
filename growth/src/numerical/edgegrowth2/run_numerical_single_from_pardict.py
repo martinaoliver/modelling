@@ -22,10 +22,11 @@ import numpy as np
 #system parameters
 circuit_n = 'turinghill'
 variant=0
-# n_samples = 2000000
+n_samples = 1000000
 
 # par_dicxt = {'c1':0.1, 'c2':1,'c3':0.9,'c4':1, 'd_A': 1, 'd_B':10}
-df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
+# df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
+# df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
 
 # df = multiple_df.xs(0, level=1)
 #solver parameters
@@ -55,28 +56,28 @@ print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
 # for parID,ss in df.index:
 # parID= (14414,0) #parameter set to use
-parID=1930331 ;ssID=2#parameter set to use
-par_dict = df.loc[parID,ssID].to_dict()
+parID=544548 ;ssID=0#parameter set to use
+# par_dict = df.loc[parID,ssID].to_dict()
 # ssID=par_dict['']
 
-print(par_dict)
-parameter_to_modify = ['ba', 'bb', 'Va', 'Vb', 'mua', 'mub']
-for parameter in parameter_to_modify:
-    par_dict[parameter] = par_dict[parameter] 
-print(par_dict)
+# print(par_dict)
+
+# print(par_dict)
 # par_dict = df.loc[parID].to_dict()
-print(f'estimated wavelenght = {par_dict["estimated_wvl"]}')
+# print(f'estimated wavelenght = {par_dict["estimated_wvl"]}')
 
 
-print(par_dict)
-model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
+# print(par_dict)
+# model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
 
 
 
 #%%
 #run
+par_dict= {'ba': 0.01, 'bb': 0.01, 'Va': 887.3976810634131, 'Vb': 621.5082654325614, 'kaa': 0.21239643530338062, 'kba': 0.11104906542778901, 'kab': 1.6551470970511883, 'kbb': 0.9597257152142981, 'mua': 5.293891273660762, 'mub': 0.17398259803013874, 'd_B': 0.0014465561532232226, 'd_A': 1.0, 'n': 2.0, 'ss_n': 1.0,  'ss_class': 'unstable point', 'system_class': 'simple unstable', 'maxeig': (3.5570492866984096+0j)}
 
-nogrowth = False
+
+nogrowth = True
 if nogrowth == True:
     growth = 'nogrowth'
     boundaryCoeff=1
