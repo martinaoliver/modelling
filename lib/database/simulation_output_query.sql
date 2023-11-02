@@ -205,3 +205,17 @@ and mp.n_samples=1000000;
 
 
 
+
+-- select mp."parID", pco."ssID"  from pattern_class_output pco
+select count(*) from pattern_class_output pco
+inner join model_param mp on pco.model_param_id = mp.model_param_id
+inner join analytical_output ao on (pco.model_param_id,pco."ssID") = (ao.model_param_id, ao."ssID")
+-- where pattern_class_nogrowth = 'Temporal Oscillator'
+-- and mp."variant"='12'
+and ao.system_class='hopf';
+
+SELECT DISTINCT pco.pattern_class_nogrowth
+FROM pattern_class_output pco
+INNER JOIN model_param mp ON pco.model_param_id = mp.model_param_id
+INNER JOIN analytical_output ao ON (pco.model_param_id, pco."ssID") = (ao.model_param_id, ao."ssID")
+WHERE ao.system_class = 'hopf';

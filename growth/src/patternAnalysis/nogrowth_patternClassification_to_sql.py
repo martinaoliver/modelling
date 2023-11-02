@@ -95,7 +95,7 @@ for parID,ssID in tqdm(parIDssID[0]):
     print( pattern_class, converged, flat)
 
     #insert classification into psql 
-    insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_nogrowth',allow_update=True)
+    # insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_nogrowth',allow_update=True)
 
     # numerical_wavelength = find_wavelenght(U_final, x_grid,showplot1D=False)
     # print('wvl', numerical_wavelength)
