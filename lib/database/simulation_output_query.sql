@@ -199,7 +199,7 @@ inner join analytical_output ao on (ao.model_param_id,ao."ssID") = (so.model_par
 --
 -- where ao.system_class in ('turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf', 'turing semi-hopf')
 -- where ao.system_class in ('hopf')
-and mp.variant='12'
+and mp.variant='11'
 and so.simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
 and mp.n_samples=1000000;
 
