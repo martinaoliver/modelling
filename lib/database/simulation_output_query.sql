@@ -214,8 +214,9 @@ inner join analytical_output ao on (pco.model_param_id,pco."ssID") = (ao.model_p
 -- and mp."variant"='12'
 and ao.system_class='hopf';
 
-SELECT DISTINCT pco.pattern_class_nogrowth
+SELECT "parID", ao."ssID"
 FROM pattern_class_output pco
 INNER JOIN model_param mp ON pco.model_param_id = mp.model_param_id
 INNER JOIN analytical_output ao ON (pco.model_param_id, pco."ssID") = (ao.model_param_id, ao."ssID")
-WHERE ao.system_class = 'hopf';
+WHERE ao.system_class = 'hopf'
+and pattern_class_nogrowth='Non-Stationary pattern';

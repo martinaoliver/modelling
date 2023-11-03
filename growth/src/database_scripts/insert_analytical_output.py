@@ -49,7 +49,7 @@ if batch_insert==True:
     for n in tqdm(range(int(len(lsa_df)/batch_size))):
         print(n)
         lhs_df_cropped = lsa_df.iloc[batch_indices[n]:batch_indices[n] + batch_size+1 ]
-        analyticalOutput_df_to_sql(lsa_df, circuit_n, variant, n_samples)
+        analyticalOutput_df_to_sql(lhs_df_cropped, circuit_n, variant, n_samples)
 
 
 # %%

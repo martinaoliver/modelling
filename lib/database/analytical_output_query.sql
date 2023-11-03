@@ -49,11 +49,11 @@ and mp.variant='11'
 and mp.n_samples=1000000
 and ao.ss_n>1;
 
-select * from analytical_output ao
+select count(*) from analytical_output ao
 inner join model_param mp on ao.model_param_id = mp.model_param_id
-where variant='11'
-and circuit_n='turinghill'
-and n_samples=1000000
-and "parID"=2956064;
+where variant='0'
+and circuit_n='turinghill';
+-- and n_samples=1000000
+-- and "parID"=2956064;
 
 
