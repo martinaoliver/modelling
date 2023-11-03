@@ -32,15 +32,15 @@ import matplotlib.pyplot as plt
 '''
 print('f')
 # Set number of threads to 1 if no valid number provided
-if len(sys.argv) > 1:
-    Number_of_Threads = int(sys.argv[1])
-else:
-    Number_of_Threads = 1
-print('Number of Threads set to ', Number_of_Threads)
-
+# if len(sys.argv) > 1:
+#     Number_of_Threads = int(sys.argv[1])
+# else:
+#     Number_of_Threads = 1
+# print('Number of Threads set to ', Number_of_Threads)
+Number_of_Threads=1
 # Specify name of circuit and variant investigated
 circuit_n='turinghill'
-variant= 8
+variant= 0
 n_species=2
 
 # Specifiy number of parameter sets in parameterset file to be loaded
@@ -74,36 +74,39 @@ def numerical_check(df,circuit_n, variant = variant, n_species=n_species):
         test=False
     #solver parameters
     L=50; dx =0.1; J = int(L/dx)
-    T =2000; dt = 0.02; N = int(T/dt)
+    T =5000; dt = 0.02; N = int(T/dt)
     rate=L/T
     suggesteddt = float(dx*dx*2)
 
 
+    tqdm_disable=False
+    # if test == True:
+    #     T =10; dt = 0.1; N = int(T/dt)
+    #     tqdm_disable = False
+    #     rate=L/T
 
-    if test == True:
-        T =10; dt = 0.1; N = int(T/dt)
-        tqdm_disable = False
-        rate=L/T
-
-    else:
-        tqdm_disable = True
+    # else:
+    #     tqdm_disable = True
     # df_index = np.unique(df.index.get_level_values(0))
     for parID,ssID in df.index:
         parIDssID = f'{parID}.{ssID}'
         print('parID = ' + str(parIDssID))
-
-
         par_dict = df.loc[(parID,ssID)].to_dict()
+
+
+        folder=  f'{circuit_n}_variant{variant}'
 
         model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
 
-
-        # steadystates=par_dict['ss_list']
 
         simulateGrowth=True
         simulateNoGrowth=True
         simulateOpenBoundary=True
         try:
+
+
+
+
             if simulateGrowth == True:
                 mechanism = 'edgegrowth2'
                 boundaryCoeff=2
@@ -163,13 +166,13 @@ start_time = time.perf_counter()
 # df = multiple_df.xs(0, level=1)
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
 # df= pickle.load( open(modellingpath + '/growth/out/analytical/instability/instability_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
-df = None
 # with open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb") as f:
 # with open(modellingpath + '/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb") as f:
-df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
+df_general= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_samples), "rb"))
     # df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
-# instabilities_list = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
-system_class = str(sys.argv[2])
+instabilities_list = ['turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf','hopf', 'turing semi-hopf']  
+# system_class = str(sys.argv[2])
+system_class ='hopf'
 print(system_class)
 if system_class=='turing':
     system_class_list = ['turing I','turing I oscillatory']  
@@ -182,8 +185,7 @@ elif system_class == 'simple_unstable':
 elif system_class == 'complex_unstable':
     system_class_list = ['complex unstable']
     
-# df = df_general.loc[df_general['system_class'].isin(system_class_list)]
-df = df.loc[df['system_class'].isin(system_class_list)]
+df = df_general.loc[df_general['system_class'].isin(system_class_list)]
 
 df.index.names = ['parID','ssID']
 total_params=len(df)

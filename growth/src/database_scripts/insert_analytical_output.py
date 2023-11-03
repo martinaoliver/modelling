@@ -43,7 +43,7 @@ lsa_df = pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframe
 #Insert in batches
 batch_insert=True
 if batch_insert==True:
-    batch_size=10
+    batch_size=10000
     batch_indices = list(range(0, len(lsa_df), batch_size))
 
     for n in tqdm(range(int(len(lsa_df)/batch_size))):
