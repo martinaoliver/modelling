@@ -21,7 +21,7 @@ from tqdm import tqdm
 # Specify name of circuit and variant investigated
 
 circuit_n='turinghill'
-variant= int(sys.argv[1])
+variant= 0#int(sys.argv[1])
 
 # Specifiy number of parameter sets in parameterset file to be loaded
 n_samples = 2000000
@@ -43,7 +43,7 @@ lsa_df = pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframe
 #Insert in batches
 batch_insert=True
 if batch_insert==True:
-    batch_size=10000
+    batch_size=10
     batch_indices = list(range(0, len(lsa_df), batch_size))
 
     for n in tqdm(range(int(len(lsa_df)/batch_size))):
@@ -51,3 +51,5 @@ if batch_insert==True:
         lhs_df_cropped = lsa_df.iloc[batch_indices[n]:batch_indices[n] + batch_size+1 ]
         analyticalOutput_df_to_sql(lsa_df, circuit_n, variant, n_samples)
 
+
+# %%

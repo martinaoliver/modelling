@@ -21,10 +21,10 @@ print('heehehe')
 
 
 circuit_n='turinghill'
-variant= 12
+variant= 0
 n_species=2
 # Specifiy number of parameter sets in parameterset file to be loaded
-n_param_sets = 2000000
+n_param_sets = 1000000
 
 
 
