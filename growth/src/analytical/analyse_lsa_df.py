@@ -31,7 +31,7 @@ n_param_sets = 2000000
 
 
 df= pickle.load( open(modellingpath + '/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl'%(circuit_n,variant,n_param_sets), "rb"))
-# df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_turinghill_variant{variant}_{n_param_sets}parametersets_seed0.pkl', "rb"))
+df = df.loc[df['ss_n']==1]# df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/lsa_df_turinghill_variant{variant}_{n_param_sets}parametersets_seed0.pkl', "rb"))
 print(f'Variant {variant}')
 print(df['system_class'].value_counts())
 #%%

@@ -30,9 +30,12 @@ L=25; dx =0.05; J = int(L/dx)
 T =2000; dt = 0.005; N = int(T/dt)
 # T =10; dt = 0.1; N = int(T/dt)
 
+L=50; dx =0.1; J = int(L/dx)
+T =5000; dt = 0.02; N = int(T/dt)
 
 
-boundaryCoeff=2;rate=L/T
+
+boundaryCoeff=1;rate=L/T
 suggesteddt = float(dx*dx*2)
 mechanism = 'nogrowth'
 simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 
