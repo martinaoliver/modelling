@@ -28,6 +28,12 @@ from database.databaseFunctions import *
 L=50; dx =0.1; J = int(L/dx)
 T =2000; dt = 0.02; N = int(T/dt)
 boundaryCoeff=1;rate=L/T
+
+L=50; dx =0.1; J = int(L/dx)
+T =2000; dt = 0.02; N = int(T/dt)
+boundaryCoeff=1;rate=L/T
+
+
 suggesteddt = float(dx*dx*2)
 growth = 'edgegrowth2'
 simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 

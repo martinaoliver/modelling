@@ -32,6 +32,12 @@ def df_from_general_query(query):
             df = pd.read_sql_query(query,con=conn)
             return df 
 
+def model_param_dict_from_model_param_id(model_param_id):
+    query = lambda model_param_id: f'''select * from model_param where model_param_id='{model_param_id}';'''
+    model_param_df = df_from_general_query(query(model_param_id))
+    model_param_dict = model_param_df.iloc[0].to_dict()
+    return model_param_dict
+
 #this function allows us to "on conflict - update"
 def postgres_upsert(table, conn, keys, data_iter):
     from sqlalchemy.dialects.postgresql import insert
@@ -297,10 +303,23 @@ def query_simulationOutput_single_from_sql(sim_param_dict,model_param_dict,query
 
             conn.commit()
 
+            return simulationOutput
 
 
+def query_simulationOutput_single_from_sql_from_id(model_param_id,simulation_param_uuid,query_column, ssID=0):
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+
+            insert_query = f'SELECT "{query_column}" from simulation_output where "model_param_id"=(%s) and "simulation_param_uuid"=(%s) and "ssID"=(%s)'
+            values = (model_param_id, simulation_param_uuid, ssID)
+            cursor.execute(insert_query, values)
+            simulationOutput = np.array(cursor.fetchall()[0][0],dtype=float)
+
+            conn.commit()
 
             return simulationOutput
+
+
 
 
 def query_simulationOutput_multiple_from_sql(sim_param_dict,model_param_dict,query_column, ssID=0):

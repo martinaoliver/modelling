@@ -49,7 +49,7 @@ df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/mu
 
 query = f'''select mp."parID", so."ssID"  from simulation_output so
 join model_param mp on mp.model_param_id = so.model_param_id
-where simulation_param_uuid='6952d306-f619-4af1-963c-aa28acb132df'
+where simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
 and mp.variant='{variant}'
 and mp.n_samples={n_samples};'''
 simulated_parID_ss = general_query(query)
@@ -124,6 +124,31 @@ def numerical_check(df,a):
         simulateOpenBoundary=True
         try:
 
+                
+            if simulateNoGrowth == True:
+                mechanism = 'nogrowth'
+                boundaryCoeff=1
+                U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n,boundaryCoeff=boundaryCoeff, tqdm_disable=tqdm_disable)
+                filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
+                simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 'boundaryCoeff':boundaryCoeff, 'mechanism':mechanism, 'growth_rate': rate}
+                query = insert_simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D, ssID,dimensions='1D',allow_update=True)
+                with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Dfinal_{filename(mechanism,parIDssID)}.pkl', 'wb') as f:
+                    pickle.dump(U_final_1D, f)
+                with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Drecord_{filename(mechanism,parIDssID)}.pkl', 'wb') as f:
+                    pickle.dump(U_record_1D, f)
+
+
+            if simulateOpenBoundary == True:
+                mechanism = 'openboundary'
+                boundaryCoeff=2
+                U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n,boundaryCoeff=boundaryCoeff, tqdm_disable=tqdm_disable)
+                filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
+                simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 'boundaryCoeff':boundaryCoeff, 'mechanism':mechanism, 'growth_rate': rate}
+                query = insert_simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D,ssID, dimensions='1D',allow_update=True)
+                with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Dfinal_{filename(mechanism,parIDssID)}.pkl', 'wb') as f:
+                    pickle.dump(U_final_1D, f)
+                with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Drecord_{filename(mechanism,parIDssID)}.pkl', 'wb') as f:
+                    pickle.dump(U_record_1D, f)
 
 
 
@@ -139,30 +164,7 @@ def numerical_check(df,a):
                     pickle.dump(U_final_1D, f)
                 with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Drecord_{filename(mechanism,parIDssID)}.pkl', 'wb') as f:
                     pickle.dump(U_record_1D, f)
-                
-            if simulateNoGrowth == True:
-                mechanism = 'nogrowth'
-                boundaryCoeff=1
-                U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n,boundaryCoeff=boundaryCoeff, tqdm_disable=tqdm_disable)
-                filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
-                simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 'boundaryCoeff':boundaryCoeff, 'mechanism':mechanism, 'growth_rate': rate}
-                query = insert_simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D, ssID,dimensions='1D',allow_update=True)
-                with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Dfinal_{filename(mechanism,parIDssID)}.pkl', 'wb') as f:
-                    pickle.dump(U_final_1D, f)
-                with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Drecord_{filename(mechanism,parIDssID)}.pkl', 'wb') as f:
-                    pickle.dump(U_record_1D, f)
 
-            if simulateOpenBoundary == True:
-                mechanism = 'openboundary'
-                boundaryCoeff=2
-                U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n,boundaryCoeff=boundaryCoeff, tqdm_disable=tqdm_disable)
-                filename= lambda mechanism, parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
-                simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N, 'boundaryCoeff':boundaryCoeff, 'mechanism':mechanism, 'growth_rate': rate}
-                query = insert_simulationOutput_to_sql(simulation_param_dict, model_param_dict,U_final_1D,U_record_1D,ssID, dimensions='1D',allow_update=True)
-                with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Dfinal_{filename(mechanism,parIDssID)}.pkl', 'wb') as f:
-                    pickle.dump(U_final_1D, f)
-                with open(modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder}/2Drecord_{filename(mechanism,parIDssID)}.pkl', 'wb') as f:
-                    pickle.dump(U_record_1D, f)
 
         except ValueError:
             print('!!!!!!!!!!!!!')

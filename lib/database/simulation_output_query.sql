@@ -220,3 +220,25 @@ INNER JOIN model_param mp ON pco.model_param_id = mp.model_param_id
 INNER JOIN analytical_output ao ON (pco.model_param_id, pco."ssID") = (ao.model_param_id, ao."ssID")
 WHERE ao.system_class = 'hopf'
 and pattern_class_nogrowth='Non-Stationary pattern';
+
+select ao.system_class, count(*) from pattern_class_output pco
+inner join model_param mp on pco.model_param_id = mp.model_param_id
+inner join analytical_output ao on (pco.model_param_id,pco."ssID") = (ao.model_param_id, ao."ssID")
+where mp.circuit_n='turinghill'
+-- and ( mp.variant='11' or mp.variant='12')
+and mp.variant='0'
+-- and n_samples=1000000
+
+and ao.ss_n=1
+group by system_class;
+
+
+select ao.system_class, count(*) from analytical_output ao
+inner join model_param mp on ao.model_param_id = mp.model_param_id
+where mp.circuit_n='turinghill'
+-- and ( mp.variant='11' or mp.variant='12')
+and mp.variant='0'
+-- and n_samples=1000000
+
+and ao.ss_n=1
+group by system_class;

@@ -10,20 +10,21 @@ from tqdm import tqdm
 import copy
 from scipy.sparse import linalg
 from scipy.linalg import solve_banded
-from equations.class_circuit_eq import *
+# from equations.class_circuit_eq import *
 from scipy.ndimage import laplace
 import numba
 from numba import cuda, float32
 # @numba.jit(nopython=True)
 
-def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
+# def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
+def adi(L_x,L_y,J,I,T,N, n_species,D,tqdm_disable=False,stochasticity=0, steadystates=0):
     #for dt/dx^2 <1 (stability criterion): t_gridpoints approx < xgridpoints^2
     # parent_list = {'circuit1':circuit1, 'circuit2':circuit2,'circuit3':circuit3,'circuit4':circuit4,'circuit5':circuit5, 'circuit6':circuit6, 'circuit7':circuit7, 'turinghill':turinghill}
     # f = parent_list[circuit_n](par_dict, stochasticity=stochasticity)
     def f_Turing(U,n_species=2):
         dudt = [0]*n_species
         dudt[0]= 5*U[0] - 6*U[1] + 1
-        dudt[1] = 6*U[0]- 7*U[1] 
+        dudt[1] = 6*U[0]- 7*U[1] + 1
         return dudt
 
     @numba.jit(nopython=True)
@@ -234,3 +235,32 @@ def adi(par_dict,L_x,L_y,J,I,T,N, circuit_n, n_species,D,tqdm_disable=False,stoc
 
 
 
+
+
+
+n_species=2
+
+
+#solver parameters
+L_x = 5; L_y=L_x; dx =0.05; dy=dx;J = int(L_x/dx); I=J
+T =25; dt = 0.005; N = int(T/dt)
+
+
+suggesteddt = float(dx*dx*2)
+print(dt, suggesteddt)
+x_grid = numpy.array([j*dx for j in range(J)])
+y_grid = numpy.array([i*dy for i in range(I)])
+t_grid = numpy.array([n*dt for n in range(N)])
+
+D=[0.02,0.4]
+
+
+
+
+
+U_record, U = adi(L_x,L_y,J,I,T,N, n_species, D)
+
+
+plt.imshow(-U[0],cmap='PiYG')
+plt.savefig('Turing.pdf')
+plt.show()

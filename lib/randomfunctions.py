@@ -153,34 +153,72 @@ def average_wavelenght_from_numerical(records,grids):
     return average_wavelenght
 
 
-def plot_highest_dispersion(eigenvalues,crop = 1000, top = 5000, L=100):
+def plot_highest_dispersion(eigenvalues,crop = 1000, top = 5000, L=100,legend=False):
     wvn_list = np.array(list(range(0,top+1)))*np.pi/L
     # wvn_list = np.array(list(range(0,5000+1)))*np.pi/100
-    plt.figure(figsize=(4,3))
+    # plt.figure(figsize=(4,3))
 
     plt.plot(wvn_list[:crop], eigenvalues.real[:crop,[-1]], label='Real highest eigenvalue', c='k')
     plt.plot(wvn_list[1:crop], eigenvalues.imag[1:crop,[-1]], linestyle = '--', label = 'Imaginary highest eigenvalue', c='k')
 
-    plt.legend()
+    if legend==True:
+        plt.legend()
     plt.xlabel('Wavenumber')
     plt.ylabel('Highest eigenvalue')
     plt.axhline(y=0, color='k', linestyle='-', linewidth = 0.1)
     plt.grid()
     plt.tight_layout()
 
-def plot_highest_dispersion_hopf(eigenvalues,crop = 1000, top = 5000, L=100):
+def plot_highest_dispersion_noticks(eigenvalues,crop = 1000, top = 5000, L=100,legend=False):
     wvn_list = np.array(list(range(0,top+1)))*np.pi/L
     # wvn_list = np.array(list(range(0,5000+1)))*np.pi/100
-    plt.figure(figsize=(4,3))
+    # plt.figure(figsize=(4,3))
+
+    plt.plot(wvn_list[:crop], eigenvalues.real[:crop,[-1]], label='Real highest eigenvalue', c='k')
+    plt.plot(wvn_list[:crop], eigenvalues.imag[:crop,[-1]], linestyle = '--', label = 'Imaginary highest eigenvalue', c='k')
+
+    if legend==True:
+        plt.legend()
+    plt.xlabel('Wavenumber')
+    plt.ylabel('Highest eigenvalue')
+    plt.axhline(y=0, color='k', linestyle='-', linewidth = 0.3)
+    # plt.grid()
+    # plt.text(horizontalalignment='bottom',verticalalignment='right' ,s='-> inf')
+    plt.yticks([0])
+    plt.xticks([0,np.amax(wvn_list[:crop])], [0,r"$\rightarrow\infty$"])
+    plt.tight_layout()
+
+def plot_highest_dispersion_hopf(eigenvalues,crop = 1000, top = 5000, L=100, legend=False):
+    wvn_list = np.array(list(range(0,top+1)))*np.pi/L
+    # wvn_list = np.array(list(range(0,5000+1)))*np.pi/100
+    # plt.figure(figsize=(4,3))
     plt.plot(wvn_list[:crop], eigenvalues.real[:crop,[-1]], label='Real highest eigenvalue', c='k')
     plt.plot(wvn_list[1:crop], eigenvalues.imag[1:crop,[-1]], linestyle = '--', label = 'Imaginary highest eigenvalue', c='k')
     plt.plot(wvn_list[1:crop], eigenvalues.imag[1:crop,[-2]], linestyle = '--', label = 'Imaginary highest eigenvalue', c='k')
 
-    plt.legend()
+    if legend==True:
+        plt.legend()
     plt.xlabel('Wavenumber')
     plt.ylabel('Highest eigenvalue')
     plt.axhline(y=0, color='k', linestyle='-', linewidth = 0.1)
     plt.grid()
+    plt.tight_layout()
+
+def plot_highest_dispersion_hopf_noticks(eigenvalues,crop = 1000, top = 5000, L=100, legend=False):
+    wvn_list = np.array(list(range(0,top+1)))*np.pi/L
+    # wvn_list = np.array(list(range(0,5000+1)))*np.pi/100
+    # plt.figure(figsize=(4,3))
+    plt.plot(wvn_list[:crop], eigenvalues.real[:crop,[-1]], label='Real highest eigenvalue', c='k')
+    plt.plot(wvn_list[1:crop], eigenvalues.imag[1:crop,[-1]], linestyle = '--', label = 'Imaginary highest eigenvalue', c='k')
+    plt.plot(wvn_list[1:crop], eigenvalues.imag[1:crop,[-2]], linestyle = '--', label = 'Imaginary highest eigenvalue', c='k')
+
+    if legend==True:
+        plt.legend()
+    plt.xlabel('Wavenumber')
+    plt.ylabel('Highest eigenvalue')
+    plt.axhline(y=0, color='k', linestyle='-', linewidth = 0.1)
+    plt.yticks([0])
+    plt.xticks([0,np.amax(wvn_list[:crop])], [0,r"$\rightarrow\infty$"])
     plt.tight_layout()
 
 

@@ -4,7 +4,11 @@ from matplotlib import cm
 cmap = cm.Spectral_r
 cmap=cm.coolwarm
 cmap = cm.magma
+from matplotlib.colors import ListedColormap
+import seaborn as sns
+my_cmap = ListedColormap(sns.color_palette("Spectral",256))   
 # from sklearn import preprocessing
+import seaborn as sns
 
 def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False, L=1):
     if round==True:
@@ -49,9 +53,9 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
         plt.show()
 
 
-def surfpattern(results,L,dx,J,T, record_every_x_hours=10,growth='linear', rate=0, morphogen = 0,savefig=False,filename='',savefigpath='',logResults=False, normalize=False, cmap=cm.magma, space_crop=None):
+def surfpattern(results,L,dx,J,T, record_every_x_hours=10,growth='linear', rate=0, morphogen = 0,savefig=False,filename='',savefigpath='',logResults=False, normalize=False, cmap=my_cmap, space_crop=None):
     
-    
+
     dx = float(L)/float(J-1)
     x_grid = np.array([j*dx for j in range(J)])
     t_grid = np.arange(0,T,10) 
@@ -65,7 +69,7 @@ def surfpattern(results,L,dx,J,T, record_every_x_hours=10,growth='linear', rate=
 
     # t,x = np.meshgrid(t_grid, x_grid)
     # plt.contourf(t,x,results, cmap=cmap)
-    plt.contourf(x,t,results, cmap=cmap)
+    plt.contourf(x,t,results, levels=100, cmap=cmap)
     if logResults==True:
         plt.colorbar(label='Concentration (logscale)')
     else:
@@ -82,7 +86,7 @@ def surfpattern(results,L,dx,J,T, record_every_x_hours=10,growth='linear', rate=
     else:
         plt.show()
     
-def surfpattern1(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
+def surfpattern1(results,grids,savefigpath,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
     fig,ax = plt.subplots(1,len(morphogen))
     for count,n in enumerate(morphogen):
         if normalize == True:
@@ -97,20 +101,17 @@ def surfpattern1(results,grids,growth='linear', rate=0, morphogen = 0,savefig=Fa
 
         # t,x = np.meshgrid(t_grid, x_grid)
         # plt.contourf(t,x,results, cmap=cmap)
-        ax[count].contourf(x,t,results, cmap=cmap)
-        if logResults==True:
-            plt.colorbar(label='Concentration (logscale)')
-        else:
-            plt.colorbar()
+        contour = ax[count].contourf(x,t,results, levels=100, cmap=cmap)
+        fig.colorbar(contour, ax=ax[count], orientation='vertical')
 
+        ax[count].set_ylabel('Time')
+        ax[count].set_xlabel('Space')
 
-        plt.ylabel('Time')
-        plt.xlabel('Space')
-        if savefig==True:
-            plt.savefig('%s_overtime.png'%filename)
-        # plt.show()
+    if savefig==True:
+        plt.savefig('%s%s.pdf'%(savefigpath,filename))
+    plt.show()
 
-def surfpattern2(results,grids,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
+def surfpattern2(results,grids,savefigpath,growth='linear', rate=0, morphogen = 0,savefig=False,filename='1',logResults=False, normalize=False):
     fig,ax = plt.subplots(1,len(morphogen))
     x_grid = grids[0] 
     t_grid = grids[1]
@@ -119,10 +120,10 @@ def surfpattern2(results,grids,growth='linear', rate=0, morphogen = 0,savefig=Fa
 
     for count,n in enumerate(morphogen):
         values = results[n]
-        ax[count].contourf(x,t,values, cmap=cmap)
+        contour = ax[count].contourf(x,t,results, levels=100, cmap=cmap)
+        ax[count].set_ylabel('Time')
+        ax[count].set_xlabel('Space')
 
-
-
-    ax[0].set_ylabel('Time')
-    ax[0].set_xlabel('Space')
+    if savefig==True:
+        plt.savefig('%s%s.pdf'%(savefigpath,filename))
     plt.show()
