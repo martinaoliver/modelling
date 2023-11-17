@@ -229,7 +229,7 @@ where mp.circuit_n='turinghill'
 and mp.variant='0'
 -- and n_samples=1000000
 
-and ao.ss_n=1
+-- and ao.ss_n=1
 group by system_class;
 
 
