@@ -47,8 +47,8 @@ simulation_param_dict = {'L':L, 'dx':dx, 'J':J, 'T':T, 'dt':dt, 'N':N,
 
 parID = 'x'
 circuit_n='turinghill'
-variant= 12
-n_samples=1000000
+variant= 0
+n_samples=2000000
 folder = f'{circuit_n}_variant{variant}'
 filename= lambda parID: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r_T%r_N%r'%(circuit_n,variant,boundaryCoeff, mechanism,rate,parID,L,J,T,N)
 print(filename(parID), 'filename')

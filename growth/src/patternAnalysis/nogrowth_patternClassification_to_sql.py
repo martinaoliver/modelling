@@ -32,11 +32,11 @@ from tqdm import tqdm
 
 
 #%%
-# L=25; dx =0.05; J = int(L/dx)
-# T =2000; dt = 0.005; N = int(T/dt)
+L=25; dx =0.05; J = int(L/dx)
+T =2000; dt = 0.005; N = int(T/dt)
 
-L=50; dx =0.1; J = int(L/dx)
-T =5000; dt = 0.02; N = int(T/dt)
+# L=50; dx =0.1; J = int(L/dx)
+# T =5000; dt = 0.02; N = int(T/dt)
 
 x_grid = np.array([j*dx for j in range(J)])
 
@@ -70,13 +70,13 @@ inner join analytical_output ao on (ao.model_param_id,ao."ssID") = (so.model_par
 -- where ao.system_class not in ('turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf', 'turing semi-hopf')
 -- where ao.system_class in ('hopf')
 and mp.variant='{variant}'
-and so.simulation_param_uuid='a3913ecd-bfe0-4fd6-b8ef-bde9895b1841'
+and so.simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
 and mp.n_samples={n_samples}'''
 parIDssID = general_query(query)
 
 
  #%%
-for parID,ssID in tqdm(parIDssID[0]):
+for parID,ssID in tqdm(parIDssID[0][:2]):
     #model param dict
     model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
     parIDdotssID =f'{parID}.{ssID}'
