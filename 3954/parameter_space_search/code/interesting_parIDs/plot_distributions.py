@@ -11,6 +11,8 @@ from numerical_solvers_variableboundary import *
 import pickle
 import pandas as pd
 import seaborn as sns
+from matplotlib import pyplot as plt
+import numpy as np
 # general_df = pickle.load(open('bullseye_df.pkl', "rb"))
 general_df = pickle.load(open('interesting_parIDs.pkl', "rb"))
 
