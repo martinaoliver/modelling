@@ -187,6 +187,7 @@ print(f'len(df) = {len(df)}')
 print('loadedd')
 total_params=1000
 print(f'total params {total_params}')
+printf('total params %s and %s', total_params, 123)
 df = df.iloc[:total_params]
 print(df)
 

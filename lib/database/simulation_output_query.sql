@@ -193,15 +193,16 @@ and simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37';
 
 
 -- select mp."parID", so."ssID"  from simulation_output so
-select count(*) from simulation_output so
+select ao.system_class, count(*) from simulation_output so
 inner join model_param mp on so.model_param_id = mp.model_param_id
 inner join analytical_output ao on (ao.model_param_id,ao."ssID") = (so.model_param_id, so."ssID")
 --
 -- where ao.system_class in ('turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf', 'turing semi-hopf')
 -- where ao.system_class in ('hopf')
-and mp.variant='11'
+and mp.variant='0'
 and so.simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
-and mp.n_samples=1000000;
+and mp.n_samples=2000000
+group by system_class;
 
 
 
@@ -242,3 +243,5 @@ and mp.variant='0'
 
 and ao.ss_n=1
 group by system_class;
+
+
