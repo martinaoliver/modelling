@@ -226,8 +226,8 @@ select ao.system_class, count(*) from pattern_class_output pco
 inner join model_param mp on pco.model_param_id = mp.model_param_id
 inner join analytical_output ao on (pco.model_param_id,pco."ssID") = (ao.model_param_id, ao."ssID")
 where mp.circuit_n='turinghill'
--- and ( mp.variant='11' or mp.variant='12')
-and mp.variant='0'
+and ( mp.variant='0' or mp.variant='11' or mp.variant='12')
+-- and mp.variant='0'
 -- and n_samples=1000000
 
 -- and ao.ss_n=1

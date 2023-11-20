@@ -81,21 +81,21 @@ for parID,ssID in tqdm(parIDssID[0]):
     model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
     parIDdotssID =f'{parID}.{ssID}'
     #load simulations
-    U_final = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%(filename(parIDdotssID)), 'rb'))
-    U_final = np.round(U_final,decimals=4)
+    # U_final = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%(filename(parIDdotssID)), 'rb'))
+    # U_final = np.round(U_final,decimals=4)
     U_record = pickle.load( open(data_path + '/2Drecord_%s.pkl'%(filename(parIDdotssID)), 'rb'))
-    peaks = countPeaks(U_final, showPlot1D=False)
+    # peaks = countPeaks(U_final, showPlot1D=False)
 
-#show simulations
-    plot=False
-    if plot==True:
-        plot1D(U_final, plotPeaks=True, peaks=peaks)
-        plt.show()
-        surfpattern(U_record,L,dx,J,T, 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-        plt.show()
+# #show simulations
+#     plot=False
+#     if plot==True:
+#         plot1D(U_final, plotPeaks=True, peaks=peaks)
+#         plt.show()
+#         surfpattern(U_record,L,dx,J,T, 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+#         plt.show()
 
     #classify simulations
-    pattern_class, converged, flat = patternClassification_nogrowth_noRegularity(U_final, U_record)
+    pattern_class, converged, flat = patternClassification_nogrowth_noRegularity(U_record)
     print( pattern_class, converged, flat)
 
     # insert classification into psql 

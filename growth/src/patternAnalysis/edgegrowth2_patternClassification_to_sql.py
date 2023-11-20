@@ -82,24 +82,24 @@ for parID,ssID in tqdm(parIDssID[0]):
     parIDdotssID =f'{parID}.{ssID}'
 
 
-    #load simulations
-    U_final = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%(filename(parIDdotssID)), 'rb'))
-    U_final = np.round(U_final,decimals=4)
+    # #load simulations
+    # U_final = pickle.load( open(data_path + '/2Dfinal_%s.pkl'%(filename(parIDdotssID)), 'rb'))
+    # U_final = np.round(U_final,decimals=4)
     U_record = pickle.load( open(data_path + '/2Drecord_%s.pkl'%(filename(parIDdotssID)), 'rb'))
 
-    #show simulations
-    plot=False
-    if plot==True:
-        peaks = countPeaks(U_final, showPlot1D=False)
-        U_final = [NormalizeData(U) for U in U_final]
-        plot1D(U_final, plotPeaks=False, peaks=peaks)
-        plt.show()
-        surfpattern(U_record,L,dx,J,T, 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
-        plt.show()
+    # #show simulations
+    # plot=False
+    # if plot==True:
+    #     peaks = countPeaks(U_final, showPlot1D=False)
+    #     U_final = [NormalizeData(U) for U in U_final]
+    #     plot1D(U_final, plotPeaks=False, peaks=peaks)
+    #     plt.show()
+    #     surfpattern(U_record,L,dx,J,T, 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+    #     plt.show()
 
     #classify simulations
 
-    pattern_class, max_n_peaks = patternClassification_openboundaryEdgegrowth2(U_final)
+    pattern_class, max_n_peaks = patternClassification_openboundaryEdgegrowth2(U_record)
     print(pattern_class, max_n_peaks)
     # insert classification into psql 
     insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_edgegrowth2',allow_update=True)
