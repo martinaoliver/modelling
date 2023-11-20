@@ -76,7 +76,7 @@ parIDssID = general_query(query)
 
 
  #%%
-for parID,ssID in tqdm(parIDssID[0][:2]):
+for parID,ssID in tqdm(parIDssID[0]):
     #model param dict
     model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
     parIDdotssID =f'{parID}.{ssID}'
