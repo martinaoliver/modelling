@@ -16,7 +16,10 @@ def countPeaks(U, showPlot1D=True):
 
     return peaks
 
-def patternClassification_nogrowth_noRegularity(U_final, U_record, normalize=True):
+def patternClassification_nogrowth_noRegularity( U_record, normalize=True):
+
+    U_final = np.stack([U_record_morphogen[-1,:] for U_record_morphogen in U_record])
+    U_final = np.round(U_final,decimals=4)
     #check if flat
     relRangeFlat = [(np.amax(U) - np.amin(U))/(np.amax(U)+1e-8) for U in U_final]
     if any(i>0.01 for i in relRangeFlat):
