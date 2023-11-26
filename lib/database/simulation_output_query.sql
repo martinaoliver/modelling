@@ -245,3 +245,36 @@ and ao.ss_n=1
 group by system_class;
 
 
+
+with cluster_pattern_class as (
+SELECT
+            model_param_id,
+            MAX(pattern_class_nogrowth) AS pattern_class_nogrowth,
+            MAX(pattern_class_openboundary) AS pattern_class_openboundary,
+            MAX(pattern_class_edgegrowth2) AS pattern_class_edgegrowth2
+
+            FROM pattern_class_output
+
+
+            GROUP BY model_param_id)
+
+
+---select pco.model_param_id, pattern_class_nogrowth, pattern_class_openboundary, pattern_class_edgegrowth2 from cluster_pattern_class pco
+select count(*) from cluster_pattern_class pco
+
+join model_param mp on mp.model_param_id = pco.model_param_id
+join analytical_output ao on mp.model_param_id = ao.model_param_id
+where mp.circuit_n='turinghill'
+
+
+
+and (( mp.variant='11' or mp.variant='12')
+and mp.n_samples=1000000
+and ss_n=1)
+---and (simulation_param_uuid = '132323a4-3f93-4287-aca9-d18e84848e37' or simulation_param_uuid = 'b94c9e61-a717-4470-957b-a59ff727e948' or simulation_param_uuid = '6952d306-f619-4af1-963c-aa28acb132df'))
+
+or
+
+( mp.variant='0'
+and mp.n_samples=2000000
+and ss_n=1);

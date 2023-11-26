@@ -1,16 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
-cmap = cm.Spectral_r
-cmap=cm.coolwarm
-cmap = cm.magma
+
 from matplotlib.colors import ListedColormap
 import seaborn as sns
 my_cmap = ListedColormap(sns.color_palette("Spectral",256))   
 # from sklearn import preprocessing
 import seaborn as sns
 
-def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False, L=1):
+def plot1D(U,dx=0.05,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.001,round=False, plotPeaks=False, peaks=False, L=1):
     if round==True:
         U = np.round(U,decimals=3)
     
@@ -34,7 +32,7 @@ def plot1D(U,morphogen='both', savefig=False,filename='',savefigpath='',pad=0.00
         # ax.ticklabel_format(useOffset=False)
 
         locs, labels = plt.xticks()
-        new_labels=locs/20
+        new_labels=locs*dx
         plt.xticks(ticks=locs, labels=new_labels)
         plt.xlim(0,len(U[0]))
         if plotPeaks==True:
@@ -127,3 +125,64 @@ def surfpattern2(results,grids,savefigpath,growth='linear', rate=0, morphogen = 
     if savefig==True:
         plt.savefig('%s%s.pdf'%(savefigpath,filename))
     plt.show()
+
+
+
+
+def surfpattern_growth(results,L,dx,J,T, masking=False, record_every_x_hours=10,growth='linear', rate=0, morphogen = 0,savefig=False,filename='',savefigpath='',logResults=False, normalize=False, cmap=my_cmap, space_crop=None):
+    
+    def create_growth_mask(shape):
+        height, width = shape
+        middle_point = width // 2
+        mask = np.zeros((height, width))
+
+        for t in range(height):
+            growth_extent = int(1 + t*width/2/height)
+            start = max(middle_point - growth_extent, 0)
+            end = min(middle_point + growth_extent, width)
+            mask[t, start:end] = 1
+            
+        return mask
+
+    mask = create_growth_mask(np.shape(results[0]))
+
+
+
+
+    dx = float(L)/float(J-1)
+    x_grid = np.array([j*dx for j in range(J)])
+    t_grid = np.arange(0,T,10) 
+    
+    if normalize == True:
+        print('NEEDS NORMALIZATION')
+    results = results[morphogen]
+    if masking == True:
+        results = results * mask
+        # Create a masked array where zeros are masked
+        results = np.ma.masked_where(results == 0, results)
+
+
+    values = results.reshape(len(x_grid),len(t_grid))
+    x, t = np.meshgrid(x_grid, t_grid)
+
+    # t,x = np.meshgrid(t_grid, x_grid)
+    # plt.contourf(t,x,results, cmap=cmap)]
+
+    
+    print(np.shape(x), np.shape(t), np.shape(results))
+    plt.contourf(x,t,results, levels=100, cmap=my_cmap)
+    if logResults==True:
+        plt.colorbar(label='Concentration (logscale)')
+    else:
+        plt.colorbar()
+
+
+    plt.ylabel('Time')
+    plt.xlabel('Space')
+    if savefig==True:
+        plt.savefig('%s%s.pdf'%(savefigpath,filename))
+        plt.show()
+        plt.close()
+
+    else:
+        plt.show()
