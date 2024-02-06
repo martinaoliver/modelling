@@ -242,8 +242,9 @@ n_species=2
 
 
 #solver parameters
-L_x = 5; L_y=L_x; dx =0.05; dy=dx;J = int(L_x/dx); I=J
+L_x = 5; L_y=L_x; dx =0.1; dy=dx;J = int(L_x/dx); I=J
 T =25; dt = 0.005; N = int(T/dt)
+T =25; dt = 0.01; N = int(T/dt)
 
 
 suggesteddt = float(dx*dx*2)

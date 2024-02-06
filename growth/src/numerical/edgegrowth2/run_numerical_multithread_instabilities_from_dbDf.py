@@ -22,10 +22,10 @@ from database.databaseFunctions import insert_simulationOutput_to_sql, general_q
 import pickle
 from datetime import date
 import pandas as pd
-import numpy as np
 import time
 import multiprocessing
-import matplotlib.pyplot as plt
+import psycopg2
+
 '''
 ====================================================
     Code
@@ -44,17 +44,52 @@ circuit_n='turinghill'
 variant = int(sys.argv[2])
 n_samples=1000000
 
-# df= pickle.load( open(modellingpath + f'/growth/out/analytical/instability/multiinstability_df_circuit{circuit_n}_variant{variant}_combinedparametersets.pkl', 'rb'))
-df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/multiinstability_lsa_df_circuitturinghill_variant{variant}_combinedparametersets.pkl','rb'))
+# # df= pickle.load( open(modellingpath + f'/growth/out/analytical/instability/multiinstability_df_circuit{circuit_n}_variant{variant}_combinedparametersets.pkl', 'rb'))
+# df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/multiinstability_lsa_df_circuitturinghill_variant{variant}_combinedparametersets.pkl','rb'))
 
-query = f'''select mp."parID", so."ssID"  from simulation_output so
-join model_param mp on mp.model_param_id = so.model_param_id
-where simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
-and mp.variant='{variant}'
-and mp.n_samples={n_samples};'''
-simulated_parID_ss = general_query(query)
+# query = f'''select mp."parID", so."ssID"  from simulation_output so
+# join model_param mp on mp.model_param_id = so.model_param_id
+# where simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
+# and mp.variant='{variant}'
+# and mp.n_samples={n_samples};'''
+# simulated_parID_ss = general_query(query)
 
-df = df.drop(simulated_parID_ss[0])
+# df = df.drop(simulated_parID_ss[0])
+
+
+
+
+
+query = '''select mp.* from pattern_class_output pco
+    join analytical_output ao on (pco.model_param_id, pco."ssID") = (ao.model_param_id, ao."ssID")
+    join model_param mp on mp.model_param_id = ao.model_param_id
+    where (simulation_param_uuid = '132323a4-3f93-4287-aca9-d18e84848e37'
+    and ( mp.variant='11' or mp.variant='12')
+    and mp.n_samples=1000000
+    and ss_n=1)
+
+    or (simulation_param_uuid = '132323a4-3f93-4287-aca9-d18e84848e37'
+    and mp.variant='0' 
+    and mp.n_samples=2000000
+    and ss_n=1);
+    '''
+def df_from_query(query):
+
+    credentials=f"postgresql://moliver:moliver@ld-rendres07.bc.ic.ac.uk/moliver"
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+            df = pd.read_sql_query(query, conn)
+    df = df.dropna(axis=1, how='all')
+    df = df.drop(['model_param_id'], axis=1)
+    # df = df.drop(model_param_dict.keys(), axis=1)
+    df.set_index('parID', inplace=True)
+    return df
+
+
+df = df_from_query(query)
+
+
+
 
 #%%
 
