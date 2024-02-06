@@ -60,7 +60,7 @@ n_samples=1000000
 
 
 
-query = '''select mp.*, ao."ssID" from pattern_class_output pco
+query = '''select mp.*, ao."ssID", ao."ss_list" from pattern_class_output pco
     join analytical_output ao on (pco.model_param_id, pco."ssID") = (ao.model_param_id, ao."ssID")
     join model_param mp on mp.model_param_id = ao.model_param_id
     where (simulation_param_uuid = '132323a4-3f93-4287-aca9-d18e84848e37'
