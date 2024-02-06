@@ -82,7 +82,7 @@ def df_from_query(query):
     df = df.dropna(axis=1, how='all')
     df = df.drop(['model_param_id'], axis=1)
     # df = df.drop(model_param_dict.keys(), axis=1)
-    df.set_index('parID', inplace=True)
+    df.set_index(['parID','ssID'], inplace=True)
     return df
 
 
