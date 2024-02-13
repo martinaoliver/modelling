@@ -21,7 +21,7 @@ import numpy as np
 
 
 
-
+#%%
 
 
 
@@ -33,20 +33,26 @@ n_samples = 2000000
 # par_dicxt = {'c1':0.1, 'c2':1,'c3':0.9,'c4':1, 'd_A': 1, 'd_B':10}
 df= pickle.load( open(modellingpath + "/growth/out/analytical/turing/turing_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
 df= pickle.load( open(modellingpath + "/growth/out/analytical/lsa_dataframes/lsa_df_%s_variant%r_%rparametersets.pkl"%(circuit_n,variant,n_samples), "rb"))
+
+#%%
 # df = multiple_df.xs(0, level=1)
 #solver parameters
 L=10; dx =0.1; J = int(L/dx)
 T =20; dt = 0.02; N = int(T/dt)
 
 
-#solver parameters
-L=50; dx =0.05; J = int(L/dx)
-T =2000; dt = 0.005; N = int(T/dt)
+# #solver parameters
+# L=50; dx =0.05; J = int(L/dx)
+# T =2000; dt = 0.005; N = int(T/dt)
+
+# #solver parameters
+# L=25; dx =0.05; J = int(L/dx)
+# T =2000; dt = 0.005; N = int(T/dt)
 
 
 #solver parameters
-L=100; dx =0.3; J = int(L/dx)
-T =18000; dt = 0.18; N = int(T/dt)
+L=100; dx =0.2; J = int(L/dx)
+T =18000; dt = 0.05; N = int(T/dt)
 
 # L=10; dx =1; J = int(L/dx)
 # T =30; dt = 0.5; N = int(T/dt)
@@ -67,7 +73,7 @@ print(f'suggested dt = {suggesteddt}, used dt = {dt}')
 
 # for parID,ss in df.index:
 # parID= (14414,0) #parameter set to use
-parID=669362 ;ssID=0#parameter set to use
+parID=1414726  ;ssID=0#parameter set to use 669362 29867
 par_dict = df.loc[parID,ssID].to_dict()
 # ssID=par_dict['']
 
@@ -115,7 +121,7 @@ if open_boundary == True:
     print(simulation_param_dict)
 
 
-    U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n,boundaryCoeff=1, tqdm_disable=False)
+    U_final_1D,U_record_1D, U0, x_grid, reduced_t_grid= cn_nogrowth(par_dict,L,J,T,N, circuit_n,boundaryCoeff=2, tqdm_disable=False)
     st = time.time()
     plot1D(U_final_1D, savefig=False,filename='')
     plt.show()
@@ -144,7 +150,7 @@ if edgegrowth2 == True:
     plt.show()
     elapsed_time = time.time() - st
     print('Execution time no numba:', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-    surfpattern(U_record_1D, L,dx,J,T, 'linear',morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
+    surfpattern_growth(U_record_1D, L,dx,J,T, masking=True,growth='linear',morphogen=0, rate=rate, savefig=False,filename='',logResults=False,normalize=False)
     plt.show()
 
 # %%
