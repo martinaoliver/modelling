@@ -38,29 +38,7 @@ else:
     Number_of_Threads = 1
 print('Number of Threads set to ', Number_of_Threads)
 
-
-#df with only instabilities of 8 and 9
-circuit_n='turinghill'
-variant = int(sys.argv[2])
-n_samples=1000000
-
-# # df= pickle.load( open(modellingpath + f'/growth/out/analytical/instability/multiinstability_df_circuit{circuit_n}_variant{variant}_combinedparametersets.pkl', 'rb'))
-# df= pickle.load( open(modellingpath + f'/growth/out/analytical/lsa_dataframes/multiinstability_lsa_df_circuitturinghill_variant{variant}_combinedparametersets.pkl','rb'))
-
-# query = f'''select mp."parID", so."ssID"  from simulation_output so
-# join model_param mp on mp.model_param_id = so.model_param_id
-# where simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
-# and mp.variant='{variant}'
-# and mp.n_samples={n_samples};'''
-# simulated_parID_ss = general_query(query)
-
-# df = df.drop(simulated_parID_ss[0])
-
-
-
-
-
-query = '''select mp.*, ao."ssID", ao."ss_list" from pattern_class_output pco
+pre_crop_query = '''select mp.*, ao."ssID", ao."ss_list" from pattern_class_output pco
     join analytical_output ao on (pco.model_param_id, pco."ssID") = (ao.model_param_id, ao."ssID")
     join model_param mp on mp.model_param_id = ao.model_param_id
     where (simulation_param_uuid = '132323a4-3f93-4287-aca9-d18e84848e37'
@@ -82,12 +60,32 @@ def df_from_query(query):
     df = df.dropna(axis=1, how='all')
     df = df.drop(['model_param_id'], axis=1)
     # df = df.drop(model_param_dict.keys(), axis=1)
-    df.set_index(['parID','ssID'], inplace=True)
+    df.set_index(['parID','ssID', 'variant', 'n_samples'], inplace=True)
     return df
 
 
-df = df_from_query(query)
+pre_crop_df = df_from_query(pre_crop_query)
 
+
+
+
+# def general_query(query):
+#     with psycopg2.connect(credentials) as conn:
+#         with conn.cursor() as cursor:
+#             cursor.execute(query)
+#             column_names = [i[0] for i in cursor.description]
+#             return cursor.fetchall(), column_names
+
+remove_query = f'''select mp."parID", so."ssID", mp."variant", mp."n_samples"  from simulation_output so
+join model_param mp on mp.model_param_id = so.model_param_id
+where simulation_param_uuid='e04c9c57-8e18-4908-8d45-d68b27b165c2';'''
+
+simulated_parID_ss = general_query(remove_query)
+
+df = pre_crop_df.drop(simulated_parID_ss[0])
+df = df.reset_index()
+df.set_index(['parID','ssID'], inplace=True)
+df
 
 
 
@@ -129,9 +127,15 @@ def numerical_check(df,a):
     # rate=L/T
     # suggesteddt = float(dx*dx*2)
 
+    # #solver parameters
+    # L=25; dx =0.05; J = int(L/dx)
+    # T =2000; dt = 0.005; N = int(T/dt)
+
     #solver parameters
-    L=25; dx =0.05; J = int(L/dx)
-    T =2000; dt = 0.005; N = int(T/dt)
+    L=100; dx =0.2; J = int(L/dx)
+    T =18000; dt = 0.05; N = int(T/dt)
+
+
     rate=L/T
     suggesteddt = float(dx*dx*2)
 
@@ -142,13 +146,19 @@ def numerical_check(df,a):
 
     else:
         tqdm_disable = True
+    # tqdm_disable = False
     # df_index = np.unique(df.index.get_level_values(0))
-    for parID,ssID in df.index:
+    # for parID,ssID in df.index:
+    for count, (parID,ssID) in enumerate(df.index):
+
         parIDssID = f'{parID}.{ssID}'
         print('parID = ' + str(parIDssID))
-        par_dict = df.loc[(parID,ssID)].to_dict()
-
-
+        # par_dict = df.loc[(parID,ssID)].to_dict()
+        par_dict = df.iloc[count].to_dict()
+        circuit_n = par_dict['circuit_n']
+        variant = par_dict['variant']
+        n_samples = par_dict['n_samples']
+        par_dict['ss_list'] = [float(x) for x in par_dict['ss_list']]
         folder=  f'{circuit_n}_variant{variant}'
 
         model_param_dict = {'parID':parID, 'circuit_n':circuit_n,'variant':variant, 'n_samples':n_samples}
@@ -158,7 +168,6 @@ def numerical_check(df,a):
         simulateNoGrowth=True
         simulateOpenBoundary=True
         try:
-
                 
             if simulateNoGrowth == True:
                 mechanism = 'nogrowth'

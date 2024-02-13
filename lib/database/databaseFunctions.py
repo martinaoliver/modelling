@@ -26,11 +26,24 @@ def general_query(query):
             cursor.execute(query)
             column_names = [i[0] for i in cursor.description]
             return cursor.fetchall(), column_names
-
+        
 def df_from_general_query(query):
     with psycopg2.connect(credentials) as conn:
             df = pd.read_sql_query(query,con=conn)
             return df 
+
+def df_from_query(query):
+
+    credentials=f"postgresql://moliver:moliver@ld-rendres07.bc.ic.ac.uk/moliver"
+    with psycopg2.connect(credentials) as conn:
+        with conn.cursor() as cursor:
+            df = pd.read_sql_query(query, conn)
+    df = df.dropna(axis=1, how='all')
+    df = df.drop(['model_param_id'], axis=1)
+    # df = df.drop(model_param_dict.keys(), axis=1)
+    df.set_index(['parID','ssID', 'variant', 'n_samples'], inplace=True)
+    return df
+
 
 def model_param_dict_from_model_param_id(model_param_id):
     query = lambda model_param_id: f'''select * from model_param where model_param_id='{model_param_id}';'''

@@ -1,36 +1,0 @@
-  0%|          | 0/11 [00:00<?, ?it/s]100%|██████████| 11/11 [00:00<00:00, 483.72it/s]
-Traceback (most recent call last):
-  File "analytical/run_lsa_multithread_seed_dependent.py", line 69, in <module>
-    df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets_seed%s.pkl"%(circuit_n,variant,n_samples,seed), "rb"))
-FileNotFoundError: [Errno 2] No such file or directory: '/rds/general/user/mo2016/home/Documents/modelling/growth/input/parameterfiles/df_turinghill_variant8_10parametersets_seed0.pkl'
-Traceback (most recent call last):
-  File "database_scripts/insert_analytical_output_instabilities.py", line 35, in <module>
-    lhs_df = pickle.load( open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%s_%rparametersets_seed%s.pkl'%(circuit_n,variant,n_samples,seed), "rb"))
-FileNotFoundError: [Errno 2] No such file or directory: '/rds/general/user/mo2016/home/Documents/modelling/growth/input/parameterfiles/df_turinghill_variant8_10parametersets_seed0.pkl'
-  0%|          | 0/11 [00:00<?, ?it/s]100%|██████████| 11/11 [00:00<00:00, 481.33it/s]
-Traceback (most recent call last):
-  File "analytical/run_lsa_multithread_seed_dependent.py", line 69, in <module>
-    df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets_seed%s.pkl"%(circuit_n,variant,n_samples,seed), "rb"))
-FileNotFoundError: [Errno 2] No such file or directory: '/rds/general/user/mo2016/home/Documents/modelling/growth/input/parameterfiles/df_turinghill_variant8_10parametersets_seed1.pkl'
-Traceback (most recent call last):
-  File "database_scripts/insert_analytical_output_instabilities.py", line 35, in <module>
-    lhs_df = pickle.load( open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%s_%rparametersets_seed%s.pkl'%(circuit_n,variant,n_samples,seed), "rb"))
-FileNotFoundError: [Errno 2] No such file or directory: '/rds/general/user/mo2016/home/Documents/modelling/growth/input/parameterfiles/df_turinghill_variant8_10parametersets_seed1.pkl'
-  0%|          | 0/11 [00:00<?, ?it/s]100%|██████████| 11/11 [00:00<00:00, 507.22it/s]
-Traceback (most recent call last):
-  File "analytical/run_lsa_multithread_seed_dependent.py", line 69, in <module>
-    df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets_seed%s.pkl"%(circuit_n,variant,n_samples,seed), "rb"))
-FileNotFoundError: [Errno 2] No such file or directory: '/rds/general/user/mo2016/home/Documents/modelling/growth/input/parameterfiles/df_turinghill_variant8_10parametersets_seed2.pkl'
-Traceback (most recent call last):
-  File "database_scripts/insert_analytical_output_instabilities.py", line 35, in <module>
-    lhs_df = pickle.load( open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%s_%rparametersets_seed%s.pkl'%(circuit_n,variant,n_samples,seed), "rb"))
-FileNotFoundError: [Errno 2] No such file or directory: '/rds/general/user/mo2016/home/Documents/modelling/growth/input/parameterfiles/df_turinghill_variant8_10parametersets_seed2.pkl'
-  0%|          | 0/11 [00:00<?, ?it/s]100%|██████████| 11/11 [00:00<00:00, 442.38it/s]
-Traceback (most recent call last):
-  File "analytical/run_lsa_multithread_seed_dependent.py", line 69, in <module>
-    df= pickle.load( open(modellingpath + "/growth/input/parameterfiles/df_%s_variant%r_%rparametersets_seed%s.pkl"%(circuit_n,variant,n_samples,seed), "rb"))
-FileNotFoundError: [Errno 2] No such file or directory: '/rds/general/user/mo2016/home/Documents/modelling/growth/input/parameterfiles/df_turinghill_variant8_10parametersets_seed3.pkl'
-Traceback (most recent call last):
-  File "database_scripts/insert_analytical_output_instabilities.py", line 35, in <module>
-    lhs_df = pickle.load( open(modellingpath + '/growth/input/parameterfiles/df_%s_variant%s_%rparametersets_seed%s.pkl'%(circuit_n,variant,n_samples,seed), "rb"))
-FileNotFoundError: [Errno 2] No such file or directory: '/rds/general/user/mo2016/home/Documents/modelling/growth/input/parameterfiles/df_turinghill_variant8_10parametersets_seed3.pkl'

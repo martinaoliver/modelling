@@ -37,6 +37,15 @@ from numerical.cn_plot import plot1D, surfpattern
 #%%
 L=25; dx =0.05; J = int(L/dx)
 T =2000; dt = 0.005; N = int(T/dt)
+
+
+#solver parameters
+L=100; dx =0.2; J = int(L/dx)
+T =18000; dt = 0.05; N = int(T/dt)
+
+
+
+
 x_grid = np.array([j*dx for j in range(J)])
 boundaryCoeff=2;rate=L/T
 suggesteddt = float(dx*dx*2)
@@ -102,7 +111,7 @@ for parID,ssID in tqdm(parIDssID[0]):
     pattern_class, max_n_peaks = patternClassification_openboundaryEdgegrowth2(U_record)
     print(pattern_class, max_n_peaks)
     # insert classification into psql 
-    insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_edgegrowth2',allow_update=True)
+    # insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_edgegrowth2',allow_update=True)
 
 
     print('---------')
