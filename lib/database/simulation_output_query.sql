@@ -199,10 +199,24 @@ inner join analytical_output ao on (ao.model_param_id,ao."ssID") = (so.model_par
 --
 -- where ao.system_class in ('turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf', 'turing semi-hopf')
 -- where ao.system_class in ('hopf')
-and mp.variant='0'
-and so.simulation_param_uuid='132323a4-3f93-4287-aca9-d18e84848e37'
-and mp.n_samples=2000000
+-- and mp.variant='0'
+-- and so.simulation_param_uuid='e9956efa-c4f1-439c-8146-5d009bd107d8'
+and so.simulation_param_uuid='b30e41a0-4780-4397-b47d-51c9937f082d'
+-- and so.simulation_param_uuid='e04c9c57-8e18-4908-8d45-d68b27b165c2'
+-- and mp.n_samples=2000000
 group by system_class;
+
+
+
+select  count(*) from simulation_output so
+inner join model_param mp on so.model_param_id = mp.model_param_id
+inner join analytical_output ao on (ao.model_param_id,ao."ssID") = (so.model_param_id, so."ssID")
+
+-- and so.simulation_param_uuid='e9956efa-c4f1-439c-8146-5d009bd107d8'
+-- and so.simulation_param_uuid='b30e41a0-4780-4397-b47d-51c9937f082d'
+and so.simulation_param_uuid='e04c9c57-8e18-4908-8d45-d68b27b165c2'
+--
+;
 
 
 
@@ -278,3 +292,74 @@ or
 ( mp.variant='0'
 and mp.n_samples=2000000
 and ss_n=1);
+
+
+
+
+select mp.*, ao."ssID", ao."ss_list" from simulation_output so
+-- select count(*) from simulation_output so
+    join analytical_output ao on (so.model_param_id, so."ssID") = (ao.model_param_id, ao."ssID")
+    join model_param mp on mp.model_param_id = ao.model_param_id
+    where (simulation_param_uuid = '132323a4-3f93-4287-aca9-d18e84848e37'
+    and ( mp.variant='11' or mp.variant='12')
+    and mp.n_samples=1000000
+    and ss_n=1)
+
+    or (simulation_param_uuid = '132323a4-3f93-4287-aca9-d18e84848e37'
+    and mp.variant='0'
+    and mp.n_samples=2000000
+    and ss_n=1);
+
+
+
+-- select mp."parID", so."ssID", mp."variant", mp."n_samples"  from simulation_output so
+select count(*)  from simulation_output so
+join model_param mp on mp.model_param_id = so.model_param_id
+where simulation_param_uuid='e04c9c57-8e18-4908-8d45-d68b27b165c2';
+
+
+
+
+
+with cluster_pattern_class as (
+SELECT
+            pco.model_param_id,
+            pco."ssID",
+            ao.system_class,
+            pco.simulation_param_uuid,
+            MAX(pattern_class_nogrowth) AS pattern_class_nogrowth,
+            MAX(pattern_class_openboundary) AS pattern_class_openboundary,
+            MAX(pattern_class_edgegrowth2) AS pattern_class_edgegrowth2
+
+            FROM pattern_class_output pco
+
+            join analytical_output ao on (pco.model_param_id,pco."ssID") = (ao.model_param_id, ao."ssID")
+
+            GROUP BY pco.model_param_id, pco."ssID",ao.system_class, pco.simulation_param_uuid)
+
+
+select cpco.model_param_id, cpco.system_class, pattern_class_nogrowth, pattern_class_openboundary, pattern_class_edgegrowth2 from cluster_pattern_class cpco
+
+join model_param mp on mp.model_param_id = cpco.model_param_id
+inner join analytical_output ao on (cpco.model_param_id,cpco."ssID") = (ao.model_param_id, ao."ssID")
+where mp.circuit_n='turinghill'
+
+
+
+and (( mp.variant='11' or mp.variant='12')
+and mp.n_samples=1000000
+and ss_n=1
+and (cpco.simulation_param_uuid = 'e9956efa-c4f1-439c-8146-5d009bd107d8' or cpco.simulation_param_uuid = 'b30e41a0-4780-4397-b47d-51c9937f082d' or cpco.simulation_param_uuid = 'e04c9c57-8e18-4908-8d45-d68b27b165c2' )
+)
+
+or
+
+( mp.variant='0'
+and mp.n_samples=2000000
+and ss_n=1
+    and (cpco.simulation_param_uuid = 'e9956efa-c4f1-439c-8146-5d009bd107d8' or cpco.simulation_param_uuid = 'b30e41a0-4780-4397-b47d-51c9937f082d' or cpco.simulation_param_uuid = 'e04c9c57-8e18-4908-8d45-d68b27b165c2' )
+);
+
+
+
+
