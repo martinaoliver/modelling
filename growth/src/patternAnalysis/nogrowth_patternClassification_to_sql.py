@@ -66,20 +66,7 @@ filename= lambda parID,variant: 'circuit%s_variant%s_bc%s_%s_rate%s_ID%s_L%r_J%r
 
 data_path = lambda variant: modellingephemeral + f'/growth/out/numerical/{mechanism}/simulation/{folder(variant)}'
 
-# parID_list = pickle.load( open(data_path + '/parID_list_%s.pkl'%(filename('x')), "rb" ) )
 
-#%%
-
-# query = f'''select mp."parID", so."ssID"  from simulation_output so
-# inner join model_param mp on so.model_param_id = mp.model_param_id
-# inner join analytical_output ao on (ao.model_param_id,ao."ssID") = (so.model_param_id, so."ssID")
-
-# -- where ao.system_class not in ('turing I', 'turing II', 'turing I hopf', 'turing I oscillatory', 'turing II hopf', 'turing semi-hopf')
-# -- where ao.system_class in ('hopf')
-# and mp.variant='{variant}'
-# and so.simulation_param_uuid='e9956efa-c4f1-439c-8146-5d009bd107d8'
-# and mp.n_samples={n_samples}'''
-# parIDssID = general_query(query)
 
 
 query = f'''select mp."parID", so."ssID", mp."variant", mp."n_samples"  from simulation_output so
@@ -108,10 +95,10 @@ for parID,ssID,variant,n_samples in tqdm(parIDssID[0]):
     # U_record_1D = query_simulationOutput_multiple_from_sql(simulation_param_dict,model_param_dict,'U_record_1D', ssID=0)
 
 #show simulations
-    plot=True
+    plot=False
     if plot==True:
-        plot1D(U_final_1D, plotPeaks=True)
-        plt.show()
+        # plot1D(U_final_1D, plotPeaks=False)
+        # plt.show()
         surfpattern(U_record_1D,L,dx,J,T, 'linear',  morphogen=0, rate=0, savefig=False,filename='',logResults=False,normalize=False)
         plt.show()
 
@@ -120,7 +107,7 @@ for parID,ssID,variant,n_samples in tqdm(parIDssID[0]):
     print( pattern_class, converged, flat)
 
     # insert classification into psql 
-    # insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_nogrowth',allow_update=True)
+    insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_nogrowth',allow_update=True)
 
     # numerical_wavelength = find_wavelenght(U_final, x_grid,showplot1D=False)
     # print('wvl', numerical_wavelength)
