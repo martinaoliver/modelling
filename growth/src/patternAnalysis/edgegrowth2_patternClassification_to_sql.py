@@ -103,7 +103,7 @@ for parID,ssID,variant,n_samples in tqdm(parIDssID[0]):
     pattern_class, max_n_peaks = patternClassification_openboundaryEdgegrowth2(U_record_1D)
     # print(pattern_class, max_n_peaks)
     # insert classification into psql 
-    insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_openboundary',allow_update=True)
+    insert_patternClassOutput_to_sql(simulation_param_dict,model_param_dict,ssID,pattern_class, 'pattern_class_edgegrowth2',allow_update=True)
 
 
     # print('---------')
