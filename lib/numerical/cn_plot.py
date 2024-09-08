@@ -67,7 +67,7 @@ def surfpattern(results,L,dx,J,T, record_every_x_hours=10,growth='linear', rate=
 
     # t,x = np.meshgrid(t_grid, x_grid)
     # plt.contourf(t,x,results, cmap=cmap)
-    plt.contourf(x,t,results, levels=100, cmap=cmap)
+    plt.contourf(x,t,results, levels=10, cmap=cmap)
     if logResults==True:
         plt.colorbar(label='Concentration (logscale)')
     else:

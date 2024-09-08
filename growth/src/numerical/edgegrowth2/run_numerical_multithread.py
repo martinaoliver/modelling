@@ -202,7 +202,7 @@ for start_batch_index in batch_indices:
     print('main' + str(start_batch_index))
     df_batch = df.iloc[start_batch_index:start_batch_index+batch_size]
     pool_output.append(pool.apply_async(numerical_check, args=(df_batch, circuit_n)))
-
+    
 # Close the parallel processing job
 pool.close()
 pool.join()

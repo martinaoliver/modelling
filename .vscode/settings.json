@@ -1,4 +1,5 @@
 {"python.pythonPath":"/Users/mo2016/opt/anaconda3/envs/condaenv",
 "python.terminal.activateEnvironment": true,
+"git.ignoreLimitWarning": true,
 // "terminal.integrated.shell.windows": "C:\\Windows\\System32\\cmd.exe",
 }
